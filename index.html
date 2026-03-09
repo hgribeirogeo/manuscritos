@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestão de Manuscritos</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f10;
+    --surface: #18181b;
+    --surface2: #222228;
+    --border: #2e2e38;
+    --accent: #c8f04a;
+    --accent2: #7c6af7;
+    --text: #e8e8ec;
+    --text-muted: #6b6b7a;
+    --danger: #f04a4a;
+    --warn: #f0a84a;
+    --ok: #4af09e;
+    --blue: #4a8ff0;
+    --radius: 10px;
+    --gap: 1.5rem;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+
+  header { padding: 1.5rem var(--gap) 1.2rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; position: sticky; top: 0; background: var(--bg); z-index: 100; }
+  .logo { font-family: 'DM Serif Display', serif; font-size: 1.5rem; letter-spacing: -0.5px; display: flex; align-items: baseline; gap: 0.5rem; }
+  .logo span { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; }
+  .header-actions { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+
+  .stats-bar { display: flex; gap: 0.5rem; padding: 0.85rem var(--gap); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  .stat-chip { background: var(--surface); border: 1px solid var(--border); border-radius: 30px; padding: 0.3rem 0.85rem; font-size: 0.74rem; font-family: 'DM Mono', monospace; display: flex; align-items: center; gap: 0.5rem; }
+  .stat-chip .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+  main { flex: 1; padding: var(--gap); max-width: 1200px; width: 100%; margin: 0 auto; }
+
+  .btn { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 600; border: none; border-radius: var(--radius); cursor: pointer; transition: all 0.15s ease; display: inline-flex; align-items: center; gap: 0.4rem; }
+  .btn-primary { background: var(--accent); color: #0f0f10; padding: 0.6rem 1.2rem; }
+  .btn-primary:hover { background: #d9ff55; transform: translateY(-1px); }
+  .btn-ghost { background: transparent; color: var(--text-muted); padding: 0.55rem 1rem; border: 1px solid var(--border); }
+  .btn-ghost:hover { background: var(--surface); color: var(--text); }
+  .btn-danger { background: transparent; color: var(--danger); padding: 0.4rem 0.75rem; border: 1px solid transparent; font-size: 0.75rem; }
+  .btn-danger:hover { border-color: var(--danger); background: rgba(240,74,74,0.08); }
+  .btn-google { background: #1a73e8; color: #fff; padding: 0.55rem 1rem; }
+  .btn-google:hover { background: #1557b0; }
+  .btn-docx { background: #185abd; color: #fff; padding: 0.55rem 1rem; }
+  .btn-docx:hover { background: #0f3d8a; }
+  .btn-sm { padding: 0.35rem 0.75rem !important; font-size: 0.74rem !important; }
+
+  .toolbar { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .search-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.55rem 1rem; font-family: 'Syne', sans-serif; font-size: 0.82rem; color: var(--text); flex: 1; min-width: 200px; outline: none; transition: border-color 0.15s; }
+  .search-box:focus { border-color: var(--accent2); }
+  .search-box::placeholder { color: var(--text-muted); }
+  .filter-select { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.55rem 1rem; font-family: 'Syne', sans-serif; font-size: 0.82rem; color: var(--text); outline: none; cursor: pointer; }
+
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.2rem; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.4rem; transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s; position: relative; overflow: hidden; }
+  .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent-bar, var(--border)); }
+  .card:hover { border-color: var(--accent2); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.6rem; }
+  .card-title { font-family: 'DM Serif Display', serif; font-size: 1rem; line-height: 1.3; flex: 1; cursor: pointer; }
+  .card-title:hover { color: var(--accent); }
+
+  .badge { font-family: 'DM Mono', monospace; font-size: 0.66rem; font-weight: 500; padding: 0.22rem 0.6rem; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+  .badge-elaboracao { background: rgba(124,106,247,0.18); color: var(--accent2); }
+  .badge-submetido  { background: rgba(74,143,240,0.18); color: var(--blue); }
+  .badge-revisao    { background: rgba(240,168,74,0.18); color: var(--warn); }
+  .badge-aceito     { background: rgba(74,240,158,0.18); color: var(--ok); }
+  .badge-rejeitado  { background: rgba(240,74,74,0.18); color: var(--danger); }
+
+  .card-meta { font-size: 0.73rem; color: var(--text-muted); font-family: 'DM Mono', monospace; margin-bottom: 0.8rem; display: flex; flex-direction: column; gap: 0.2rem; }
+  .skeleton-badge { font-size: 0.62rem; font-family: 'DM Mono', monospace; padding: 0.18rem 0.55rem; border-radius: 4px; margin-bottom: 0.75rem; display: inline-block; }
+  .skeleton-done { background: rgba(74,240,158,0.12); color: var(--ok); }
+  .skeleton-pending { background: rgba(240,168,74,0.12); color: var(--warn); }
+  .progress-wrap { margin-bottom: 0.85rem; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 0.68rem; font-family: 'DM Mono', monospace; color: var(--text-muted); margin-bottom: 0.3rem; }
+  .progress-bar { height: 5px; background: var(--surface2); border-radius: 10px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 10px; background: var(--accent); transition: width 0.4s ease; }
+  .sections-mini { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 0.9rem; }
+  .sec-pill { font-size: 0.6rem; font-family: 'DM Mono', monospace; padding: 0.18rem 0.45rem; border-radius: 4px; border: 1px solid var(--border); color: var(--text-muted); }
+  .sec-pill.done { background: rgba(74,240,158,0.12); color: var(--ok); border-color: transparent; }
+  .sec-pill.progress { background: rgba(124,106,247,0.12); color: var(--accent2); border-color: transparent; }
+  .sec-pill.review { background: rgba(240,168,74,0.12); color: var(--warn); border-color: transparent; }
+  .card-actions { display: flex; justify-content: flex-end; margin-top: 0.75rem; gap: 0.5rem; flex-wrap: wrap; }
+
+  .empty-state { grid-column: 1/-1; text-align: center; padding: 5rem 2rem; color: var(--text-muted); }
+  .empty-state .big-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .empty-state h3 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; font-style: italic; margin-bottom: 0.5rem; color: var(--text); }
+  .empty-state p { font-size: 0.85rem; line-height: 1.6; }
+
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 200; align-items: flex-start; justify-content: center; padding: 2rem 1rem; overflow-y: auto; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 780px; flex-shrink: 0; margin: auto; animation: slideUp 0.2s ease; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .modal-header { padding: 1.5rem 1.5rem 0; display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.25rem; }
+  .modal-title { font-family: 'DM Serif Display', serif; font-size: 1.35rem; }
+  .modal-close { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text-muted); padding: 0.35rem 0.65rem; cursor: pointer; font-size: 1rem; transition: all 0.1s; }
+  .modal-close:hover { color: var(--text); background: var(--border); }
+  .modal-body { padding: 0 1.5rem 1.5rem; }
+
+  .tab-bar { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 1.25rem; }
+  .tab-btn { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 600; background: none; border: none; color: var(--text-muted); padding: 0.65rem 1.1rem; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; display: flex; align-items: center; gap: 0.4rem; }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
+  .form-full { grid-column: 1/-1; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text-muted); font-family: 'DM Mono', monospace; }
+  input[type="text"], input[type="date"], textarea, select { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem 0.9rem; font-family: 'Syne', sans-serif; font-size: 0.83rem; color: var(--text); outline: none; transition: border-color 0.15s; width: 100%; }
+  input:focus, textarea:focus, select:focus { border-color: var(--accent2); }
+  textarea { resize: vertical; min-height: 70px; }
+  select option { background: var(--surface2); }
+
+  .skeleton-fields { display: flex; flex-direction: column; gap: 1rem; }
+  .skeleton-field-group { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .skeleton-field-header { padding: 0.75rem 1rem; background: rgba(124,106,247,0.07); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.6rem; }
+  .skeleton-field-number { font-family: 'DM Mono', monospace; font-size: 0.65rem; background: var(--accent2); color: #fff; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600; }
+  .skeleton-field-label { font-size: 0.85rem; font-weight: 700; }
+  .skeleton-field-hint { font-size: 0.7rem; font-family: 'DM Mono', monospace; color: var(--text-muted); margin-top: 1px; }
+  .skeleton-field-group textarea { border: none; border-radius: 0; background: transparent; padding: 0.9rem 1rem; }
+  .skeleton-field-group textarea:focus { border-color: transparent; background: rgba(124,106,247,0.04); }
+
+  .sections-block { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 1rem; }
+  .sections-block-title { font-size: 0.7rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; font-family: 'DM Mono', monospace; color: var(--text-muted); padding: 0.7rem 1rem; background: var(--surface2); border-bottom: 1px solid var(--border); }
+  .section-row { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 0.75rem; padding: 0.7rem 1rem; border-bottom: 1px solid var(--border); transition: background 0.1s; }
+  .section-row:last-child { border-bottom: none; }
+  .section-row:hover { background: var(--surface2); }
+  .section-name { font-size: 0.83rem; font-weight: 600; }
+  .section-note-toggle { font-size: 0.7rem; font-family: 'DM Mono', monospace; color: var(--accent2); cursor: pointer; background: none; border: none; padding: 0; }
+  .section-note-toggle:hover { text-decoration: underline; }
+  .status-select { font-size: 0.7rem; padding: 0.28rem 0.55rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'Syne', sans-serif; cursor: pointer; }
+  .section-note-area { grid-column: 1/-1; padding-top: 0.25rem; display: none; }
+  .section-note-area.open { display: block; }
+  .section-note-area textarea { min-height: 55px; font-size: 0.8rem; }
+
+  .detail-view { display: none; }
+  .detail-view.open { display: block; }
+  .list-view.hidden { display: none; }
+  .detail-back { display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); font-size: 0.8rem; font-family: 'DM Mono', monospace; cursor: pointer; margin-bottom: 1.5rem; background: none; border: none; padding: 0; transition: color 0.15s; }
+  .detail-back:hover { color: var(--text); }
+  .detail-title { font-family: 'DM Serif Display', serif; font-size: 1.9rem; line-height: 1.2; margin-bottom: 0.5rem; }
+  .detail-meta { font-family: 'DM Mono', monospace; font-size: 0.73rem; color: var(--text-muted); display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.2rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--border); }
+  .detail-meta span b { color: var(--text); font-weight: 500; }
+
+  .action-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem; padding: 1rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; align-items: center; }
+  .action-row-label { font-size: 0.72rem; font-family: 'DM Mono', monospace; color: var(--text-muted); flex-shrink: 0; }
+
+  .skeleton-detail-block { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 1.5rem; overflow: hidden; }
+  .skeleton-detail-header { padding: 1rem 1.2rem; background: rgba(124,106,247,0.06); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .skeleton-detail-title { font-weight: 700; font-size: 0.95rem; }
+  .skeleton-item { padding: 0.9rem 1.2rem; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.35rem; }
+  .skeleton-item:last-child { border-bottom: none; }
+  .skeleton-item-label { font-size: 0.68rem; font-family: 'DM Mono', monospace; color: var(--accent2); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .skeleton-item-value { font-size: 0.85rem; line-height: 1.7; white-space: pre-wrap; color: var(--text); }
+  .skeleton-item-empty { font-size: 0.82rem; color: var(--text-muted); font-style: italic; }
+
+  .detail-sections { display: flex; flex-direction: column; gap: 1rem; }
+  .detail-section-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: border-color 0.15s; }
+  .detail-section-card:hover { border-color: var(--accent2); }
+  .detail-section-header { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 1.2rem; gap: 1rem; cursor: pointer; }
+  .detail-section-name { font-weight: 700; font-size: 0.88rem; display: flex; align-items: center; gap: 0.6rem; }
+  .status-indicator { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .si-none     { background: var(--border); }
+  .si-progress { background: var(--accent2); box-shadow: 0 0 6px var(--accent2); }
+  .si-review   { background: var(--warn); box-shadow: 0 0 6px var(--warn); }
+  .si-done     { background: var(--ok); box-shadow: 0 0 6px var(--ok); }
+  .detail-section-body { padding: 0 1.2rem 1.2rem; border-top: 1px solid var(--border); display: none; }
+  .detail-section-body.open { display: block; }
+  .detail-section-body .form-group { margin-top: 0.75rem; }
+
+  .detail-edit-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; justify-content: flex-end; padding-top: 1.2rem; border-top: 1px solid var(--border); flex-wrap: wrap; }
+
+  .toast-container { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999; display: flex; flex-direction: column; gap: 0.5rem; }
+  .toast { background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 8px; padding: 0.7rem 1rem; font-size: 0.8rem; font-family: 'DM Mono', monospace; animation: fadeInRight 0.2s ease; max-width: 280px; }
+  @keyframes fadeInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+  @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .cards-grid { grid-template-columns: 1fr; } .detail-meta { gap: 0.75rem; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Manuscritos <span>UFG</span></div>
+  <div class="header-actions">
+    <button class="btn btn-ghost" onclick="exportData()">⬇ Exportar JSON</button>
+    <button class="btn btn-ghost" onclick="triggerImport()">⬆ Importar JSON</button>
+    <button class="btn btn-primary" onclick="openNewModal()">+ Novo manuscrito</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+  </div>
+</header>
+
+<div class="stats-bar" id="statsBar"></div>
+
+<main>
+  <div class="list-view" id="listView">
+    <div class="toolbar">
+      <input class="search-box" type="text" id="searchInput" placeholder="Buscar por título ou periódico..." oninput="renderList()">
+      <select class="filter-select" id="filterStatus" onchange="renderList()">
+        <option value="">Todos os status</option>
+        <option value="Em elaboração">Em elaboração</option>
+        <option value="Submetido">Submetido</option>
+        <option value="Em revisão">Em revisão</option>
+        <option value="Aceito">Aceito</option>
+        <option value="Rejeitado">Rejeitado</option>
+      </select>
+    </div>
+    <div class="cards-grid" id="cardsGrid"></div>
+  </div>
+
+  <div class="detail-view" id="detailView">
+    <button class="detail-back" onclick="closeDetail()">← Voltar à lista</button>
+    <div id="detailContent"></div>
+  </div>
+</main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modalTitle">Novo manuscrito</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('info')" id="tab-info">📋 Informações</button>
+        <button class="tab-btn" onclick="switchTab('skeleton')" id="tab-skeleton">🦴 Esqueleto</button>
+        <button class="tab-btn" onclick="switchTab('writing')" id="tab-writing">✍ Etapas</button>
+      </div>
+
+      <!-- INFO -->
+      <div class="tab-panel active" id="panel-info">
+        <div class="form-grid">
+          <div class="form-group form-full">
+            <label>Título do manuscrito</label>
+            <input type="text" id="fTitle" placeholder="Ex: Estimativa de biomassa no Cerrado usando QAOA...">
+          </div>
+          <div class="form-group">
+            <label>Periódico alvo</label>
+            <input type="text" id="fJournal" placeholder="Ex: Environmental Modelling & Software">
+          </div>
+          <div class="form-group">
+            <label>Status geral</label>
+            <select id="fStatus">
+              <option>Em elaboração</option><option>Submetido</option><option>Em revisão</option><option>Aceito</option><option>Rejeitado</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Deadline de submissão</label>
+            <input type="date" id="fDeadline">
+          </div>
+          <div class="form-group">
+            <label>Coautores</label>
+            <input type="text" id="fCoauthors" placeholder="Nomes separados por vírgula">
+          </div>
+          <div class="form-group form-full">
+            <label>Notas gerais</label>
+            <textarea id="fNotes" placeholder="Observações, decisões, pendências..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- SKELETON -->
+      <div class="tab-panel" id="panel-skeleton">
+        <div class="skeleton-fields">
+          <div class="skeleton-field-group">
+            <div class="skeleton-field-header"><div class="skeleton-field-number">1</div><div><div class="skeleton-field-label">Pergunta de Pesquisa</div><div class="skeleton-field-hint">O problema central que o estudo responde</div></div></div>
+            <textarea id="sk-question" rows="3" placeholder="Qual é a pergunta central que este manuscrito responde?"></textarea>
+          </div>
+          <div class="skeleton-field-group">
+            <div class="skeleton-field-header"><div class="skeleton-field-number">2</div><div><div class="skeleton-field-label">Hipótese</div><div class="skeleton-field-hint">A resposta provisória que será testada</div></div></div>
+            <textarea id="sk-hypothesis" rows="3" placeholder="Qual hipótese o estudo testa?"></textarea>
+          </div>
+          <div class="skeleton-field-group">
+            <div class="skeleton-field-header"><div class="skeleton-field-number">3</div><div><div class="skeleton-field-label">Objetivo Geral</div><div class="skeleton-field-hint">O propósito amplo do trabalho</div></div></div>
+            <textarea id="sk-obj-general" rows="2" placeholder="Desenvolver / avaliar / propor..."></textarea>
+          </div>
+          <div class="skeleton-field-group">
+            <div class="skeleton-field-header"><div class="skeleton-field-number">4</div><div><div class="skeleton-field-label">Objetivos Específicos</div><div class="skeleton-field-hint">Liste um por linha</div></div></div>
+            <textarea id="sk-obj-specific" rows="4" placeholder="(i) Implementar...&#10;(ii) Comparar...&#10;(iii) Avaliar..."></textarea>
+          </div>
+          <div class="skeleton-field-group">
+            <div class="skeleton-field-header"><div class="skeleton-field-number">5</div><div><div class="skeleton-field-label">Estrutura da Revisão de Literatura</div><div class="skeleton-field-hint">Blocos temáticos que serão cobertos</div></div></div>
+            <textarea id="sk-lit" rows="4" placeholder="1. Tema A&#10;2. Tema B&#10;3. Lacuna identificada..."></textarea>
+          </div>
+          <div class="skeleton-field-group">
+            <div class="skeleton-field-header"><div class="skeleton-field-number">6</div><div><div class="skeleton-field-label">Estrutura de Materiais e Métodos</div><div class="skeleton-field-hint">Subseções previstas</div></div></div>
+            <textarea id="sk-mm" rows="4" placeholder="2.1 Área de estudo&#10;2.2 Dados utilizados&#10;2.3 Pipeline metodológico..."></textarea>
+          </div>
+          <div class="skeleton-field-group">
+            <div class="skeleton-field-header"><div class="skeleton-field-number">7</div><div><div class="skeleton-field-label">Estrutura de Resultados</div><div class="skeleton-field-hint">O que será apresentado e em que ordem</div></div></div>
+            <textarea id="sk-results" rows="4" placeholder="3.1 Resultado A (tabela/figura esperada)&#10;3.2 Resultado B..."></textarea>
+          </div>
+          <div class="skeleton-field-group">
+            <div class="skeleton-field-header"><div class="skeleton-field-number">8</div><div><div class="skeleton-field-label">Estrutura de Discussão</div><div class="skeleton-field-hint">Pontos que serão interpretados e confrontados com a literatura</div></div></div>
+            <textarea id="sk-discussion" rows="4" placeholder="4.1 Interpretação do resultado A&#10;4.2 Comparação com literatura&#10;4.3 Limitações..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- WRITING -->
+      <div class="tab-panel" id="panel-writing">
+        <div class="sections-block">
+          <div class="sections-block-title">Progresso das seções de escrita</div>
+          <div id="sectionsEditor"></div>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;gap:0.75rem;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveManuscript()">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+  const SECTIONS = ['Resumo','Introdução','Materiais e Métodos','Resultados','Discussão','Conclusão'];
+  const STATUS_OPTS = ['Não iniciado','Em andamento','Em revisão','Concluído'];
+  const STATUS_COLORS = { 'Em elaboração':'#7c6af7','Submetido':'#4a8ff0','Em revisão':'#f0a84a','Aceito':'#4af09e','Rejeitado':'#f04a4a' };
+  const SKELETON_FIELDS = [
+    { id:'question',    label:'Pergunta de Pesquisa' },
+    { id:'hypothesis',  label:'Hipótese' },
+    { id:'objGeneral',  label:'Objetivo Geral' },
+    { id:'objSpecific', label:'Objetivos Específicos' },
+    { id:'lit',         label:'Estrutura da Revisão de Literatura' },
+    { id:'mm',          label:'Estrutura de Materiais e Métodos' },
+    { id:'results',     label:'Estrutura de Resultados' },
+    { id:'discussion',  label:'Estrutura de Discussão' }
+  ];
+  const SK_EL_IDS = { question:'sk-question', hypothesis:'sk-hypothesis', objGeneral:'sk-obj-general', objSpecific:'sk-obj-specific', lit:'sk-lit', mm:'sk-mm', results:'sk-results', discussion:'sk-discussion' };
+
+  let manuscripts = [];
+  let editingId = null;
+  let openSections = {};
+  let currentDetailId = null;
+
+  function load() { try { manuscripts = JSON.parse(localStorage.getItem('mss_data')||'[]'); } catch(e) { manuscripts=[]; } }
+  function save() { localStorage.setItem('mss_data', JSON.stringify(manuscripts)); }
+  function genId() { return Date.now().toString(36)+Math.random().toString(36).slice(2); }
+  function getProgress(m) { return Math.round(m.sections.filter(s=>s.status==='Concluído').length/m.sections.length*100); }
+  function skeletonComplete(m) { return SKELETON_FIELDS.some(f=>m.skeleton&&m.skeleton[f.id]&&m.skeleton[f.id].trim()); }
+  function badgeClass(s) { return {'Em elaboração':'badge-elaboracao','Submetido':'badge-submetido','Em revisão':'badge-revisao','Aceito':'badge-aceito','Rejeitado':'badge-rejeitado'}[s]||'badge-elaboracao'; }
+  function pillClass(s) { if(s==='Concluído') return 'done'; if(s==='Em andamento') return 'progress'; if(s==='Em revisão') return 'review'; return ''; }
+  function daysLeft(d) { if(!d) return null; return Math.ceil((new Date(d+'T12:00:00')-new Date())/86400000); }
+  function xe(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  function renderStats() {
+    const total=manuscripts.length, byStatus={};
+    manuscripts.forEach(m=>{byStatus[m.status]=(byStatus[m.status]||0)+1;});
+    const avg=total?Math.round(manuscripts.reduce((a,m)=>a+getProgress(m),0)/total):0;
+    document.getElementById('statsBar').innerHTML=[
+      `<div class="stat-chip"><span class="dot" style="background:#6b6b7a"></span>${total} manuscrito${total!==1?'s':''}</div>`,
+      ...Object.entries(byStatus).map(([s,n])=>`<div class="stat-chip"><span class="dot" style="background:${STATUS_COLORS[s]||'#6b6b7a'}"></span>${n} ${s}</div>`),
+      total?`<div class="stat-chip"><span class="dot" style="background:var(--accent)"></span>Progresso médio: ${avg}%</div>`:''
+    ].join('');
+  }
+
+  function renderList() {
+    const q=document.getElementById('searchInput').value.toLowerCase();
+    const fs=document.getElementById('filterStatus').value;
+    const grid=document.getElementById('cardsGrid');
+    const filtered=manuscripts.filter(m=>(!q||m.title.toLowerCase().includes(q)||(m.journal||'').toLowerCase().includes(q))&&(!fs||m.status===fs));
+    if(!filtered.length){grid.innerHTML=`<div class="empty-state"><div class="big-icon">📄</div><h3>Nenhum manuscrito encontrado</h3><p>Adicione seu primeiro manuscrito.</p></div>`;return;}
+    grid.innerHTML=filtered.map(m=>{
+      const prog=getProgress(m), dl=daysLeft(m.deadline), color=STATUS_COLORS[m.status]||'#6b6b7a', hasSk=skeletonComplete(m);
+      const dlStr=dl===null?'':dl<0?`<span style="color:var(--danger)">Vencido há ${Math.abs(dl)}d</span>`:dl===0?`<span style="color:var(--warn)">Vence hoje</span>`:dl<=7?`<span style="color:var(--warn)">${dl}d restantes</span>`:`${dl}d restantes`;
+      return `<div class="card" style="--accent-bar:${color}">
+        <div class="card-header"><div class="card-title" onclick="openDetail('${m.id}')">${xe(m.title)}</div><div class="badge ${badgeClass(m.status)}">${m.status}</div></div>
+        <div class="card-meta">${m.journal?`<div>📋 ${xe(m.journal)}</div>`:''} ${m.coauthors?`<div>👥 ${xe(m.coauthors)}</div>`:''} ${dl!==null?`<div>📅 ${dlStr}</div>`:''}</div>
+        <div class="skeleton-badge ${hasSk?'skeleton-done':'skeleton-pending'}">${hasSk?'🦴 Esqueleto preenchido':'🦴 Esqueleto pendente'}</div>
+        <div class="progress-wrap"><div class="progress-label"><span>Escrita</span><span>${prog}%</span></div><div class="progress-bar"><div class="progress-fill" style="width:${prog}%"></div></div></div>
+        <div class="sections-mini">${m.sections.map(s=>`<div class="sec-pill ${pillClass(s.status)}">${s.name.split(' ')[0]}</div>`).join('')}</div>
+        <div class="card-actions">
+          <button class="btn btn-ghost btn-sm" onclick="openDetail('${m.id}')">👁 Ver</button>
+          <button class="btn btn-ghost btn-sm" onclick="openEditModal('${m.id}')">✏ Editar</button>
+          <button class="btn btn-danger" onclick="deleteManuscript('${m.id}')">🗑</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function openDetail(id) {
+    const m=manuscripts.find(x=>x.id===id); if(!m) return;
+    currentDetailId=id; openSections={};
+    document.getElementById('listView').classList.add('hidden');
+    document.getElementById('detailView').classList.add('open');
+    renderDetail(m); window.scrollTo(0,0);
+  }
+
+  function closeDetail() {
+    document.getElementById('detailView').classList.remove('open');
+    document.getElementById('listView').classList.remove('hidden');
+    currentDetailId=null; renderList();
+  }
+
+  function renderDetail(m) {
+    const prog=getProgress(m), dl=daysLeft(m.deadline);
+    const dlStr=dl===null?'—':dl<0?`Vencido há ${Math.abs(dl)} dias`:dl===0?'Vence hoje':`${dl} dias restantes`;
+
+    const skItems=SKELETON_FIELDS.map(f=>{
+      const val=m.skeleton&&m.skeleton[f.id]?m.skeleton[f.id].trim():'';
+      return `<div class="skeleton-item"><div class="skeleton-item-label">${f.label}</div>${val?`<div class="skeleton-item-value">${xe(val)}</div>`:`<div class="skeleton-item-empty">Não preenchido</div>`}</div>`;
+    }).join('');
+
+    const sectHtml=m.sections.map((s,i)=>{
+      const siClass={'Não iniciado':'si-none','Em andamento':'si-progress','Em revisão':'si-review','Concluído':'si-done'}[s.status]||'si-none';
+      const isOpen=openSections[i];
+      return `<div class="detail-section-card">
+        <div class="detail-section-header" onclick="toggleSection(${i},'${m.id}')">
+          <div class="detail-section-name"><span class="status-indicator ${siClass}"></span>${s.name}</div>
+          <div style="display:flex;align-items:center;gap:.75rem">
+            <select class="status-select" onchange="updateSectionStatus('${m.id}',${i},this.value);event.stopPropagation()" onclick="event.stopPropagation()">
+              ${STATUS_OPTS.map(o=>`<option${o===s.status?' selected':''}>${o}</option>`).join('')}
+            </select>
+            <span style="color:var(--text-muted);font-size:.8rem">${isOpen?'▲':'▼'}</span>
+          </div>
+        </div>
+        <div class="detail-section-body${isOpen?' open':''}">
+          <div class="form-group" style="margin-top:.75rem">
+            <label>Notas</label>
+            <textarea rows="4" placeholder="Anotações, pendências..." onchange="updateSectionNote('${m.id}',${i},this.value)">${s.note||''}</textarea>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    document.getElementById('detailContent').innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:.5rem">
+        <h1 class="detail-title">${xe(m.title)}</h1>
+        <div class="badge ${badgeClass(m.status)}" style="font-size:.8rem;padding:.4rem 1rem">${m.status}</div>
+      </div>
+      <div class="detail-meta">
+        ${m.journal?`<span>Periódico<br><b>${xe(m.journal)}</b></span>`:''}
+        ${m.coauthors?`<span>Coautores<br><b>${xe(m.coauthors)}</b></span>`:''}
+        <span>Deadline<br><b>${m.deadline||'—'}</b></span>
+        <span>Prazo<br><b>${dlStr}</b></span>
+      </div>
+
+      <div class="action-row">
+        <span class="action-row-label">Ações:</span>
+        <button class="btn btn-docx btn-sm" onclick="exportSkeletonDocx('${m.id}')">📄 Exportar Esqueleto DOCX</button>
+        <button class="btn btn-google btn-sm" onclick="openGoogleDocs('${m.id}')">📝 Iniciar Escrita no Google Docs</button>
+        <button class="btn btn-ghost btn-sm" onclick="openEditModal('${m.id}')">✏ Editar manuscrito</button>
+      </div>
+
+      ${m.notes?`<div style="background:var(--surface2);border-left:3px solid var(--accent2);border-radius:0 8px 8px 0;padding:.9rem 1rem;margin-bottom:1.5rem;font-size:.82rem;line-height:1.6;color:var(--text-muted)">${xe(m.notes)}</div>`:''}
+
+      <div class="skeleton-detail-block">
+        <div class="skeleton-detail-header">
+          <div class="skeleton-detail-title">🦴 Esqueleto do Manuscrito</div>
+          <button class="btn btn-ghost btn-sm" onclick="openEditModal('${m.id}');setTimeout(()=>switchTab('skeleton'),100)">✏ Editar</button>
+        </div>
+        <div>${skItems}</div>
+      </div>
+
+      <div style="margin-bottom:1rem">
+        <div style="display:flex;justify-content:space-between;font-size:.78rem;font-family:'DM Mono',monospace;color:var(--text-muted);margin-bottom:.4rem"><span>Progresso da escrita</span><span style="color:var(--accent)">${prog}%</span></div>
+        <div class="progress-bar" style="height:8px"><div class="progress-fill" style="width:${prog}%"></div></div>
+      </div>
+      <div class="detail-sections" style="margin-bottom:1.5rem">${sectHtml}</div>
+      <div class="detail-edit-actions">
+        <button class="btn btn-danger" onclick="if(confirm('Remover este manuscrito?')){deleteManuscript('${m.id}');closeDetail()}">🗑 Remover manuscrito</button>
+      </div>
+    `;
+  }
+
+  function toggleSection(i,id) { openSections[i]=!openSections[i]; const m=manuscripts.find(x=>x.id===id); if(m) renderDetail(m); }
+  function updateSectionStatus(id,i,val) { const m=manuscripts.find(x=>x.id===id); if(!m) return; m.sections[i].status=val; save(); renderDetail(m); renderStats(); }
+  function updateSectionNote(id,i,val) { const m=manuscripts.find(x=>x.id===id); if(!m) return; m.sections[i].note=val; save(); }
+
+  function switchTab(name) {
+    ['info','skeleton','writing'].forEach(t=>{
+      document.getElementById('tab-'+t).classList.toggle('active',t===name);
+      document.getElementById('panel-'+t).classList.toggle('active',t===name);
+    });
+  }
+
+  function buildSectionsEditor(sections) {
+    return SECTIONS.map((name,i)=>{
+      const sec=sections?sections[i]:null, status=sec?sec.status:'Não iniciado', note=sec?sec.note||'':'';
+      return `<div class="section-row">
+        <div class="section-name">${name}</div>
+        <button class="section-note-toggle" onclick="toggleNoteArea(${i})">+ nota</button>
+        <select class="status-select" id="sec-status-${i}">${STATUS_OPTS.map(o=>`<option${o===status?' selected':''}>${o}</option>`).join('')}</select>
+        <div class="section-note-area${note?' open':''}" id="secnote-${i}">
+          <textarea id="sec-note-${i}" placeholder="Notas...">${note}</textarea>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function toggleNoteArea(i) { document.getElementById('secnote-'+i).classList.toggle('open'); }
+
+  function populateSkeleton(sk) {
+    Object.entries(SK_EL_IDS).forEach(([k,id])=>{ document.getElementById(id).value=(sk&&sk[k])||''; });
+  }
+
+  function readSkeleton() {
+    const r={};
+    Object.entries(SK_EL_IDS).forEach(([k,id])=>{ r[k]=document.getElementById(id).value.trim(); });
+    return r;
+  }
+
+  function openNewModal() {
+    editingId=null;
+    document.getElementById('modalTitle').textContent='Novo manuscrito';
+    ['fTitle','fJournal','fCoauthors','fNotes'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('fStatus').value='Em elaboração';
+    document.getElementById('fDeadline').value='';
+    populateSkeleton(null);
+    document.getElementById('sectionsEditor').innerHTML=buildSectionsEditor(null);
+    switchTab('info');
+    document.getElementById('modalOverlay').classList.add('open');
+  }
+
+  function openEditModal(id) {
+    const m=manuscripts.find(x=>x.id===id); if(!m) return;
+    editingId=id;
+    document.getElementById('modalTitle').textContent='Editar manuscrito';
+    document.getElementById('fTitle').value=m.title;
+    document.getElementById('fJournal').value=m.journal||'';
+    document.getElementById('fStatus').value=m.status;
+    document.getElementById('fDeadline').value=m.deadline||'';
+    document.getElementById('fCoauthors').value=m.coauthors||'';
+    document.getElementById('fNotes').value=m.notes||'';
+    populateSkeleton(m.skeleton||null);
+    document.getElementById('sectionsEditor').innerHTML=buildSectionsEditor(m.sections);
+    switchTab('info');
+    document.getElementById('modalOverlay').classList.add('open');
+  }
+
+  function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+  function handleOverlayClick(e) { if(e.target.id==='modalOverlay') closeModal(); }
+
+  function saveManuscript() {
+    const title=document.getElementById('fTitle').value.trim();
+    if(!title){ toast('Informe o título.'); switchTab('info'); return; }
+    const sections=SECTIONS.map((name,i)=>({ name, status:document.getElementById('sec-status-'+i).value, note:(document.getElementById('sec-note-'+i)||{value:''}).value }));
+    const skeleton=readSkeleton();
+    if(editingId) {
+      const m=manuscripts.find(x=>x.id===editingId);
+      Object.assign(m,{ title, journal:document.getElementById('fJournal').value.trim(), status:document.getElementById('fStatus').value, deadline:document.getElementById('fDeadline').value, coauthors:document.getElementById('fCoauthors').value.trim(), notes:document.getElementById('fNotes').value.trim(), sections, skeleton });
+      toast('Manuscrito atualizado.');
+    } else {
+      manuscripts.unshift({ id:genId(), title, journal:document.getElementById('fJournal').value.trim(), status:document.getElementById('fStatus').value, deadline:document.getElementById('fDeadline').value, coauthors:document.getElementById('fCoauthors').value.trim(), notes:document.getElementById('fNotes').value.trim(), sections, skeleton, createdAt:new Date().toISOString() });
+      toast('Manuscrito adicionado.');
+    }
+    save(); closeModal(); renderList(); renderStats();
+    if(currentDetailId){ const m=manuscripts.find(x=>x.id===currentDetailId); if(m) renderDetail(m); }
+  }
+
+  function deleteManuscript(id) {
+    if(!confirm('Remover este manuscrito?')) return;
+    manuscripts=manuscripts.filter(x=>x.id!==id); save(); renderList(); renderStats(); toast('Removido.');
+  }
+
+  function openGoogleDocs(id) {
+    const m=manuscripts.find(x=>x.id===id); if(!m) return;
+    window.open(`https://docs.google.com/document/create?title=${encodeURIComponent(m.title)}`,'_blank');
+    toast('Abrindo Google Docs...');
+  }
+
+  async function exportSkeletonDocx(id) {
+    const m=manuscripts.find(x=>x.id===id); if(!m) return;
+    toast('Gerando DOCX...');
+    try {
+      const zip=new JSZip();
+      zip.file('[Content_Types].xml',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>`);
+      zip.file('_rels/.rels',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`);
+      zip.file('word/_rels/document.xml.rels',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`);
+      zip.file('word/styles.xml',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:style w:type="paragraph" w:styleId="Normal" w:default="1"><w:name w:val="Normal"/><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:sz w:val="24"/></w:rPr></w:style><w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="Heading 1"/><w:basedOn w:val="Normal"/><w:pPr><w:spacing w:before="300" w:after="150"/><w:outlineLvl w:val="0"/></w:pPr><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:b/><w:sz w:val="36"/></w:rPr></w:style><w:style w:type="paragraph" w:styleId="Heading2"><w:name w:val="Heading 2"/><w:basedOn w:val="Normal"/><w:pPr><w:spacing w:before="240" w:after="100"/><w:outlineLvl w:val="1"/></w:pPr><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:b/><w:sz w:val="28"/><w:color w:val="2B4EA8"/></w:rPr></w:style><w:style w:type="paragraph" w:styleId="Body"><w:name w:val="Body"/><w:basedOn w:val="Normal"/><w:pPr><w:spacing w:before="60" w:after="60" w:line="360" w:lineRule="auto"/></w:pPr><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:sz w:val="24"/></w:rPr></w:style></w:styles>`);
+
+      function p(text,style){ return (text||'').split('\n').map(l=>`<w:p><w:pPr><w:pStyle w:val="${style||'Body'}"/></w:pPr><w:r><w:t xml:space="preserve">${xe(l)||' '}</w:t></w:r></w:p>`).join(''); }
+      function h1(t){ return `<w:p><w:pPr><w:pStyle w:val="Heading1"/></w:pPr><w:r><w:t>${xe(t)}</w:t></w:r></w:p>`; }
+      function h2(t){ return `<w:p><w:pPr><w:pStyle w:val="Heading2"/></w:pPr><w:r><w:t>${xe(t)}</w:t></w:r></w:p>`; }
+      function empty(){ return `<w:p><w:pPr><w:pStyle w:val="Body"/></w:pPr><w:r><w:t xml:space="preserve"> </w:t></w:r></w:p>`; }
+      function bold(label,val){ return `<w:p><w:pPr><w:pStyle w:val="Body"/></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t xml:space="preserve">${xe(label)}</w:t></w:r><w:r><w:t xml:space="preserve"> ${xe(val)}</w:t></w:r></w:p>`; }
+
+      const sk=m.skeleton||{}, date=new Date().toLocaleDateString('pt-BR');
+      const body=[
+        h1(m.title), empty(),
+        m.journal?bold('Periódico alvo:',m.journal):'',
+        m.coauthors?bold('Coautores:',m.coauthors):'',
+        bold('Data:',date), empty(),
+        h2('1. Pergunta de Pesquisa'), p(sk.question||'Não preenchido.'), empty(),
+        h2('2. Hipótese'), p(sk.hypothesis||'Não preenchido.'), empty(),
+        h2('3. Objetivo Geral'), p(sk.objGeneral||'Não preenchido.'), empty(),
+        h2('4. Objetivos Específicos'), p(sk.objSpecific||'Não preenchido.'), empty(),
+        h2('5. Estrutura da Revisão de Literatura'), p(sk.lit||'Não preenchido.'), empty(),
+        h2('6. Estrutura de Materiais e Métodos'), p(sk.mm||'Não preenchido.'), empty(),
+        h2('7. Estrutura de Resultados'), p(sk.results||'Não preenchido.'), empty(),
+        h2('8. Estrutura de Discussão'), p(sk.discussion||'Não preenchido.'), empty(),
+        m.notes?[h2('Notas Gerais'),p(m.notes),empty()].join(''):''
+      ].filter(Boolean).join('\n');
+
+      zip.file('word/document.xml',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1418" w:right="1418" w:bottom="1418" w:left="1418"/></w:sectPr>${body}</w:body></w:document>`);
+
+      const blob=await zip.generateAsync({type:'blob',mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      a.download=`esqueleto_${m.title.slice(0,40).replace(/[^a-zA-Z0-9]/g,'_')}.docx`;
+      a.click();
+      toast('DOCX exportado.');
+    } catch(e){ console.error(e); toast('Erro ao gerar DOCX.'); }
+  }
+
+  function exportData() {
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([JSON.stringify(manuscripts,null,2)],{type:'application/json'}));
+    a.download=`manuscritos_${new Date().toISOString().slice(0,10)}.json`;
+    a.click(); toast('Dados exportados.');
+  }
+
+  function triggerImport() { document.getElementById('importFile').click(); }
+
+  function importData(e) {
+    const file=e.target.files[0]; if(!file) return;
+    const r=new FileReader();
+    r.onload=ev=>{ try{ const d=JSON.parse(ev.target.result); if(!Array.isArray(d)) throw new Error(); manuscripts=d; save(); renderList(); renderStats(); toast(`${d.length} manuscrito(s) importado(s).`); } catch{ toast('Arquivo inválido.'); } };
+    r.readAsText(file); e.target.value='';
+  }
+
+  function toast(msg) {
+    const el=document.createElement('div'); el.className='toast'; el.textContent=msg;
+    document.getElementById('toastContainer').appendChild(el);
+    setTimeout(()=>el.remove(),3000);
+  }
+
+  load(); renderStats(); renderList();
+</script>
+</body>
+</html>
