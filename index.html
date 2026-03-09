@@ -30,6 +30,21 @@
   .logo { font-family: 'DM Serif Display', serif; font-size: 1.5rem; letter-spacing: -0.5px; display: flex; align-items: baseline; gap: 0.5rem; }
   .logo span { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; }
   .header-actions { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+  .sync-indicator { font-family: 'DM Mono', monospace; font-size: 0.7rem; display: flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.75rem; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); transition: all 0.3s; }
+  .sync-indicator.syncing { color: var(--warn); border-color: var(--warn); }
+  .sync-indicator.synced  { color: var(--ok);  border-color: var(--ok); }
+  .sync-indicator.error   { color: var(--danger); border-color: var(--danger); }
+  .spin { display: inline-block; animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .settings-modal { max-width: 520px; }
+  .settings-section-title { font-family: 'DM Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+  .input-with-toggle { position: relative; }
+  .input-with-toggle input { padding-right: 3rem; }
+  .toggle-vis { position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; padding: 0; }
+  .toggle-vis:hover { color: var(--text); }
+  .hint-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.78rem; font-family: 'DM Mono', monospace; color: var(--text-muted); line-height: 1.6; margin-top: 0.5rem; }
+  .hint-box a { color: var(--accent2); text-decoration: none; }
+  .hint-box a:hover { text-decoration: underline; }
 
   .stats-bar { display: flex; gap: 0.5rem; padding: 0.85rem var(--gap); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
   .stat-chip { background: var(--surface); border: 1px solid var(--border); border-radius: 30px; padding: 0.3rem 0.85rem; font-size: 0.74rem; font-family: 'DM Mono', monospace; display: flex; align-items: center; gap: 0.5rem; }
@@ -199,8 +214,13 @@
 <header>
   <div class="logo">Manuscritos <span>UFG</span></div>
   <div class="header-actions">
+    <div class="sync-indicator" id="syncIndicator" onclick="openSettings()" title="Configurações de sincronização" style="cursor:pointer">
+      <span id="syncDot">○</span><span id="syncLabel">Configurar sync</span>
+    </div>
+    <button class="btn btn-ghost" onclick="syncNow()" title="Sincronizar agora">⟳ Sync</button>
     <button class="btn btn-ghost" onclick="exportData()">⬇ Exportar JSON</button>
     <button class="btn btn-ghost" onclick="triggerImport()">⬆ Importar JSON</button>
+    <button class="btn btn-ghost" onclick="openSettings()">⚙ Config</button>
     <button class="btn btn-primary" onclick="openNewModal()">+ Novo manuscrito</button>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
   </div>
@@ -325,6 +345,46 @@
       <div style="display:flex;justify-content:flex-end;gap:0.75rem;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)">
         <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
         <button class="btn btn-primary" onclick="saveManuscript()">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="fab-home" id="fabHome" onclick="closeDetail()">← Lista</button>
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="settingsOverlay" onclick="handleSettingsOverlay(event)">
+  <div class="modal settings-modal">
+    <div class="modal-header">
+      <h2 class="modal-title">⚙ Sincronização GitHub Gist</h2>
+      <button class="modal-close" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom:1.25rem">
+        <div class="settings-section-title">Como configurar</div>
+        <div class="hint-box">
+          1. Crie um Gist secreto em <a href="https://gist.github.com" target="_blank">gist.github.com</a> com um arquivo <b>manuscritos.json</b> contendo <b>[]</b><br>
+          2. Copie o ID do Gist (sequência no final da URL)<br>
+          3. Gere um token em <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a> com escopo <b>gist</b><br>
+          4. Cole os dois abaixo — ficam salvos apenas neste navegador
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:1rem">
+        <label>ID do Gist</label>
+        <input type="text" id="cfgGistId" placeholder="e5d141b42a27db388a7d1f684c78e3f0">
+      </div>
+      <div class="form-group" style="margin-bottom:1.25rem">
+        <label>Personal Access Token</label>
+        <div class="input-with-toggle">
+          <input type="password" id="cfgToken" placeholder="ghp_...">
+          <button class="toggle-vis" onclick="toggleTokenVis()">👁</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:.75rem;justify-content:space-between;align-items:center;flex-wrap:wrap">
+        <button class="btn btn-danger" onclick="clearCredentials()">🗑 Remover credenciais</button>
+        <div style="display:flex;gap:.75rem">
+          <button class="btn btn-ghost" onclick="closeSettings()">Cancelar</button>
+          <button class="btn btn-primary" onclick="saveSettings()">Salvar e sincronizar</button>
+        </div>
       </div>
     </div>
   </div>
@@ -671,7 +731,127 @@
     setTimeout(()=>el.remove(),3000);
   }
 
-  load(); renderStats(); renderList();
+  /* ---- GIST SYNC ---- */
+  function getCreds() {
+    return {
+      gistId: localStorage.getItem('mss_gist_id')||'',
+      token:  localStorage.getItem('mss_gist_token')||''
+    };
+  }
+
+  function setSyncStatus(state, label) {
+    const ind = document.getElementById('syncIndicator');
+    const dot = document.getElementById('syncDot');
+    const lbl = document.getElementById('syncLabel');
+    ind.className = 'sync-indicator ' + state;
+    lbl.textContent = label;
+    dot.innerHTML = state === 'syncing' ? '<span class="spin">↻</span>' :
+                    state === 'synced'  ? '●' :
+                    state === 'error'   ? '✕' : '○';
+  }
+
+  async function syncFromGist() {
+    const {gistId, token} = getCreds();
+    if (!gistId || !token) { setSyncStatus('offline','Sem sync'); return false; }
+    setSyncStatus('syncing','Carregando...');
+    try {
+      const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+        headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
+      });
+      if (!res.ok) throw new Error('HTTP '+res.status);
+      const data = await res.json();
+      const raw = data.files['manuscritos.json']?.content || '[]';
+      const remote = JSON.parse(raw);
+      manuscripts = remote;
+      save();
+      setSyncStatus('synced', `Sincronizado`);
+      return true;
+    } catch(e) {
+      setSyncStatus('error','Erro ao carregar');
+      toast('Erro ao carregar do Gist: ' + e.message);
+      return false;
+    }
+  }
+
+  async function syncToGist() {
+    const {gistId, token} = getCreds();
+    if (!gistId || !token) return;
+    setSyncStatus('syncing','Salvando...');
+    try {
+      const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+        method: 'PATCH',
+        headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ files: { 'manuscritos.json': { content: JSON.stringify(manuscripts, null, 2) } } })
+      });
+      if (!res.ok) throw new Error('HTTP '+res.status);
+      const now = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+      setSyncStatus('synced', `Salvo ${now}`);
+    } catch(e) {
+      setSyncStatus('error','Erro ao salvar');
+      toast('Erro ao salvar no Gist: ' + e.message);
+    }
+  }
+
+  async function syncNow() {
+    await syncFromGist();
+    renderList(); renderStats();
+  }
+
+  // Override save to also push to Gist
+  const _origSave = save;
+  function save() {
+    localStorage.setItem('mss_data', JSON.stringify(manuscripts));
+    syncToGist();
+  }
+
+  /* ---- SETTINGS ---- */
+  function openSettings() {
+    const {gistId, token} = getCreds();
+    document.getElementById('cfgGistId').value = gistId;
+    document.getElementById('cfgToken').value = token;
+    document.getElementById('settingsOverlay').classList.add('open');
+  }
+
+  function closeSettings() { document.getElementById('settingsOverlay').classList.remove('open'); }
+  function handleSettingsOverlay(e) { if(e.target.id==='settingsOverlay') closeSettings(); }
+
+  function toggleTokenVis() {
+    const inp = document.getElementById('cfgToken');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+  }
+
+  async function saveSettings() {
+    const gistId = document.getElementById('cfgGistId').value.trim();
+    const token  = document.getElementById('cfgToken').value.trim();
+    if (!gistId || !token) { toast('Preencha os dois campos.'); return; }
+    localStorage.setItem('mss_gist_id', gistId);
+    localStorage.setItem('mss_gist_token', token);
+    closeSettings();
+    toast('Credenciais salvas. Sincronizando...');
+    const ok = await syncFromGist();
+    if (ok) { renderList(); renderStats(); toast('Sincronização concluída!'); }
+  }
+
+  function clearCredentials() {
+    if (!confirm('Remover credenciais de sincronização deste dispositivo?')) return;
+    localStorage.removeItem('mss_gist_id');
+    localStorage.removeItem('mss_gist_token');
+    setSyncStatus('offline','Sem sync');
+    closeSettings();
+    toast('Credenciais removidas.');
+  }
+
+  /* ---- INIT ---- */
+  load();
+  renderStats();
+  renderList();
+  // Auto-sync on load if credentials exist
+  const {gistId: _gid, token: _tok} = getCreds();
+  if (_gid && _tok) {
+    syncFromGist().then(ok => { if(ok){ renderList(); renderStats(); } });
+  } else {
+    setSyncStatus('offline','Configurar sync');
+  }
 </script>
 </body>
 </html>
