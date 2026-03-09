@@ -176,6 +176,17 @@
 
   .detail-edit-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; justify-content: flex-end; padding-top: 1.2rem; border-top: 1px solid var(--border); flex-wrap: wrap; }
 
+  /* FLOATING NAV */
+  .fab-home { position: fixed; bottom: 1.5rem; left: 1.5rem; z-index: 300; background: var(--surface2); border: 1px solid var(--border); border-radius: 30px; color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 0.75rem; padding: 0.5rem 1rem; cursor: pointer; display: none; align-items: center; gap: 0.4rem; transition: all 0.15s; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+  .fab-home:hover { background: var(--surface); color: var(--text); border-color: var(--accent2); }
+  .fab-home.visible { display: flex; }
+
+  /* SECTION DIVIDER NAV */
+  .nav-divider { display: flex; align-items: center; gap: 1rem; margin: 1.5rem 0; }
+  .nav-divider-line { flex: 1; height: 1px; background: var(--border); }
+  .nav-divider-btn { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--text-muted); background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 0.3rem 0.85rem; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .nav-divider-btn:hover { color: var(--text); border-color: var(--accent2); }
+
   .toast-container { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999; display: flex; flex-direction: column; gap: 0.5rem; }
   .toast { background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 8px; padding: 0.7rem 1rem; font-size: 0.8rem; font-family: 'DM Mono', monospace; animation: fadeInRight 0.2s ease; max-width: 280px; }
   @keyframes fadeInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
@@ -319,6 +330,7 @@
   </div>
 </div>
 
+<button class="fab-home" id="fabHome" onclick="closeDetail()">← Lista</button>
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
@@ -392,12 +404,14 @@
     currentDetailId=id; openSections={};
     document.getElementById('listView').classList.add('hidden');
     document.getElementById('detailView').classList.add('open');
+    document.getElementById('fabHome').classList.add('visible');
     renderDetail(m); window.scrollTo(0,0);
   }
 
   function closeDetail() {
     document.getElementById('detailView').classList.remove('open');
     document.getElementById('listView').classList.remove('hidden');
+    document.getElementById('fabHome').classList.remove('visible');
     currentDetailId=null; renderList();
   }
 
@@ -453,6 +467,8 @@
 
       ${m.notes?`<div style="background:var(--surface2);border-left:3px solid var(--accent2);border-radius:0 8px 8px 0;padding:.9rem 1rem;margin-bottom:1.5rem;font-size:.82rem;line-height:1.6;color:var(--text-muted)">${xe(m.notes)}</div>`:''}
 
+      <div class="nav-divider"><div class="nav-divider-line"></div><button class="nav-divider-btn" onclick="closeDetail()">← Voltar à lista</button><div class="nav-divider-line"></div></div>
+
       <div class="skeleton-detail-block">
         <div class="skeleton-detail-header">
           <div class="skeleton-detail-title">🦴 Esqueleto do Manuscrito</div>
@@ -460,6 +476,8 @@
         </div>
         <div>${skItems}</div>
       </div>
+
+      <div class="nav-divider"><div class="nav-divider-line"></div><button class="nav-divider-btn" onclick="closeDetail()">← Voltar à lista</button><div class="nav-divider-line"></div></div>
 
       <div style="margin-bottom:1rem">
         <div style="display:flex;justify-content:space-between;font-size:.78rem;font-family:'DM Mono',monospace;color:var(--text-muted);margin-bottom:.4rem"><span>Progresso da escrita</span><span style="color:var(--accent)">${prog}%</span></div>
@@ -564,8 +582,27 @@
 
   function openGoogleDocs(id) {
     const m=manuscripts.find(x=>x.id===id); if(!m) return;
+    const sk=m.skeleton||{};
+    const text=[
+      m.title,
+      m.journal?`Periódico alvo: ${m.journal}`:'',
+      m.coauthors?`Coautores: ${m.coauthors}`:'',
+      `Data: ${new Date().toLocaleDateString('pt-BR')}`,
+      '',
+      '1. PERGUNTA DE PESQUISA', sk.question||'(não preenchido)', '',
+      '2. HIPÓTESE', sk.hypothesis||'(não preenchido)', '',
+      '3. OBJETIVO GERAL', sk.objGeneral||'(não preenchido)', '',
+      '4. OBJETIVOS ESPECÍFICOS', sk.objSpecific||'(não preenchido)', '',
+      '5. ESTRUTURA DA REVISÃO DE LITERATURA', sk.lit||'(não preenchido)', '',
+      '6. ESTRUTURA DE MATERIAIS E MÉTODOS', sk.mm||'(não preenchido)', '',
+      '7. ESTRUTURA DE RESULTADOS', sk.results||'(não preenchido)', '',
+      '8. ESTRUTURA DE DISCUSSÃO', sk.discussion||'(não preenchido)', '',
+      m.notes?`NOTAS GERAIS\n${m.notes}`:''
+    ].filter(x=>x!==undefined).join('\n');
+
+    navigator.clipboard.writeText(text).catch(()=>{});
     window.open(`https://docs.google.com/document/create?title=${encodeURIComponent(m.title)}`,'_blank');
-    toast('Abrindo Google Docs...');
+    toast('📋 Esqueleto copiado! Cole com Ctrl+V no Google Docs.');
   }
 
   async function exportSkeletonDocx(id) {
