@@ -231,7 +231,7 @@
 <main>
   <div class="list-view" id="listView">
     <div class="toolbar">
-      <input class="search-box" type="text" id="searchInput" placeholder="Buscar por título ou periódico..." oninput="renderList()">
+      <input class="search-box" type="text" id="searchInput" placeholder="Buscar por título ou periódico..." autocomplete="off" oninput="renderList()">
       <select class="filter-select" id="filterStatus" onchange="renderList()">
         <option value="">Todos os status</option>
         <option value="Em elaboração">Em elaboração</option>
@@ -370,12 +370,12 @@
       </div>
       <div class="form-group" style="margin-bottom:1rem">
         <label>ID do Gist</label>
-        <input type="text" id="cfgGistId" placeholder="e5d141b42a27db388a7d1f684c78e3f0">
+        <input type="text" id="cfgGistId" placeholder="e5d141b42a27db388a7d1f684c78e3f0" autocomplete="off">
       </div>
       <div class="form-group" style="margin-bottom:1.25rem">
         <label>Personal Access Token</label>
         <div class="input-with-toggle">
-          <input type="password" id="cfgToken" placeholder="ghp_...">
+          <input type="password" id="cfgToken" placeholder="ghp_..." autocomplete="new-password">
           <button class="toggle-vis" onclick="toggleTokenVis()">👁</button>
         </div>
       </div>
