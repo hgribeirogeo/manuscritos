@@ -36,6 +36,26 @@
   .sync-indicator.error   { color: var(--danger); border-color: var(--danger); }
   .spin { display: inline-block; animation: spin 1s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
+  /* HELP SIDEBAR */
+  .help-sidebar { width: 280px; flex-shrink: 0; border-right: 1px solid var(--border); padding: 1.25rem; position: sticky; top: 57px; max-height: calc(100vh - 57px); overflow-y: auto; background: var(--bg); transition: width 0.25s ease, opacity 0.25s ease; }
+  .help-sidebar.collapsed { width: 40px; padding: 1rem 0; overflow: hidden; }
+  .help-sidebar-toggle { display: flex; align-items: center; justify-content: center; width: 100%; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; padding: 0.25rem; margin-bottom: 1rem; transition: color 0.15s; }
+  .help-sidebar-toggle:hover { color: var(--text); }
+  .help-sidebar.collapsed .help-sidebar-toggle { margin-bottom: 0; }
+  .help-sidebar.collapsed .help-content { display: none; }
+  .help-sidebar-title { font-family: 'DM Serif Display', serif; font-size: 1rem; font-style: italic; margin-bottom: 1.1rem; color: var(--text); display: flex; align-items: center; gap: 0.5rem; }
+  .help-step { display: flex; gap: 0.75rem; margin-bottom: 1.1rem; align-items: flex-start; }
+  .help-step-num { font-family: 'DM Mono', monospace; font-size: 0.65rem; font-weight: 700; background: var(--accent2); color: #fff; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .help-step-body { font-size: 0.78rem; line-height: 1.6; color: var(--text-muted); }
+  .help-step-body b { color: var(--text); font-weight: 600; }
+  .help-step-body a { color: var(--accent2); text-decoration: none; font-size: 0.74rem; }
+  .help-step-body a:hover { text-decoration: underline; }
+  .help-divider { height: 1px; background: var(--border); margin: 1.1rem 0; }
+  .help-note { font-size: 0.72rem; font-family: 'DM Mono', monospace; color: var(--text-muted); background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.65rem 0.8rem; line-height: 1.6; }
+  .help-note b { color: var(--accent); }
+  .help-configured { background: rgba(74,240,158,0.07); border: 1px solid rgba(74,240,158,0.2); border-radius: 10px; padding: 0.8rem; text-align: center; font-size: 0.78rem; color: var(--ok); font-family: 'DM Mono', monospace; line-height: 1.6; }
+  .help-configured .big-check { font-size: 1.5rem; display: block; margin-bottom: 0.3rem; }
+
   .settings-modal { max-width: 520px; }
   .settings-section-title { font-family: 'DM Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
   .input-with-toggle { position: relative; }
@@ -50,7 +70,8 @@
   .stat-chip { background: var(--surface); border: 1px solid var(--border); border-radius: 30px; padding: 0.3rem 0.85rem; font-size: 0.74rem; font-family: 'DM Mono', monospace; display: flex; align-items: center; gap: 0.5rem; }
   .stat-chip .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 
-  main { flex: 1; padding: var(--gap); max-width: 1200px; width: 100%; margin: 0 auto; }
+  .app-layout { flex: 1; display: flex; align-items: flex-start; max-width: 1400px; width: 100%; margin: 0 auto; gap: 0; }
+  main { flex: 1; padding: var(--gap); min-width: 0; }
 
   .btn { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 600; border: none; border-radius: var(--radius); cursor: pointer; transition: all 0.15s ease; display: inline-flex; align-items: center; gap: 0.4rem; }
   .btn-primary { background: var(--accent); color: #0f0f10; padding: 0.6rem 1.2rem; }
@@ -228,6 +249,11 @@
 
 <div class="stats-bar" id="statsBar"></div>
 
+<div class="app-layout">
+<aside class="help-sidebar" id="helpSidebar">
+  <button class="help-sidebar-toggle" onclick="toggleSidebar()" id="sidebarToggleBtn" title="Recolher/expandir">◀</button>
+  <div class="help-content" id="helpContent"></div>
+</aside>
 <main>
   <div class="list-view" id="listView">
     <div class="toolbar">
@@ -830,6 +856,7 @@
     toast('Credenciais salvas. Sincronizando...');
     const ok = await syncFromGist();
     if (ok) { renderList(); renderStats(); toast('Sincronização concluída!'); }
+    renderSidebar();
   }
 
   function clearCredentials() {
@@ -839,12 +866,77 @@
     setSyncStatus('offline','Sem sync');
     closeSettings();
     toast('Credenciais removidas.');
+    renderSidebar();
+  }
+
+
+  /* ---- HELP SIDEBAR ---- */
+  function renderSidebar() {
+    const {gistId, token} = getCreds();
+    const configured = gistId && token;
+    const el = document.getElementById('helpContent');
+    if (!el) return;
+
+    if (configured) {
+      el.innerHTML = `
+        <div class="help-sidebar-title">🔧 Configuração</div>
+        <div class="help-configured">
+          <span class="big-check">✅</span>
+          Sincronização ativa.<br>Seus dados estão conectados ao GitHub Gist.
+        </div>
+        <div class="help-divider"></div>
+        <div class="help-step-body" style="font-size:0.74rem;color:var(--text-muted);line-height:1.7">
+          Os manuscritos são salvos automaticamente a cada alteração e carregados ao abrir em qualquer dispositivo configurado.<br><br>
+          Para alterar as credenciais, use o botão <b>⚙ Config</b> no topo.
+        </div>`;
+    } else {
+      el.innerHTML = `
+        <div class="help-sidebar-title">🚀 Primeiros passos</div>
+        <div class="help-step">
+          <div class="help-step-num">1</div>
+          <div class="help-step-body">Acesse <a href="https://gist.github.com" target="_blank">gist.github.com</a> e crie um <b>Secret Gist</b> com um arquivo chamado <b>manuscritos.json</b> contendo apenas <b>[]</b></div>
+        </div>
+        <div class="help-step">
+          <div class="help-step-num">2</div>
+          <div class="help-step-body">Copie o <b>ID do Gist</b> — a sequência alfanumérica no final da URL após criar</div>
+        </div>
+        <div class="help-step">
+          <div class="help-step-num">3</div>
+          <div class="help-step-body">Acesse <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a>, crie um token com escopo <b>gist</b> e sem expiração. Copie o token <b>ghp_...</b></div>
+        </div>
+        <div class="help-step">
+          <div class="help-step-num">4</div>
+          <div class="help-step-body">Clique em <b>⚙ Config</b> no topo, cole o ID do Gist e o token, e clique em <b>Salvar e sincronizar</b></div>
+        </div>
+        <div class="help-divider"></div>
+        <div class="help-note"><b>Por que fazer isso?</b><br>Sem configuração, os dados ficam apenas neste navegador. Com o Gist, você acessa seus manuscritos em qualquer dispositivo.</div>
+        <div class="help-divider"></div>
+        <div class="help-note" style="border-color:var(--border)">Sem configuração, a ferramenta ainda funciona normalmente — os dados ficam salvos localmente neste navegador.</div>`;
+    }
+  }
+
+  function toggleSidebar() {
+    const sidebar = document.getElementById('helpSidebar');
+    const btn = document.getElementById('sidebarToggleBtn');
+    const collapsed = sidebar.classList.toggle('collapsed');
+    btn.textContent = collapsed ? '▶' : '◀';
+    localStorage.setItem('mss_sidebar_collapsed', collapsed ? '1' : '0');
+  }
+
+  function initSidebar() {
+    renderSidebar();
+    if (localStorage.getItem('mss_sidebar_collapsed') === '1') {
+      const sidebar = document.getElementById('helpSidebar');
+      const btn = document.getElementById('sidebarToggleBtn');
+      if (sidebar) { sidebar.classList.add('collapsed'); btn.textContent = '▶'; }
+    }
   }
 
   /* ---- INIT ---- */
   load();
   renderStats();
   renderList();
+  initSidebar();
   // Auto-sync on load if credentials exist
   const {gistId: _gid, token: _tok} = getCreds();
   if (_gid && _tok) {
