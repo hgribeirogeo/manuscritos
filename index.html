@@ -22,6 +22,10 @@
     --blue: #4a8ff0;
     --radius: 10px;
     --gap: 1.5rem;
+    /* research type colors */
+    --ic-color: #f0c44a;
+    --tcc-color: #4acef0;
+    --pos-color: #c44af0;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
@@ -36,6 +40,28 @@
   .sync-indicator.error   { color: var(--danger); border-color: var(--danger); }
   .spin { display: inline-block; animation: spin 1s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* TYPE FILTER BAR */
+  .type-filter-bar { display: flex; gap: 0.6rem; padding: 0.9rem var(--gap); border-bottom: 1px solid var(--border); flex-wrap: wrap; align-items: center; }
+  .type-filter-label { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-right: 0.2rem; }
+  .type-btn { font-family: 'DM Mono', monospace; font-size: 0.72rem; font-weight: 600; padding: 0.4rem 1rem; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 0.4rem; letter-spacing: 0.3px; }
+  .type-btn:hover { color: var(--text); border-color: var(--text-muted); }
+  .type-btn.active { background: var(--surface2); color: var(--text); border-color: var(--text); }
+  .type-btn[data-type=""] .type-dot { background: var(--text-muted); }
+  .type-btn[data-type="IC"].active { color: var(--ic-color); border-color: var(--ic-color); background: rgba(240,196,74,0.08); }
+  .type-btn[data-type="TCC"].active { color: var(--tcc-color); border-color: var(--tcc-color); background: rgba(74,206,240,0.08); }
+  .type-btn[data-type="Pós-Graduação"].active { color: var(--pos-color); border-color: var(--pos-color); background: rgba(196,74,240,0.08); }
+  .type-btn[data-type="Sem categoria"].active { color: var(--text-muted); border-color: var(--border); }
+  .type-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; background: currentColor; opacity: 0.7; }
+  .type-count { font-size: 0.62rem; opacity: 0.6; background: rgba(255,255,255,0.07); border-radius: 10px; padding: 0.05rem 0.4rem; }
+
+  /* TYPE BADGE on cards */
+  .type-tag { font-family: 'DM Mono', monospace; font-size: 0.6rem; font-weight: 600; padding: 0.15rem 0.5rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem; letter-spacing: 0.5px; text-transform: uppercase; }
+  .type-tag-IC  { background: rgba(240,196,74,0.15); color: var(--ic-color); }
+  .type-tag-TCC { background: rgba(74,206,240,0.15); color: var(--tcc-color); }
+  .type-tag-pos { background: rgba(196,74,240,0.15); color: var(--pos-color); }
+  .type-tag-none { background: rgba(107,107,122,0.15); color: var(--text-muted); }
+
   /* HELP SIDEBAR */
   .help-sidebar { width: 280px; flex-shrink: 0; border-right: 1px solid var(--border); padding: 1.25rem; position: sticky; top: 57px; max-height: calc(100vh - 57px); overflow-y: auto; background: var(--bg); transition: width 0.25s ease, opacity 0.25s ease; }
   .help-sidebar.collapsed { width: 40px; padding: 1rem 0; overflow: hidden; }
@@ -153,6 +179,9 @@
   textarea { resize: vertical; min-height: 70px; }
   select option { background: var(--surface2); }
 
+  /* highlight the type select when a value is chosen */
+  select#fType option[value="IC"]:checked, select#fType:has(option[value="IC"]:checked) { color: var(--ic-color); }
+
   .skeleton-fields { display: flex; flex-direction: column; gap: 1rem; }
   .skeleton-field-group { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
   .skeleton-field-header { padding: 0.75rem 1rem; background: rgba(124,106,247,0.07); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.6rem; }
@@ -249,6 +278,9 @@
 
 <div class="stats-bar" id="statsBar"></div>
 
+<!-- ★ TYPE FILTER BAR ★ -->
+<div class="type-filter-bar" id="typeFilterBar"></div>
+
 <div class="app-layout">
 <aside class="help-sidebar" id="helpSidebar">
   <button class="help-sidebar-toggle" onclick="toggleSidebar()" id="sidebarToggleBtn" title="Recolher/expandir">◀</button>
@@ -305,6 +337,16 @@
             <label>Status geral</label>
             <select id="fStatus">
               <option>Em elaboração</option><option>Submetido</option><option>Em revisão</option><option>Aceito</option><option>Rejeitado</option>
+            </select>
+          </div>
+          <!-- ★ NOVO CAMPO: Tipo de pesquisa ★ -->
+          <div class="form-group">
+            <label>Tipo de pesquisa</label>
+            <select id="fType">
+              <option value="">— Sem categoria —</option>
+              <option value="IC">IC — Iniciação Científica</option>
+              <option value="TCC">TCC — Trabalho de Conclusão de Curso</option>
+              <option value="Pós-Graduação">Pós-Graduação</option>
             </select>
           </div>
           <div class="form-group">
@@ -377,6 +419,7 @@
 </div>
 
 <button class="fab-home" id="fabHome" onclick="closeDetail()">← Lista</button>
+
 <!-- SETTINGS MODAL -->
 <div class="modal-overlay" id="settingsOverlay" onclick="handleSettingsOverlay(event)">
   <div class="modal settings-modal">
@@ -416,13 +459,23 @@
   </div>
 </div>
 
-<button class="fab-home" id="fabHome" onclick="closeDetail()">← Lista</button>
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
   const SECTIONS = ['Resumo','Introdução','Revisão de Literatura','Materiais e Métodos','Resultados','Discussão','Conclusão'];
   const STATUS_OPTS = ['Não iniciado','Em andamento','Em revisão','Concluído'];
   const STATUS_COLORS = { 'Em elaboração':'#7c6af7','Submetido':'#4a8ff0','Em revisão':'#f0a84a','Aceito':'#4af09e','Rejeitado':'#f04a4a' };
+
+  // ★ Research types configuration
+  const RESEARCH_TYPES = [
+    { value: '',              label: 'Todos',         emoji: '📚' },
+    { value: 'IC',            label: 'IC',            emoji: '🔬' },
+    { value: 'TCC',           label: 'TCC',           emoji: '🎓' },
+    { value: 'Pós-Graduação', label: 'Pós-Grad',      emoji: '🏛️' },
+    { value: '__none__',      label: 'Sem categoria',  emoji: '📄' },
+  ];
+  const TYPE_COLORS = { 'IC':'#f0c44a', 'TCC':'#4acef0', 'Pós-Graduação':'#c44af0' };
+
   const SKELETON_FIELDS = [
     { id:'question',    label:'Pergunta de Pesquisa' },
     { id:'hypothesis',  label:'Hipótese' },
@@ -439,9 +492,10 @@
   let editingId = null;
   let openSections = {};
   let currentDetailId = null;
+  let currentTypeFilter = ''; // ★ active type filter
 
   function load() { try { manuscripts = JSON.parse(localStorage.getItem('mss_data')||'[]'); } catch(e) { manuscripts=[]; } }
-  function save() { localStorage.setItem('mss_data', JSON.stringify(manuscripts)); }
+  function save() { localStorage.setItem('mss_data', JSON.stringify(manuscripts)); syncToGist(); }
   function genId() { return Date.now().toString(36)+Math.random().toString(36).slice(2); }
   function getProgress(m) { return Math.round(m.sections.filter(s=>s.status==='Concluído').length/m.sections.length*100); }
   function skeletonComplete(m) { return SKELETON_FIELDS.some(f=>m.skeleton&&m.skeleton[f.id]&&m.skeleton[f.id].trim()); }
@@ -449,6 +503,43 @@
   function pillClass(s) { if(s==='Concluído') return 'done'; if(s==='Em andamento') return 'progress'; if(s==='Em revisão') return 'review'; return ''; }
   function daysLeft(d) { if(!d) return null; return Math.ceil((new Date(d+'T12:00:00')-new Date())/86400000); }
   function xe(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  // ★ Returns tag HTML for a research type
+  function typeTagHtml(type) {
+    if (!type) return `<span class="type-tag type-tag-none">Sem categoria</span>`;
+    if (type === 'IC')  return `<span class="type-tag type-tag-IC">🔬 IC</span>`;
+    if (type === 'TCC') return `<span class="type-tag type-tag-TCC">🎓 TCC</span>`;
+    if (type === 'Pós-Graduação') return `<span class="type-tag type-tag-pos">🏛️ Pós-Grad</span>`;
+    return `<span class="type-tag type-tag-none">${xe(type)}</span>`;
+  }
+
+  // ★ Render type filter buttons
+  function renderTypeFilterBar() {
+    const counts = { '': manuscripts.length };
+    manuscripts.forEach(m => {
+      const t = m.type || '';
+      if (t) counts[t] = (counts[t]||0)+1;
+      else counts['__none__'] = (counts['__none__']||0)+1;
+    });
+
+    document.getElementById('typeFilterBar').innerHTML =
+      `<span class="type-filter-label">Filtrar:</span>` +
+      RESEARCH_TYPES.map(rt => {
+        const count = rt.value === '' ? manuscripts.length : (counts[rt.value]||0);
+        if (count === 0 && rt.value !== '') return ''; // hide empty categories
+        const isActive = currentTypeFilter === rt.value;
+        return `<button class="type-btn${isActive?' active':''}" data-type="${rt.value}" onclick="setTypeFilter('${rt.value}')">
+          <span class="type-dot"></span>${rt.emoji} ${rt.label}<span class="type-count">${count}</span>
+        </button>`;
+      }).join('');
+  }
+
+  // ★ Set active type filter
+  function setTypeFilter(type) {
+    currentTypeFilter = type;
+    renderTypeFilterBar();
+    renderList();
+  }
 
   function renderStats() {
     const total=manuscripts.length, byStatus={};
@@ -465,13 +556,24 @@
     const q=document.getElementById('searchInput').value.toLowerCase();
     const fs=document.getElementById('filterStatus').value;
     const grid=document.getElementById('cardsGrid');
-    const filtered=manuscripts.filter(m=>(!q||m.title.toLowerCase().includes(q)||(m.journal||'').toLowerCase().includes(q))&&(!fs||m.status===fs));
-    if(!filtered.length){grid.innerHTML=`<div class="empty-state"><div class="big-icon">📄</div><h3>Nenhum manuscrito encontrado</h3><p>Adicione seu primeiro manuscrito.</p></div>`;return;}
+
+    // ★ Apply type filter
+    const filtered=manuscripts.filter(m=>{
+      if (!(!q||m.title.toLowerCase().includes(q)||(m.journal||'').toLowerCase().includes(q))) return false;
+      if (fs && m.status!==fs) return false;
+      if (currentTypeFilter === '') return true; // all
+      if (currentTypeFilter === '__none__') return !m.type; // uncategorized
+      return m.type === currentTypeFilter;
+    });
+
+    if(!filtered.length){grid.innerHTML=`<div class="empty-state"><div class="big-icon">📄</div><h3>Nenhum manuscrito encontrado</h3><p>${currentTypeFilter && currentTypeFilter!=='__none__' ? 'Nenhum manuscrito nesta categoria.' : 'Adicione seu primeiro manuscrito.'}</p></div>`;return;}
     grid.innerHTML=filtered.map(m=>{
       const prog=getProgress(m), dl=daysLeft(m.deadline), color=STATUS_COLORS[m.status]||'#6b6b7a', hasSk=skeletonComplete(m);
+      const typeBar = m.type ? (TYPE_COLORS[m.type]||color) : color;
       const dlStr=dl===null?'':dl<0?`<span style="color:var(--danger)">Vencido há ${Math.abs(dl)}d</span>`:dl===0?`<span style="color:var(--warn)">Vence hoje</span>`:dl<=7?`<span style="color:var(--warn)">${dl}d restantes</span>`:`${dl}d restantes`;
-      return `<div class="card" style="--accent-bar:${color}">
+      return `<div class="card" style="--accent-bar:${typeBar}">
         <div class="card-header"><div class="card-title" onclick="openDetail('${m.id}')">${xe(m.title)}</div><div class="badge ${badgeClass(m.status)}">${m.status}</div></div>
+        ${typeTagHtml(m.type||'')}
         <div class="card-meta">${m.journal?`<div>📋 ${xe(m.journal)}</div>`:''} ${m.coauthors?`<div>👥 ${xe(m.coauthors)}</div>`:''} ${dl!==null?`<div>📅 ${dlStr}</div>`:''}</div>
         <div class="skeleton-badge ${hasSk?'skeleton-done':'skeleton-pending'}">${hasSk?'🦴 Esqueleto preenchido':'🦴 Esqueleto pendente'}</div>
         <div class="progress-wrap"><div class="progress-label"><span>Escrita</span><span>${prog}%</span></div><div class="progress-bar"><div class="progress-fill" style="width:${prog}%"></div></div></div>
@@ -532,14 +634,20 @@
       </div>`;
     }).join('');
 
+    // ★ Type label for detail view
+    const typeLabel = m.type || 'Sem categoria';
+    const typeColor = TYPE_COLORS[m.type] || 'var(--text-muted)';
+
     document.getElementById('detailContent').innerHTML=`
       <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:.5rem">
         <h1 class="detail-title">${xe(m.title)}</h1>
         <div class="badge ${badgeClass(m.status)}" style="font-size:.8rem;padding:.4rem 1rem">${m.status}</div>
       </div>
+      <div style="margin-bottom:.75rem">${typeTagHtml(m.type||'')}</div>
       <div class="detail-meta">
         ${m.journal?`<span>Periódico<br><b>${xe(m.journal)}</b></span>`:''}
         ${m.coauthors?`<span>Coautores<br><b>${xe(m.coauthors)}</b></span>`:''}
+        <span>Tipo de Pesquisa<br><b style="color:${typeColor}">${xe(typeLabel)}</b></span>
         <span>Deadline<br><b>${m.deadline||'—'}</b></span>
         <span>Prazo<br><b>${dlStr}</b></span>
       </div>
@@ -618,6 +726,7 @@
     document.getElementById('modalTitle').textContent='Novo manuscrito';
     ['fTitle','fJournal','fCoauthors','fNotes'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('fStatus').value='Em elaboração';
+    document.getElementById('fType').value=''; // ★
     document.getElementById('fDeadline').value='';
     populateSkeleton(null);
     document.getElementById('sectionsEditor').innerHTML=buildSectionsEditor(null);
@@ -632,6 +741,7 @@
     document.getElementById('fTitle').value=m.title;
     document.getElementById('fJournal').value=m.journal||'';
     document.getElementById('fStatus').value=m.status;
+    document.getElementById('fType').value=m.type||''; // ★
     document.getElementById('fDeadline').value=m.deadline||'';
     document.getElementById('fCoauthors').value=m.coauthors||'';
     document.getElementById('fNotes').value=m.notes||'';
@@ -649,21 +759,22 @@
     if(!title){ toast('Informe o título.'); switchTab('info'); return; }
     const sections=SECTIONS.map((name,i)=>({ name, status:document.getElementById('sec-status-'+i).value, note:(document.getElementById('sec-note-'+i)||{value:''}).value }));
     const skeleton=readSkeleton();
+    const type=document.getElementById('fType').value; // ★
     if(editingId) {
       const m=manuscripts.find(x=>x.id===editingId);
-      Object.assign(m,{ title, journal:document.getElementById('fJournal').value.trim(), status:document.getElementById('fStatus').value, deadline:document.getElementById('fDeadline').value, coauthors:document.getElementById('fCoauthors').value.trim(), notes:document.getElementById('fNotes').value.trim(), sections, skeleton });
+      Object.assign(m,{ title, journal:document.getElementById('fJournal').value.trim(), status:document.getElementById('fStatus').value, type, deadline:document.getElementById('fDeadline').value, coauthors:document.getElementById('fCoauthors').value.trim(), notes:document.getElementById('fNotes').value.trim(), sections, skeleton });
       toast('Manuscrito atualizado.');
     } else {
-      manuscripts.unshift({ id:genId(), title, journal:document.getElementById('fJournal').value.trim(), status:document.getElementById('fStatus').value, deadline:document.getElementById('fDeadline').value, coauthors:document.getElementById('fCoauthors').value.trim(), notes:document.getElementById('fNotes').value.trim(), sections, skeleton, createdAt:new Date().toISOString() });
+      manuscripts.unshift({ id:genId(), title, journal:document.getElementById('fJournal').value.trim(), status:document.getElementById('fStatus').value, type, deadline:document.getElementById('fDeadline').value, coauthors:document.getElementById('fCoauthors').value.trim(), notes:document.getElementById('fNotes').value.trim(), sections, skeleton, createdAt:new Date().toISOString() });
       toast('Manuscrito adicionado.');
     }
-    save(); closeModal(); renderList(); renderStats();
+    save(); closeModal(); renderList(); renderStats(); renderTypeFilterBar();
     if(currentDetailId){ const m=manuscripts.find(x=>x.id===currentDetailId); if(m) renderDetail(m); }
   }
 
   function deleteManuscript(id) {
     if(!confirm('Remover este manuscrito?')) return;
-    manuscripts=manuscripts.filter(x=>x.id!==id); save(); renderList(); renderStats(); toast('Removido.');
+    manuscripts=manuscripts.filter(x=>x.id!==id); save(); renderList(); renderStats(); renderTypeFilterBar(); toast('Removido.');
   }
 
   function openGoogleDocs(id) {
@@ -673,6 +784,7 @@
       m.title,
       m.journal?`Periódico alvo: ${m.journal}`:'',
       m.coauthors?`Coautores: ${m.coauthors}`:'',
+      m.type?`Tipo de pesquisa: ${m.type}`:'',
       `Data: ${new Date().toLocaleDateString('pt-BR')}`,
       '',
       '1. PERGUNTA DE PESQUISA', sk.question||'(não preenchido)', '',
@@ -712,6 +824,7 @@
         h1(m.title), empty(),
         m.journal?bold('Periódico alvo:',m.journal):'',
         m.coauthors?bold('Coautores:',m.coauthors):'',
+        m.type?bold('Tipo de pesquisa:',m.type):'',
         bold('Data:',date), empty(),
         h2('1. Pergunta de Pesquisa'), p(sk.question||'Não preenchido.'), empty(),
         h2('2. Hipótese'), p(sk.hypothesis||'Não preenchido.'), empty(),
@@ -747,7 +860,7 @@
   function importData(e) {
     const file=e.target.files[0]; if(!file) return;
     const r=new FileReader();
-    r.onload=ev=>{ try{ const d=JSON.parse(ev.target.result); if(!Array.isArray(d)) throw new Error(); manuscripts=d; save(); renderList(); renderStats(); toast(`${d.length} manuscrito(s) importado(s).`); } catch{ toast('Arquivo inválido.'); } };
+    r.onload=ev=>{ try{ const d=JSON.parse(ev.target.result); if(!Array.isArray(d)) throw new Error(); manuscripts=d; save(); renderList(); renderStats(); renderTypeFilterBar(); toast(`${d.length} manuscrito(s) importado(s).`); } catch{ toast('Arquivo inválido.'); } };
     r.readAsText(file); e.target.value='';
   }
 
@@ -789,7 +902,7 @@
       const raw = data.files['manuscritos.json']?.content || '[]';
       const remote = JSON.parse(raw);
       manuscripts = remote;
-      save();
+      localStorage.setItem('mss_data', JSON.stringify(manuscripts));
       setSyncStatus('synced', `Sincronizado`);
       return true;
     } catch(e) {
@@ -819,15 +932,8 @@
   }
 
   async function syncNow() {
-    await syncFromGist();
-    renderList(); renderStats();
-  }
-
-  // Override save to also push to Gist
-  const _origSave = save;
-  function save() {
-    localStorage.setItem('mss_data', JSON.stringify(manuscripts));
-    syncToGist();
+    const ok = await syncFromGist();
+    if (ok) { renderList(); renderStats(); renderTypeFilterBar(); }
   }
 
   /* ---- SETTINGS ---- */
@@ -855,7 +961,7 @@
     closeSettings();
     toast('Credenciais salvas. Sincronizando...');
     const ok = await syncFromGist();
-    if (ok) { renderList(); renderStats(); toast('Sincronização concluída!'); }
+    if (ok) { renderList(); renderStats(); renderTypeFilterBar(); toast('Sincronização concluída!'); }
     renderSidebar();
   }
 
@@ -868,7 +974,6 @@
     toast('Credenciais removidas.');
     renderSidebar();
   }
-
 
   /* ---- HELP SIDEBAR ---- */
   function renderSidebar() {
@@ -936,11 +1041,11 @@
   load();
   renderStats();
   renderList();
+  renderTypeFilterBar(); // ★
   initSidebar();
-  // Auto-sync on load if credentials exist
   const {gistId: _gid, token: _tok} = getCreds();
   if (_gid && _tok) {
-    syncFromGist().then(ok => { if(ok){ renderList(); renderStats(); } });
+    syncFromGist().then(ok => { if(ok){ renderList(); renderStats(); renderTypeFilterBar(); } });
   } else {
     setSyncStatus('offline','Configurar sync');
   }
