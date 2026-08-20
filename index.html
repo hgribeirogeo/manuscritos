@@ -31,6 +31,10 @@
   --blue-dim:#1a3a5c;
   --purple:#bc8cff;
   --purple-dim:#2d1f4a;
+  --teal:#39d3c3;
+  --teal-dim:#0d3330;
+  --pink:#ff7eb6;
+  --pink-dim:#3d1428;
   --accent:#2ea043;
   --mono:'JetBrains Mono',monospace;
   --sans:'Inter',sans-serif;
@@ -82,7 +86,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .card-body{padding:16px}
 
 /* STATS ROW */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
 .stat-value{font-family:var(--mono);font-size:26px;font-weight:600;color:var(--text);line-height:1}
 .stat-label{font-size:11px;color:var(--text-muted);margin-top:5px;font-weight:500;text-transform:uppercase;letter-spacing:0.05em}
@@ -106,6 +110,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .badge-ic{background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue)33}
 .badge-tcc{background:var(--purple-dim);color:var(--purple);border:1px solid var(--purple)33}
 .badge-esp{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange)33}
+.badge-msc{background:var(--teal-dim);color:var(--teal);border:1px solid var(--teal)33}
+.badge-phd{background:var(--pink-dim);color:var(--pink);border:1px solid var(--pink)33}
+.coori-tag{font-size:10px;font-family:var(--mono);color:var(--text-dim);display:flex;align-items:center;gap:4px;margin-top:3px}
+.coori-tag span{color:var(--text-muted)}
 .student-milestone{font-size:11.5px;color:var(--text-muted);margin-top:5px;display:flex;align-items:center;gap:6px}
 .student-progress{width:160px}
 .progress-track{height:4px;background:var(--surface3);border-radius:2px;overflow:hidden;margin-bottom:4px}
@@ -275,6 +283,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <button class="btn btn-secondary btn-sm" onclick="filterStudents('IC')" id="f-IC">IC</button>
         <button class="btn btn-secondary btn-sm" onclick="filterStudents('TCC')" id="f-TCC">TCC Graduação</button>
         <button class="btn btn-secondary btn-sm" onclick="filterStudents('ESP')" id="f-ESP">TCC Especialização</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterStudents('MSC')" id="f-MSC">Mestrado</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterStudents('PHD')" id="f-PHD">Doutorado</button>
         <button class="btn btn-secondary btn-sm" onclick="filterStudents('encerrado')" id="f-enc">Encerrados</button>
       </div>
       <div class="students-grid" id="orientandosGrid"></div>
@@ -383,6 +393,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <option value="IC">IC — Iniciação Científica</option>
             <option value="TCC">TCC — Graduação</option>
             <option value="ESP">TCC — Especialização</option>
+            <option value="MSC">Mestrado (Coorientação)</option>
+            <option value="PHD">Doutorado (Coorientação)</option>
           </select>
         </div>
         <div class="form-group">
@@ -417,6 +429,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="form-group">
         <label class="form-label">Agência / Bolsa</label>
         <input type="text" class="form-control" id="sGrant" placeholder="CNPQ PIBIC, FAPEG, Voluntário...">
+      </div>
+      <div id="cooriGroup" style="display:none">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Orientador principal</label>
+            <input type="text" class="form-control" id="sAdvisor" placeholder="Prof. Dr. Nome Completo">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Programa de pós-graduação</label>
+            <input type="text" class="form-control" id="sProgram" placeholder="PPGEMA, PPGCA...">
+          </div>
+        </div>
       </div>
       <div class="form-group">
         <label class="form-label">Data da última reunião</label>
@@ -504,7 +528,9 @@ let cfg = {
 const PIPELINES = {
   IC:  ['Plano de Trabalho','Coleta de Dados','Análise','Relatório Parcial','Relatório Final PIBIC/PIVIC','Encerrado'],
   TCC: ['Proposta','TCC 1 (Banca)','Correções Pós-TCC1','Coleta / Análise','Escrita','TCC 2 (Defesa)','Entregue'],
-  ESP: ['Projeto','Escrita','Defesa','Entregue']
+  ESP: ['Projeto','Escrita','Defesa','Entregue'],
+  MSC: ['Proposta','Qualificação','Correções Pós-Qualif.','Coleta / Análise','Escrita','Defesa','Entregue'],
+  PHD: ['Proposta','Qualificação','Correções Pós-Qualif.','Coleta / Análise','Escrita','Pré-defesa','Defesa','Entregue']
 };
 
 const MANU_STEPS = ['Resumo','Introdução','Materiais e Métodos','Resultados','Discussão','Conclusão','Referências','Submetido'];
@@ -631,9 +657,11 @@ function pipelineProgress(s){
 function initials(name){if(!name) return '?';const p=name.trim().split(' ');return(p[0][0]+(p[1]?p[1][0]:'')).toUpperCase();}
 
 function typeBadge(t){
-  if(t==='IC') return '<span class="badge badge-ic">IC</span>';
+  if(t==='IC')  return '<span class="badge badge-ic">IC</span>';
   if(t==='TCC') return '<span class="badge badge-tcc">TCC Grad</span>';
   if(t==='ESP') return '<span class="badge badge-esp">TCC Esp</span>';
+  if(t==='MSC') return '<span class="badge badge-msc">Mestrado</span>';
+  if(t==='PHD') return '<span class="badge badge-phd">Doutorado</span>';
   return '<span class="badge badge-tcc">'+t+'</span>';
 }
 
@@ -646,6 +674,7 @@ function renderDashboard(){
     <div class="stat-card"><div class="stat-value">${active.length}</div><div class="stat-label">Orientandos ativos</div><div class="stat-sub">${enc.length} encerrados</div></div>
     <div class="stat-card"><div class="stat-value">${students.filter(s=>s.type==='IC').length}</div><div class="stat-label">IC</div><div class="stat-sub">Iniciação Científica</div></div>
     <div class="stat-card"><div class="stat-value">${students.filter(s=>s.type==='TCC'||s.type==='ESP').length}</div><div class="stat-label">TCCs</div><div class="stat-sub">Grad + Especialização</div></div>
+    <div class="stat-card"><div class="stat-value">${students.filter(s=>s.type==='MSC'||s.type==='PHD').length}</div><div class="stat-label">Pós-Grad</div><div class="stat-sub">Mestrado + Doutorado</div></div>
     <div class="stat-card" style="border-color:${alertas.length>0?'var(--orange)44':'var(--border)'}"><div class="stat-value" style="color:${alertas.length>0?'var(--orange)':'var(--text)'}">${alertas.length}</div><div class="stat-label">Requerem atenção</div><div class="stat-sub">Inatividade ≥${cfg.warnDays}d</div></div>
   `;
   const sorted=[...students].sort((a,b)=>{
@@ -659,11 +688,14 @@ function studentCardHTML(s){
   const risk=riskLevel(s);
   const pct=pipelineProgress(s);
   const il=inactivityLabel(s);
+  const cooriLine=(s.type==='MSC'||s.type==='PHD')&&s.advisor
+    ?`<div class="coori-tag">coorient. de <span>${escHTML(s.advisor)}</span>${s.program?' · '+escHTML(s.program):''}</div>`:'';
   return `<div class="student-card risk-${risk}" onclick="openStudentDetail('${s.id}')">
     <div class="student-avatar">${initials(s.name)}</div>
     <div class="student-info">
       <div class="student-name">${s.name||'—'}</div>
       <div class="student-meta">${typeBadge(s.type)}<span style="font-size:11px;color:var(--text-muted)">${s.theme||''}</span></div>
+      ${cooriLine}
       <div class="student-milestone"><span style="color:${riskColor(risk)};font-size:10px">●</span>${s.milestone||'Sem etapa'}</div>
     </div>
     <div class="student-progress">
@@ -678,7 +710,7 @@ function studentCardHTML(s){
 let currentFilter='todos';
 function renderOrientandos(f){
   currentFilter=f;
-  ['todos','IC','TCC','ESP','encerrado'].forEach(k=>{
+  ['todos','IC','TCC','ESP','MSC','PHD','encerrado'].forEach(k=>{
     const b=document.getElementById('f-'+k);
     if(b) b.className='btn btn-'+(k===f?'primary':'secondary')+' btn-sm';
   });
@@ -753,6 +785,8 @@ function renderStudentDetail(id){
           ${infoRow('Início',fmtDate(s.start))}
           ${infoRow('Prazo',fmtDate(s.end))}
           ${infoRow('Bolsa',s.grant)}
+          ${ (s.type==='MSC'||s.type==='PHD') ? infoRow('Orient. principal',s.advisor||'—') : '' }
+          ${ (s.type==='MSC'||s.type==='PHD') ? infoRow('Programa',s.program||'—') : '' }
         </div>
       </div>
       <div>
@@ -836,6 +870,8 @@ function updatePipelineOptions(){
   const sel=document.getElementById('sMilestone');
   const steps=PIPELINES[type]||PIPELINES.TCC;
   sel.innerHTML=steps.map(s=>`<option value="${s}">${s}</option>`).join('');
+  const isCoori=type==='MSC'||type==='PHD';
+  document.getElementById('cooriGroup').style.display=isCoori?'block':'none';
 }
 
 function openAddStudentModal(){
@@ -850,6 +886,8 @@ function openAddStudentModal(){
   document.getElementById('sEnd').value='';
   document.getElementById('sTheme').value='';
   document.getElementById('sGrant').value='';
+  document.getElementById('sAdvisor').value='';
+  document.getElementById('sProgram').value='';
   document.getElementById('sLastMeet').value='';
   document.getElementById('sNotes').value='';
   document.getElementById('btnDeleteStudent').style.display='none';
@@ -870,6 +908,8 @@ function openEditStudentModal(id){
   document.getElementById('sEnd').value=s.end||'';
   document.getElementById('sTheme').value=s.theme||'';
   document.getElementById('sGrant').value=s.grant||'';
+  document.getElementById('sAdvisor').value=s.advisor||'';
+  document.getElementById('sProgram').value=s.program||'';
   document.getElementById('sLastMeet').value=s.lastMeet||'';
   document.getElementById('sNotes').value=s.notes||'';
   document.getElementById('btnDeleteStudent').style.display='inline-flex';
@@ -891,6 +931,8 @@ function saveStudent(){
     end:document.getElementById('sEnd').value,
     theme:document.getElementById('sTheme').value.trim(),
     grant:document.getElementById('sGrant').value.trim(),
+    advisor:document.getElementById('sAdvisor').value.trim(),
+    program:document.getElementById('sProgram').value.trim(),
     lastMeet:document.getElementById('sLastMeet').value,
     notes:document.getElementById('sNotes').value.trim()
   };
