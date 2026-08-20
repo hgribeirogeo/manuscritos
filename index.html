@@ -42,8 +42,8 @@
   --radius-sm:5px;
   --sidebar:220px;
 }
-html{font-size:14px;scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;display:flex}
+html{font-size:14px;scroll-behavior:smooth;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;display:flex;overflow-x:hidden}
 
 /* SIDEBAR */
 .sidebar{width:var(--sidebar);min-height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100}
@@ -63,7 +63,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 
 /* MAIN */
-.main{margin-left:var(--sidebar);flex:1;min-height:100vh;display:flex;flex-direction:column}
+.main{margin-left:var(--sidebar);flex:1;min-height:100vh;display:flex;flex-direction:column;min-width:0;max-width:calc(100vw - var(--sidebar))}
 .topbar{padding:16px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface)cc;backdrop-filter:blur(8px);position:sticky;top:0;z-index:50}
 .topbar-title{font-size:15px;font-weight:600;color:var(--text)}
 .topbar-actions{display:flex;gap:8px;align-items:center}
@@ -86,7 +86,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .card-body{padding:16px}
 
 /* STATS ROW */
-.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px}
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px;min-width:0}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
 .stat-value{font-family:var(--mono);font-size:26px;font-weight:600;color:var(--text);line-height:1}
 .stat-label{font-size:11px;color:var(--text-muted);margin-top:5px;font-weight:500;text-transform:uppercase;letter-spacing:0.05em}
@@ -218,8 +218,71 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .cal-past{opacity:0.45}
 .cal-soon{border-color:var(--orange)66}
 
-/* TOAST */
-.toast-wrap{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px}
+/* DASHBOARD SECTIONS */
+.dash-section{margin-bottom:20px}
+.dash-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.dash-section-title{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em}
+.dash-bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:0}
+
+/* SEMÁFORO COMPACTO */
+.sema-row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);margin-bottom:6px;cursor:pointer;transition:all 0.15s;position:relative;overflow:hidden}
+.sema-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.sema-row.risk-verde::before{background:var(--green)}
+.sema-row.risk-amarelo::before{background:var(--yellow)}
+.sema-row.risk-laranja::before{background:var(--orange)}
+.sema-row.risk-vermelho::before{background:var(--red)}
+.sema-row.risk-encerrado::before{background:var(--text-dim)}
+.sema-row:hover{background:var(--surface2);border-color:var(--border2)}
+.sema-avatar{width:30px;height:30px;border-radius:50%;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--text);flex-shrink:0}
+.sema-name{font-size:12.5px;font-weight:600;color:var(--text);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sema-detail{font-size:11px;color:var(--text-muted);flex:2;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sema-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+
+/* MANUSCRITOS DASHBOARD */
+.manu-dash-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);margin-bottom:6px;cursor:pointer;transition:all 0.15s}
+.manu-dash-row:hover{background:var(--surface2);border-color:var(--border2)}
+.manu-dash-title{font-size:12px;font-weight:500;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.manu-dash-journal{font-size:11px;color:var(--text-muted);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
+.sub-badge{font-family:var(--mono);font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:12px;white-space:nowrap}
+.sub-escrita{background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue)33}
+.sub-submetido{background:var(--yellow-dim);color:var(--yellow);border:1px solid var(--yellow)33}
+.sub-revisao{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange)33}
+.sub-aceito{background:var(--green-dim);color:var(--green-bright);border:1px solid var(--green)33}
+.sub-rejeitado{background:var(--red-dim);color:var(--red);border:1px solid var(--red)33}
+.sub-publicado{background:#1a3a3a;color:#39d3c3;border:1px solid var(--teal)33}
+.sub-planejado{background:var(--surface3);color:var(--text-dim);border:1px solid var(--border)}
+.manu-prog-mini{width:60px;flex-shrink:0}
+
+/* JOURNALS TABLE */
+.journal-row{display:flex;align-items:center;gap:10px;padding:7px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);margin-bottom:6px}
+.journal-name{font-size:12px;font-weight:500;color:var(--text);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qualis-badge{font-family:var(--mono);font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;min-width:32px;text-align:center}
+.qualis-a1{background:#0d2a1a;color:#3fb950;border:1px solid #3fb95055}
+.qualis-a2{background:#0d2820;color:#26d96e;border:1px solid #26d96e55}
+.qualis-a3{background:#122a12;color:#6ee06e;border:1px solid #6ee06e55}
+.qualis-a4{background:#1a2a0d;color:#a0e06e;border:1px solid #a0e06e55}
+.qualis-b1{background:#1a2a0d;color:#d4e06e;border:1px solid #d4e06e55}
+.qualis-b2{background:#2a200d;color:#e0c06e;border:1px solid #e0c06e55}
+.qualis-b3,.qualis-b4,.qualis-c{background:var(--surface3);color:var(--text-dim);border:1px solid var(--border)}
+.jcr-badge{font-family:var(--mono);font-size:10px;color:var(--text-muted);min-width:50px;text-align:right}
+.journal-count{font-size:10px;color:var(--text-dim);font-family:var(--mono)}
+
+/* TIMELINE */
+.tl-row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);margin-bottom:6px;position:relative}
+.tl-date{font-family:var(--mono);font-size:10px;color:var(--text-dim);width:68px;flex-shrink:0}
+.tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.tl-label{font-size:12px;font-weight:500;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tl-past{opacity:0.4}
+
+/* SKELETON MANUSCRITO */
+.sk-block{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px;overflow:hidden}
+.sk-block-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;user-select:none}
+.sk-block-header:hover{background:var(--surface3)}
+.sk-block-label{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em}
+.sk-block-body{padding:0 14px 12px;font-size:12.5px;color:var(--text-muted);line-height:1.7;white-space:pre-wrap;word-break:break-word;display:none}
+.sk-block-body.open{display:block}
+.sk-toggle{font-size:12px;color:var(--text-dim);transition:transform .2s}
+.sk-toggle.open{transform:rotate(180deg)}
 .toast{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 16px;font-size:12.5px;color:var(--text);box-shadow:0 8px 32px #00000066;animation:fadeIn 0.2s ease;font-family:var(--sans)}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .scroll-hint{font-size:9.5px;color:var(--text-dim);font-family:var(--mono);padding-left:4px;margin-top:2px}
@@ -272,8 +335,42 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 
     <!-- DASHBOARD -->
     <div id="view-dashboard">
+      <!-- STAT CARDS -->
       <div class="stats-row" id="statsRow"></div>
-      <div class="students-grid" id="dashboardGrid"></div>
+
+      <!-- SEÇÃO 1: SEMÁFORO DE ORIENTANDOS -->
+      <div class="dash-section">
+        <div class="dash-section-header">
+          <span class="dash-section-title">Orientandos — Semáforo de Contato</span>
+          <button class="btn btn-secondary btn-sm" onclick="showView('orientandos')">Ver todos →</button>
+        </div>
+        <div id="dashSemaforo"></div>
+      </div>
+
+      <!-- SEÇÃO 2: MANUSCRITOS EM ANDAMENTO -->
+      <div class="dash-section">
+        <div class="dash-section-header">
+          <span class="dash-section-title">Manuscritos — Status de Submissão</span>
+          <button class="btn btn-secondary btn-sm" onclick="showView('manuscritos')">Ver todos →</button>
+        </div>
+        <div id="dashManu"></div>
+      </div>
+
+      <!-- GRID INFERIOR: PERIÓDICOS + LINHA DO TEMPO -->
+      <div class="dash-bottom-grid">
+        <div class="dash-section" style="margin-bottom:0">
+          <div class="dash-section-header">
+            <span class="dash-section-title">Periódicos Alvo — Qualis / JCR</span>
+          </div>
+          <div id="dashJournals"></div>
+        </div>
+        <div class="dash-section" style="margin-bottom:0">
+          <div class="dash-section-header">
+            <span class="dash-section-title">Linha do Tempo de Submissões</span>
+          </div>
+          <div id="dashTimeline"></div>
+        </div>
+      </div>
     </div>
 
     <!-- ORIENTANDOS (lista filtrada) -->
@@ -326,41 +423,111 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 
     <!-- CONFIGURAÇÕES -->
     <div id="view-configuracoes" style="display:none">
-      <div class="card" style="max-width:480px">
-        <div class="card-header"><span style="font-size:13px;font-weight:600">Sincronização — GitHub Gist</span></div>
-        <div class="card-body">
-          <div class="form-group">
-            <label class="form-label">Gist ID</label>
-            <input type="text" class="form-control" id="cfgGistId" placeholder="e5d141b42a27db388a7d1f684c78e3f0">
+      <div style="display:flex;flex-direction:column;gap:16px;max-width:520px">
+
+        <!-- DRIVE -->
+        <div class="card">
+          <div class="card-header">
+            <span style="font-size:13px;font-weight:600">☁ Google Drive — Sync automático</span>
+            <span id="driveSyncBadge" style="font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:12px;background:var(--surface3);color:var(--text-dim)">inativo</span>
           </div>
-          <div class="form-group">
-            <label class="form-label">GitHub Token (PAT)</label>
-            <input type="password" class="form-control" id="cfgToken" placeholder="ghp_...">
+          <div class="card-body">
+            <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;line-height:1.6">Salva <code style="font-family:var(--mono);font-size:11px;background:var(--surface3);padding:1px 5px;border-radius:3px">labresearch_data.json</code> no Drive. Token renovado automaticamente — configure uma vez, funciona para sempre.</p>
+
+            <details style="margin-bottom:14px">
+              <summary style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;cursor:pointer;user-select:none">▶ Como obter as credenciais (clique para expandir)</summary>
+              <div style="margin-top:10px;font-size:11.5px;color:var(--text-muted);line-height:1.8;background:var(--surface3);border-radius:var(--radius-sm);padding:12px 14px">
+                <b style="color:var(--text)">Passo 1 — Criar credenciais no Google Cloud</b><br>
+                1. Acesse <a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="color:var(--blue)">console.cloud.google.com/apis/credentials</a><br>
+                2. Crie um projeto (ou use um existente)<br>
+                3. Ative a <b>Google Drive API</b> em "APIs e serviços"<br>
+                4. Em "Credenciais" → "Criar credenciais" → <b>ID do cliente OAuth 2.0</b><br>
+                5. Tipo: <b>Aplicativo da Web</b><br>
+                6. Em "URIs de redirecionamento autorizados" adicione: <code style="font-family:var(--mono);font-size:10px;background:var(--surface2);padding:1px 4px">https://developers.google.com/oauthplayground</code><br>
+                7. Salve e copie o <b>Client ID</b> e o <b>Client Secret</b><br><br>
+                <b style="color:var(--text)">Passo 2 — Obter refresh_token no OAuth Playground</b><br>
+                1. Acesse <a href="https://developers.google.com/oauthplayground" target="_blank" style="color:var(--blue)">developers.google.com/oauthplayground</a><br>
+                2. Clique no ⚙ (canto superior direito) → marque <b>"Use your own OAuth credentials"</b><br>
+                3. Cole seu Client ID e Client Secret<br>
+                4. Na lista de APIs, selecione <b>Drive API v3</b> → <code style="font-family:var(--mono);font-size:10px">https://www.googleapis.com/auth/drive.file</code><br>
+                5. Clique <b>"Authorize APIs"</b> → faça login → autorize<br>
+                6. Clique <b>"Exchange authorization code for tokens"</b><br>
+                7. Copie o <b>refresh_token</b> da resposta JSON
+              </div>
+            </details>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Client ID</label>
+                <input type="text" class="form-control" id="cfgDriveClientId" placeholder="123456789.apps.googleusercontent.com">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Client Secret</label>
+                <input type="password" class="form-control" id="cfgDriveClientSecret" placeholder="GOCSPX-...">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Refresh Token</label>
+              <input type="password" class="form-control" id="cfgDriveRefreshToken" placeholder="1//042Ark...">
+            </div>
+            <div class="form-group" style="display:none" id="driveTokenManualGroup">
+              <label class="form-label">Access Token manual (opcional — só se não tiver refresh token)</label>
+              <input type="password" class="form-control" id="cfgDriveToken" placeholder="ya29.a0...">
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-primary" onclick="saveDriveConfig()">Ativar Drive</button>
+              <button class="btn btn-secondary" onclick="testDrive()">Testar conexão</button>
+              <button class="btn btn-secondary" onclick="disableDrive()">Desativar</button>
+            </div>
           </div>
-          <div style="display:flex;gap:8px;margin-top:4px">
-            <button class="btn btn-primary" onclick="saveConfig()">Salvar configuração</button>
-            <button class="btn btn-secondary" onclick="testGist()">Testar conexão</button>
+        </div>
+
+        <!-- GIST (fallback) -->
+        <div class="card">
+          <div class="card-header"><span style="font-size:13px;font-weight:600">⎇ GitHub Gist — Fallback</span></div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Gist ID</label>
+              <input type="text" class="form-control" id="cfgGistId" placeholder="e5d141b42a27db388a7d1f684c78e3f0">
+            </div>
+            <div class="form-group">
+              <label class="form-label">GitHub Token (PAT)</label>
+              <input type="password" class="form-control" id="cfgToken" placeholder="ghp_...">
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-secondary" onclick="saveConfig()">Salvar Gist</button>
+              <button class="btn btn-secondary" onclick="testGist()">Testar</button>
+            </div>
           </div>
-          <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px">
-            <div class="form-label" style="margin-bottom:10px">Inatividade — dias para alerta</div>
-            <div style="display:flex;gap:8px;align-items:center">
+        </div>
+
+        <!-- ALERTAS -->
+        <div class="card">
+          <div class="card-header"><span style="font-size:13px;font-weight:600">Alertas de inatividade</span></div>
+          <div class="card-body">
+            <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
               <input type="number" class="form-control" id="cfgWarnDays" style="width:80px" value="14">
               <span style="color:var(--text-muted);font-size:12px">dias → alerta amarelo</span>
             </div>
-            <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+            <div style="display:flex;gap:8px;align-items:center">
               <input type="number" class="form-control" id="cfgAlertDays" style="width:80px" value="30">
               <span style="color:var(--text-muted);font-size:12px">dias → alerta vermelho</span>
             </div>
             <button class="btn btn-secondary" style="margin-top:10px" onclick="saveConfig()">Salvar</button>
           </div>
-          <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px">
-            <div class="form-label" style="margin-bottom:8px">Exportar / Importar JSON</div>
+        </div>
+
+        <!-- EXPORT/IMPORT -->
+        <div class="card">
+          <div class="card-header"><span style="font-size:13px;font-weight:600">Exportar / Importar JSON</span></div>
+          <div class="card-body">
             <div style="display:flex;gap:8px">
-              <button class="btn btn-secondary" onclick="exportJSON()">⬇ Exportar</button>
+              <button class="btn btn-secondary" onclick="exportJSON()">⬇ Exportar backup</button>
               <label class="btn btn-secondary" style="cursor:pointer">⬆ Importar<input type="file" accept=".json" style="display:none" onchange="importJSON(this)"></label>
             </div>
           </div>
         </div>
+
       </div>
     </div>
 
@@ -495,9 +662,48 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <label class="form-label">Etapas concluídas</label>
         <div id="mStepsCheck" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px"></div>
       </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Status de submissão</label>
+          <select class="form-control" id="mSubStatus">
+            <option value="planejado">Planejado</option>
+            <option value="escrita">Em escrita</option>
+            <option value="submetido">Submetido</option>
+            <option value="revisao">Em revisão</option>
+            <option value="aceito">Aceito</option>
+            <option value="rejeitado">Rejeitado</option>
+            <option value="publicado">Publicado</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Data de submissão / prazo</label>
+          <input type="date" class="form-control" id="mSubDate">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Qualis CAPES</label>
+          <select class="form-control" id="mQualis">
+            <option value="">—</option>
+            <option value="A1">A1</option>
+            <option value="A2">A2</option>
+            <option value="A3">A3</option>
+            <option value="A4">A4</option>
+            <option value="B1">B1</option>
+            <option value="B2">B2</option>
+            <option value="B3">B3</option>
+            <option value="B4">B4</option>
+            <option value="C">C</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">JCR / Impact Factor</label>
+          <input type="text" class="form-control" id="mJCR" placeholder="ex: 4.2">
+        </div>
+      </div>
       <div class="form-group">
         <label class="form-label">Notas</label>
-        <textarea class="form-control" id="mNotes" rows="3" placeholder="Status, revisores, decisões..."></textarea>
+        <textarea class="form-control" id="mNotes" rows="3" placeholder="Revisores, decisões, observações..."></textarea>
       </div>
     </div>
     <div class="modal-footer">
@@ -516,13 +722,109 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 const DEFAULT_GIST_ID = 'e5d141b42a27db388a7d1f684c78e3f0';
 const GIST_FILENAME_S = 'labresearch_students.json';
 const GIST_FILENAME_M = 'labresearch_manuscripts.json';
+const DRIVE_FILENAME  = 'labresearch_data.json';
 
 let cfg = {
   gistId: DEFAULT_GIST_ID,
   token: '',
+  driveToken: '',
+  driveRefreshToken: '',
+  driveClientId: '',
+  driveClientSecret: '',
+  driveTokenExpiry: 0,   // epoch ms
+  driveFileId: '',
   warnDays: 14,
-  alertDays: 30
+  alertDays: 30,
+  syncMode: 'gist'
 };
+
+// ─── DRIVE SYNC ───────────────────────────────────────────────
+const DRIVE_TOKEN_URL = 'https://oauth2.googleapis.com/token';
+
+async function driveEnsureToken(){
+  // Se token válido por mais de 2 minutos, usa direto
+  if(cfg.driveToken && cfg.driveTokenExpiry && Date.now() < cfg.driveTokenExpiry - 120000) return true;
+  // Tentar renovar com refresh_token
+  if(!cfg.driveRefreshToken || !cfg.driveClientId || !cfg.driveClientSecret) return !!cfg.driveToken;
+  try{
+    const r=await fetch(DRIVE_TOKEN_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:`client_id=${encodeURIComponent(cfg.driveClientId)}&client_secret=${encodeURIComponent(cfg.driveClientSecret)}&refresh_token=${encodeURIComponent(cfg.driveRefreshToken)}&grant_type=refresh_token`
+    });
+    if(!r.ok) return false;
+    const d=await r.json();
+    if(d.access_token){
+      cfg.driveToken=d.access_token;
+      cfg.driveTokenExpiry=Date.now()+(d.expires_in||3599)*1000;
+      saveCfg();
+      return true;
+    }
+    return false;
+  }catch(e){return false;}
+}
+
+async function driveLoad(){
+  if(!(await driveEnsureToken())) return false;
+  try{
+    let fileId=cfg.driveFileId;
+    if(!fileId){
+      const q=encodeURIComponent(`name='${DRIVE_FILENAME}' and trashed=false`);
+      const r=await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)`,
+        {headers:{Authorization:`Bearer ${cfg.driveToken}`}});
+      if(!r.ok) return false;
+      const d=await r.json();
+      if(d.files&&d.files.length>0){fileId=d.files[0].id;cfg.driveFileId=fileId;saveCfg();}
+    }
+    if(!fileId) return false;
+    const r2=await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
+      {headers:{Authorization:`Bearer ${cfg.driveToken}`}});
+    if(!r2.ok) return false;
+    const data=await r2.json();
+    if(data.students) students=data.students;
+    if(data.manuscripts) manuscripts=data.manuscripts;
+    return true;
+  }catch(e){return false;}
+}
+
+async function driveSave(){
+  if(!(await driveEnsureToken())) return false;
+  try{
+    const payload=JSON.stringify({students,manuscripts},null,2);
+    const boundary='labresearch_boundary';
+    let fileId=cfg.driveFileId;
+    if(!fileId){
+      const meta=JSON.stringify({name:DRIVE_FILENAME,mimeType:'application/json'});
+      const body=`--${boundary}\r\nContent-Type: application/json\r\n\r\n${meta}\r\n--${boundary}\r\nContent-Type: application/json\r\n\r\n${payload}\r\n--${boundary}--`;
+      const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{
+        method:'POST',
+        headers:{Authorization:`Bearer ${cfg.driveToken}`,'Content-Type':`multipart/related; boundary=${boundary}`},
+        body
+      });
+      if(!r.ok) return false;
+      const d=await r.json();
+      cfg.driveFileId=d.id; saveCfg();
+      return true;
+    } else {
+      const r=await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`,{
+        method:'PATCH',
+        headers:{Authorization:`Bearer ${cfg.driveToken}`,'Content-Type':'application/json'},
+        body:payload
+      });
+      if(r.status===401){
+        // Token expirou — forçar renovação e tentar uma vez mais
+        cfg.driveTokenExpiry=0;
+        if(await driveEnsureToken()){
+          const r2=await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`,{
+            method:'PATCH',headers:{Authorization:`Bearer ${cfg.driveToken}`,'Content-Type':'application/json'},body:payload
+          });
+          return r2.ok;
+        }
+      }
+      return r.ok;
+    }
+  }catch(e){return false;}
+}
 
 // ─── PIPELINES ────────────────────────────────────────────────
 const PIPELINES = {
@@ -534,6 +836,9 @@ const PIPELINES = {
 };
 
 const MANU_STEPS = ['Resumo','Introdução','Materiais e Métodos','Resultados','Discussão','Conclusão','Referências','Submetido'];
+const MANU_STEPS_TCC = ['Resumo','Introdução','Materiais e Métodos','Resultados','Discussão','Conclusão','Referências','Defesa TCC 1','Defesa TCC 2','Submetido'];
+
+function getManuSteps(type){ return type==='TCC'?MANU_STEPS_TCC:MANU_STEPS; }
 
 // ─── DATA ─────────────────────────────────────────────────────
 let students = [];
@@ -551,6 +856,12 @@ function saveCfg(){localStorage.setItem('labcfg',JSON.stringify(cfg));}
 
 async function loadData(){
   loadCfg();
+  // 1. Tentar Drive
+  if(cfg.syncMode==='drive' && cfg.driveToken){
+    const ok=await driveLoad();
+    if(ok){setSyncOk('Drive');return;}
+  }
+  // 2. Tentar Gist
   if(cfg.gistId && cfg.token){
     try{
       const r=await fetch(`https://api.github.com/gists/${cfg.gistId}`,{headers:{Authorization:`token ${cfg.token}`}});
@@ -558,19 +869,28 @@ async function loadData(){
         const g=await r.json();
         if(g.files[GIST_FILENAME_S]) students=JSON.parse(g.files[GIST_FILENAME_S].content||'[]');
         if(g.files[GIST_FILENAME_M]) manuscripts=JSON.parse(g.files[GIST_FILENAME_M].content||'[]');
-        setSyncOk(); return;
+        setSyncOk('Gist'); return;
       }
     }catch(e){}
   }
-  // fallback localStorage
+  // 3. Fallback localStorage
   try{students=JSON.parse(localStorage.getItem('labstudents')||'[]');}catch(e){students=[];}
   try{manuscripts=JSON.parse(localStorage.getItem('labmanuscripts')||'[]');}catch(e){manuscripts=[];}
   setSyncWarn();
 }
 
 async function saveData(){
+  // Sempre salva local como segurança
   localStorage.setItem('labstudents',JSON.stringify(students));
   localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
+
+  // 1. Tentar Drive
+  if(cfg.syncMode==='drive' && cfg.driveToken){
+    const ok=await driveSave();
+    if(ok){setSyncOk('Drive');return;}
+    setSyncErr('Drive');return;
+  }
+  // 2. Tentar Gist
   if(cfg.gistId && cfg.token){
     try{
       const files={};
@@ -580,15 +900,15 @@ async function saveData(){
         method:'PATCH',headers:{'Content-Type':'application/json',Authorization:`token ${cfg.token}`},
         body:JSON.stringify({files})
       });
-      if(r.ok){setSyncOk();return;}
+      if(r.ok){setSyncOk('Gist');return;}
     }catch(e){}
-    setSyncErr();
+    setSyncErr('Gist');
   }
 }
 
-function setSyncOk(){document.getElementById('syncDot').className='sync-dot ok';document.getElementById('syncText').textContent='Sincronizado';}
-function setSyncWarn(){document.getElementById('syncDot').className='sync-dot';document.getElementById('syncText').textContent='Local (sem Gist)';}
-function setSyncErr(){document.getElementById('syncDot').className='sync-dot err';document.getElementById('syncText').textContent='Erro de sync';}
+function setSyncOk(src){document.getElementById('syncDot').className='sync-dot ok';document.getElementById('syncText').textContent=`✓ ${src||'Sync'}`;}
+function setSyncWarn(){document.getElementById('syncDot').className='sync-dot';document.getElementById('syncText').textContent='Local (sem sync)';}
+function setSyncErr(src){document.getElementById('syncDot').className='sync-dot err';document.getElementById('syncText').textContent=`Erro — ${src||'sync'}`;}
 
 async function syncNow(){toast('Sincronizando...');await loadData();renderCurrentView();}
 
@@ -666,22 +986,153 @@ function typeBadge(t){
 }
 
 // ─── DASHBOARD ────────────────────────────────────────────────
+function subStatusInfo(st){
+  const map={
+    planejado:{cls:'sub-planejado',lbl:'Planejado'},
+    escrita:  {cls:'sub-escrita',  lbl:'Em escrita'},
+    submetido:{cls:'sub-submetido',lbl:'Submetido'},
+    revisao:  {cls:'sub-revisao',  lbl:'Em revisão'},
+    aceito:   {cls:'sub-aceito',   lbl:'Aceito'},
+    rejeitado:{cls:'sub-rejeitado',lbl:'Rejeitado'},
+    publicado:{cls:'sub-publicado',lbl:'Publicado'},
+  };
+  return map[st]||{cls:'sub-planejado',lbl:st||'—'};
+}
+
+function qualisClass(q){
+  if(!q) return '';
+  return 'qualis-'+q.toLowerCase().replace(' ','');
+}
+
 function renderDashboard(){
   const active=students.filter(s=>!s.encerrado);
   const enc=students.filter(s=>s.encerrado);
   const alertas=students.filter(s=>!s.encerrado && inactivityDays(s)>=cfg.warnDays);
+  const manuAtivos=manuscripts.filter(m=>m.subStatus!=='publicado');
+
+  // ── STAT CARDS ──
   document.getElementById('statsRow').innerHTML=`
-    <div class="stat-card"><div class="stat-value">${active.length}</div><div class="stat-label">Orientandos ativos</div><div class="stat-sub">${enc.length} encerrados</div></div>
+    <div class="stat-card"><div class="stat-value">${active.length}</div><div class="stat-label">Orientandos ativos</div><div class="stat-sub">${enc.length} encerrado${enc.length!==1?'s':''}</div></div>
     <div class="stat-card"><div class="stat-value">${students.filter(s=>s.type==='IC').length}</div><div class="stat-label">IC</div><div class="stat-sub">Iniciação Científica</div></div>
     <div class="stat-card"><div class="stat-value">${students.filter(s=>s.type==='TCC'||s.type==='ESP').length}</div><div class="stat-label">TCCs</div><div class="stat-sub">Grad + Especialização</div></div>
     <div class="stat-card"><div class="stat-value">${students.filter(s=>s.type==='MSC'||s.type==='PHD').length}</div><div class="stat-label">Pós-Grad</div><div class="stat-sub">Mestrado + Doutorado</div></div>
     <div class="stat-card" style="border-color:${alertas.length>0?'var(--orange)44':'var(--border)'}"><div class="stat-value" style="color:${alertas.length>0?'var(--orange)':'var(--text)'}">${alertas.length}</div><div class="stat-label">Requerem atenção</div><div class="stat-sub">Inatividade ≥${cfg.warnDays}d</div></div>
   `;
-  const sorted=[...students].sort((a,b)=>{
-    const order={vermelho:0,laranja:1,amarelo:2,verde:3,encerrado:4};
-    return (order[riskLevel(a)]||3)-(order[riskLevel(b)]||3);
+
+  // ── SEÇÃO 1: SEMÁFORO ──
+  const semaEl=document.getElementById('dashSemaforo');
+  if(!active.length){
+    semaEl.innerHTML='<div class="empty-state" style="padding:20px"><div class="empty-icon" style="font-size:20px">◎</div>Nenhum orientando cadastrado. <button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="openAddStudentModal()">+ Adicionar</button></div>';
+  } else {
+    const sorted=[...active].sort((a,b)=>{
+      const order={vermelho:0,laranja:1,amarelo:2,verde:3,encerrado:4};
+      return (order[riskLevel(a)]||3)-(order[riskLevel(b)]||3);
+    });
+    semaEl.innerHTML=sorted.map(s=>{
+      const risk=riskLevel(s);
+      const il=inactivityLabel(s);
+      const pct=pipelineProgress(s);
+      return `<div class="sema-row risk-${risk}" onclick="openStudentDetail('${s.id}')">
+        <div class="sema-avatar">${initials(s.name)}</div>
+        ${typeBadge(s.type)}
+        <div class="sema-name">${escHTML(s.name)}</div>
+        <div class="sema-detail">${escHTML(s.milestone||'Sem etapa')}</div>
+        <div class="sema-right">
+          <div class="manu-prog-mini">
+            <div class="progress-track"><div class="progress-fill ${risk}" style="width:${pct}%"></div></div>
+            <div class="progress-label">${pct}%</div>
+          </div>
+          <span class="inactivity-badge ${il.cls}">${il.txt}</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── SEÇÃO 2: MANUSCRITOS ──
+  const manuEl=document.getElementById('dashManu');
+  if(!manuscripts.length){
+    manuEl.innerHTML='<div class="empty-state" style="padding:20px"><div class="empty-icon" style="font-size:20px">◈</div>Nenhum manuscrito cadastrado. <button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="openAddManuModal()">+ Adicionar</button></div>';
+  } else {
+    const mSorted=[...manuscripts].sort((a,b)=>{
+      const order={revisao:0,submetido:1,escrita:2,planejado:3,aceito:4,rejeitado:5,publicado:6};
+      return (order[a.subStatus]??3)-(order[b.subStatus]??3);
+    });
+    manuEl.innerHTML=mSorted.map(m=>{
+      const si=subStatusInfo(m.subStatus);
+      const done=(m.steps||[]).length;
+      const total=getManuSteps(m.type).length;
+      const pct=Math.round((done/total)*100);
+      const qcls=qualisClass(m.qualis);
+      return `<div class="manu-dash-row" onclick="openManuDetail('${m.id}')">
+        ${typeBadge(m.type)}
+        <div class="manu-dash-title" title="${escHTML(m.title)}">${escHTML(m.title||'Sem título')}</div>
+        <div class="manu-dash-journal" title="${escHTML(m.journal)}">${escHTML(m.journal||'')}</div>
+        ${m.qualis?`<span class="qualis-badge ${qcls}">${m.qualis}</span>`:''}
+        ${m.jcr?`<span class="jcr-badge">IF ${m.jcr}</span>`:''}
+        <div class="manu-prog-mini">
+          <div class="progress-track"><div class="progress-fill verde" style="width:${pct}%"></div></div>
+          <div class="progress-label">${pct}%</div>
+        </div>
+        <span class="sub-badge ${si.cls}">${si.lbl}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // ── SEÇÃO 3: PERIÓDICOS / QUALIS ──
+  const jEl=document.getElementById('dashJournals');
+  const journalMap={};
+  manuscripts.forEach(m=>{
+    if(!m.journal) return;
+    const key=m.journal.trim();
+    if(!journalMap[key]) journalMap[key]={name:key,qualis:m.qualis||'',jcr:m.jcr||'',count:0};
+    journalMap[key].count++;
+    if(m.qualis) journalMap[key].qualis=m.qualis;
+    if(m.jcr)    journalMap[key].jcr=m.jcr;
   });
-  document.getElementById('dashboardGrid').innerHTML=sorted.map(s=>studentCardHTML(s)).join('')||'<div class="empty-state"><div class="empty-icon">◎</div>Nenhum orientando cadastrado.<br><br><button class="btn btn-primary" onclick="openAddStudentModal()">+ Adicionar primeiro orientando</button></div>';
+  const journals=Object.values(journalMap).sort((a,b)=>{
+    const qOrder={A1:0,A2:1,A3:2,A4:3,B1:4,B2:5,B3:6,B4:7,C:8,'':9};
+    return (qOrder[a.qualis]??9)-(qOrder[b.qualis]??9);
+  });
+  if(!journals.length){
+    jEl.innerHTML='<div style="color:var(--text-dim);font-size:12px;padding:12px 0">Cadastre periódicos nos manuscritos para visualizar aqui.</div>';
+  } else {
+    jEl.innerHTML=journals.map(j=>{
+      const qcls=qualisClass(j.qualis);
+      return `<div class="journal-row">
+        <div class="journal-name" title="${escHTML(j.name)}">${escHTML(j.name)}</div>
+        ${j.qualis?`<span class="qualis-badge ${qcls}">${j.qualis}</span>`:'<span class="qualis-badge qualis-b3">—</span>'}
+        ${j.jcr?`<span class="jcr-badge">IF ${j.jcr}</span>`:''}
+        <span class="journal-count">${j.count} ms.</span>
+      </div>`;
+    }).join('');
+  }
+
+  // ── SEÇÃO 4: LINHA DO TEMPO ──
+  const tlEl=document.getElementById('dashTimeline');
+  const events=[];
+  manuscripts.forEach(m=>{
+    if(m.subDate) events.push({date:m.subDate,label:m.title,subStatus:m.subStatus,id:m.id});
+  });
+  students.forEach(s=>{
+    if(s.end) events.push({date:s.end,label:`Prazo: ${s.name}`,subStatus:'prazo',id:s.id,isStudent:true});
+  });
+  events.sort((a,b)=>new Date(a.date)-new Date(b.date));
+  if(!events.length){
+    tlEl.innerHTML='<div style="color:var(--text-dim);font-size:12px;padding:12px 0">Adicione datas de submissão nos manuscritos ou prazos nos orientandos.</div>';
+  } else {
+    const now=Date.now();
+    tlEl.innerHTML=events.map(ev=>{
+      const isPast=new Date(ev.date).getTime()<now;
+      const si=ev.isStudent?{cls:'sub-planejado',lbl:'Prazo'}:subStatusInfo(ev.subStatus);
+      const dotColor=ev.isStudent?'var(--orange)':(isPast?'var(--text-dim)':'var(--blue)');
+      return `<div class="tl-row ${isPast?'tl-past':''}" onclick="${ev.isStudent?`openStudentDetail('${ev.id}')`:`openManuDetail('${ev.id}')`}">
+        <div class="tl-date">${fmtDate(ev.date)}</div>
+        <div class="tl-dot" style="background:${dotColor}"></div>
+        <div class="tl-label" title="${escHTML(ev.label)}">${escHTML(ev.label||'')}</div>
+        <span class="sub-badge ${si.cls}">${si.lbl}</span>
+      </div>`;
+    }).join('');
+  }
 }
 
 function studentCardHTML(s){
@@ -970,7 +1421,7 @@ function renderManuscritos(f){
   if(!list.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">◈</div>Nenhum manuscrito cadastrado.<br><br><button class="btn btn-primary" onclick="openAddManuModal()">+ Adicionar primeiro manuscrito</button></div>';return;}
   el.innerHTML=list.map(m=>{
     const done=(m.steps||[]).filter(Boolean).length;
-    const stepsHTML=MANU_STEPS.map(st=>{
+    const stepsHTML=getManuSteps(m.type).map(st=>{
       const isDone=(m.steps||[]).includes(st);
       return `<span class="step-pill ${isDone?'step-done':'step-pend'}">${st}</span>`;
     }).join('');
@@ -995,27 +1446,76 @@ function backFromManuDetail(){showView(prevView||'manuscritos',true);}
 
 function renderManuDetail(id){
   const m=manuscripts.find(x=>x.id===id);if(!m)return;
-  const stepsHTML=MANU_STEPS.map(st=>{
+  const si=subStatusInfo(m.subStatus);
+  const qcls=qualisClass(m.qualis);
+
+  const stepsHTML=getManuSteps(m.type).map(st=>{
     const isDone=(m.steps||[]).includes(st);
     return `<label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px 10px;border-radius:var(--radius-sm);border:1px solid ${isDone?'var(--green)44':'var(--border)'};background:${isDone?'var(--green-dim)':'var(--surface2)'};margin-bottom:5px">
       <input type="checkbox" ${isDone?'checked':''} onchange="toggleManuStep('${id}','${st}',this.checked)" style="accent-color:var(--green)">
       <span style="font-size:13px;color:${isDone?'var(--green-bright)':'var(--text-muted)'}">${st}</span>
     </label>`;
   }).join('');
+
+  // Skeleton colapsável
+  const sk=m.skeleton||{};
+  const skFields=[
+    {key:'question',   label:'Pergunta de pesquisa'},
+    {key:'hypothesis', label:'Hipótese'},
+    {key:'objGeneral', label:'Objetivo geral'},
+    {key:'objSpecific',label:'Objetivos específicos'},
+    {key:'lit',        label:'Estrutura da revisão de literatura'},
+    {key:'mm',         label:'Materiais e métodos'},
+    {key:'results',    label:'Estrutura de resultados'},
+    {key:'discussion', label:'Estrutura de discussão'},
+  ];
+  const skHTML=skFields.filter(f=>sk[f.key]&&sk[f.key].trim()).map((f,i)=>`
+    <div class="sk-block">
+      <div class="sk-block-header" onclick="toggleSk('sk_${id}_${i}')">
+        <span class="sk-block-label">${f.label}</span>
+        <span class="sk-toggle" id="sk_${id}_${i}_ico">▼</span>
+      </div>
+      <div class="sk-block-body" id="sk_${id}_${i}">${escHTML(sk[f.key])}</div>
+    </div>`).join('');
+
   document.getElementById('manuDetailContent').innerHTML=`
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:12px">
-      <div>
-        <div style="font-size:18px;font-weight:700;color:var(--text)">${escHTML(m.title||'Sem título')}</div>
-        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center">${typeBadge(m.type)}<span style="font-size:12px;color:var(--text-muted)">${m.journal||''}</span><span style="font-size:12px;color:var(--text-muted)">${m.authors||''}</span></div>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;gap:12px">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:17px;font-weight:700;color:var(--text);line-height:1.4">${escHTML(m.title||'Sem título')}</div>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center">
+          ${typeBadge(m.type)}
+          <span style="font-size:12px;color:var(--text-muted)">${escHTML(m.journal||'')}</span>
+          <span style="font-size:12px;color:var(--text-muted)">${escHTML(m.authors||'')}</span>
+          ${m.qualis?`<span class="qualis-badge ${qcls}">${m.qualis}</span>`:''}
+          ${m.jcr?`<span class="jcr-badge" style="font-family:var(--mono);font-size:10px;color:var(--text-muted)">IF ${escHTML(m.jcr)}</span>`:''}
+          <span class="sub-badge ${si.cls}">${si.lbl}</span>
+          ${m.subDate?`<span style="font-family:var(--mono);font-size:10px;color:var(--text-dim)">${fmtDate(m.subDate)}</span>`:''}
+        </div>
       </div>
       <div style="display:flex;gap:8px;flex-shrink:0">
         <button class="btn btn-secondary btn-sm" onclick="openEditManuModal('${id}')">✎ Editar</button>
         <button class="btn btn-secondary btn-sm" onclick="openGDocs('${id}')">↗ Google Docs</button>
       </div>
     </div>
-    <div class="pipeline-section"><div class="section-title">Etapas de escrita</div>${stepsHTML}</div>
-    ${m.notes?`<div class="pipeline-section"><div class="section-title">Notas</div><div style="font-size:12.5px;color:var(--text-muted);line-height:1.6;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px">${escHTML(m.notes)}</div></div>`:''}
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div>
+        <div class="pipeline-section"><div class="section-title">Etapas de escrita</div>${stepsHTML}</div>
+        ${m.notes?`<div class="pipeline-section"><div class="section-title">Notas</div><div style="font-size:12.5px;color:var(--text-muted);line-height:1.6;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;white-space:pre-wrap">${escHTML(m.notes)}</div></div>`:''}
+      </div>
+      <div>
+        ${skHTML?`<div class="pipeline-section"><div class="section-title">Esqueleto do manuscrito</div>${skHTML}</div>`:'<div style="color:var(--text-dim);font-size:12px;padding:12px 0">Nenhum esqueleto cadastrado. Edite o manuscrito para adicionar.</div>'}
+      </div>
+    </div>
   `;
+}
+
+function toggleSk(id){
+  const body=document.getElementById(id);
+  const ico=document.getElementById(id+'_ico');
+  if(!body) return;
+  body.classList.toggle('open');
+  ico.classList.toggle('open');
 }
 
 function toggleManuStep(id,step,checked){
@@ -1041,8 +1541,12 @@ function openAddManuModal(){
   document.getElementById('mType').value='IC';
   document.getElementById('mAuthors').value='';
   document.getElementById('mNotes').value='';
+  document.getElementById('mSubStatus').value='planejado';
+  document.getElementById('mSubDate').value='';
+  document.getElementById('mQualis').value='';
+  document.getElementById('mJCR').value='';
   document.getElementById('btnDeleteManu').style.display='none';
-  renderManuStepsCheck([]);
+  renderManuStepsCheck([], 'IC');
   openModal('modalManu');
 }
 
@@ -1055,13 +1559,18 @@ function openEditManuModal(id){
   document.getElementById('mType').value=m.type||'IC';
   document.getElementById('mAuthors').value=m.authors||'';
   document.getElementById('mNotes').value=m.notes||'';
+  document.getElementById('mSubStatus').value=m.subStatus||'planejado';
+  document.getElementById('mSubDate').value=m.subDate||'';
+  document.getElementById('mQualis').value=m.qualis||'';
+  document.getElementById('mJCR').value=m.jcr||'';
   document.getElementById('btnDeleteManu').style.display='inline-flex';
-  renderManuStepsCheck(m.steps||[]);
+  renderManuStepsCheck(m.steps||[], m.type);
   openModal('modalManu');
 }
 
-function renderManuStepsCheck(done){
-  document.getElementById('mStepsCheck').innerHTML=MANU_STEPS.map(st=>`
+function renderManuStepsCheck(done, type){
+  const steps=getManuSteps(type||'IC');
+  document.getElementById('mStepsCheck').innerHTML=steps.map(st=>`
     <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px;color:var(--text-muted)">
       <input type="checkbox" ${done.includes(st)?'checked':''} value="${st}" style="accent-color:var(--green)"> ${st}
     </label>`).join('');
@@ -1070,7 +1579,7 @@ function renderManuStepsCheck(done){
 function saveManu(){
   const id=document.getElementById('mId').value||uid();
   const steps=Array.from(document.querySelectorAll('#mStepsCheck input:checked')).map(i=>i.value);
-  const data={id,title:document.getElementById('mTitle').value.trim(),journal:document.getElementById('mJournal').value.trim(),type:document.getElementById('mType').value,authors:document.getElementById('mAuthors').value.trim(),notes:document.getElementById('mNotes').value.trim(),steps};
+  const data={id,title:document.getElementById('mTitle').value.trim(),journal:document.getElementById('mJournal').value.trim(),type:document.getElementById('mType').value,authors:document.getElementById('mAuthors').value.trim(),notes:document.getElementById('mNotes').value.trim(),steps,subStatus:document.getElementById('mSubStatus').value,subDate:document.getElementById('mSubDate').value,qualis:document.getElementById('mQualis').value,jcr:document.getElementById('mJCR').value.trim()};
   if(!data.title){toast('Informe o título.');return;}
   const ei=manuscripts.findIndex(m=>m.id===id);
   if(ei>=0) Object.assign(manuscripts[ei],data);
@@ -1159,6 +1668,18 @@ function renderConfig(){
   document.getElementById('cfgToken').value=cfg.token||'';
   document.getElementById('cfgWarnDays').value=cfg.warnDays||14;
   document.getElementById('cfgAlertDays').value=cfg.alertDays||30;
+  document.getElementById('cfgDriveClientId').value=cfg.driveClientId||'';
+  document.getElementById('cfgDriveClientSecret').value=cfg.driveClientSecret||'';
+  document.getElementById('cfgDriveRefreshToken').value=cfg.driveRefreshToken||'';
+  const badge=document.getElementById('driveSyncBadge');
+  if(badge){
+    if(cfg.syncMode==='drive'&&(cfg.driveRefreshToken||cfg.driveToken)){
+      const temRefresh=!!cfg.driveRefreshToken;
+      badge.textContent=temRefresh?'✓ ativo (auto-renova)':'✓ ativo (manual)';
+      badge.style.background=temRefresh?'var(--green-dim)':'var(--yellow-dim)';
+      badge.style.color=temRefresh?'var(--green-bright)':'var(--yellow)';
+    } else {badge.textContent='inativo';badge.style.background='var(--surface3)';badge.style.color='var(--text-dim)';}
+  }
 }
 
 function saveConfig(){
@@ -1168,6 +1689,45 @@ function saveConfig(){
   cfg.alertDays=parseInt(document.getElementById('cfgAlertDays').value)||30;
   saveCfg();
   toast('Configurações salvas.');
+}
+
+function saveDriveConfig(){
+  const clientId=document.getElementById('cfgDriveClientId').value.trim();
+  const clientSecret=document.getElementById('cfgDriveClientSecret').value.trim();
+  const refreshToken=document.getElementById('cfgDriveRefreshToken').value.trim();
+  const manualToken=document.getElementById('cfgDriveToken')?document.getElementById('cfgDriveToken').value.trim():'';
+
+  if(!refreshToken && !manualToken){toast('Informe pelo menos o Refresh Token ou um Access Token manual.');return;}
+  if(refreshToken && (!clientId||!clientSecret)){toast('Para auto-renovação, informe também o Client ID e o Client Secret.');return;}
+
+  cfg.driveClientId=clientId;
+  cfg.driveClientSecret=clientSecret;
+  cfg.driveRefreshToken=refreshToken;
+  if(manualToken){cfg.driveToken=manualToken;cfg.driveTokenExpiry=Date.now()+3500000;}
+  cfg.syncMode='drive';
+  cfg.driveFileId='';
+  saveCfg();
+  renderConfig();
+  toast('Drive configurado. Testando...');
+  testDrive();
+}
+
+function disableDrive(){
+  cfg.driveToken='';cfg.driveRefreshToken='';cfg.driveClientId='';cfg.driveClientSecret='';
+  cfg.driveTokenExpiry=0;cfg.syncMode='gist';cfg.driveFileId='';
+  saveCfg();renderConfig();
+  toast('Drive desativado. Usando Gist/local.');
+}
+
+async function testDrive(){
+  const ok=await driveEnsureToken();
+  if(!ok||!cfg.driveToken){toast('✗ Não foi possível obter token. Verifique Client ID, Secret e Refresh Token.');return;}
+  try{
+    const r=await fetch('https://www.googleapis.com/drive/v3/about?fields=user',
+      {headers:{Authorization:`Bearer ${cfg.driveToken}`}});
+    if(r.ok){const d=await r.json();toast(`✓ Drive conectado: ${d.user?.displayName||'OK'}`);}
+    else{const e=await r.json();toast('✗ '+( e.error?.message||'Erro desconhecido'));}
+  }catch(e){toast('✗ Erro de rede: '+e.message);}
 }
 
 async function testGist(){
