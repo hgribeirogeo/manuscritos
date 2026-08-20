@@ -253,9 +253,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .sub-planejado{background:var(--surface3);color:var(--text-dim);border:1px solid var(--border)}
 .manu-prog-mini{width:60px;flex-shrink:0}
 
-/* JOURNALS TABLE */
-.journal-row{display:flex;align-items:center;gap:10px;padding:7px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);margin-bottom:6px}
-.journal-name{font-size:12px;font-weight:500;color:var(--text);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* JOURNAL CARDS */
+.journal-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden;transition:border-color .15s}
+.journal-card:hover{border-color:var(--border2)}
+.journal-card-header{display:flex;align-items:center;gap:10px;padding:10px 14px}
+.journal-card-name{font-size:12.5px;font-weight:600;color:var(--text);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.journal-card-body{padding:2px 14px 10px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.journal-stat{font-size:10.5px;color:var(--text-dim);font-family:var(--mono)}
+.journal-stat-val{color:var(--text-muted);font-weight:600}
+.journal-ms-pills{display:flex;flex-wrap:wrap;gap:4px;padding:0 14px 10px}
+.journal-ms-pill{font-size:10px;color:var(--text-dim);background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
 .qualis-badge{font-family:var(--mono);font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;min-width:32px;text-align:center}
 .qualis-a1{background:#0d2a1a;color:#3fb950;border:1px solid #3fb95055}
 .qualis-a2{background:#0d2820;color:#26d96e;border:1px solid #26d96e55}
@@ -703,7 +710,42 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       </div>
       <div class="form-group">
         <label class="form-label">Notas</label>
-        <textarea class="form-control" id="mNotes" rows="3" placeholder="Revisores, decisões, observações..."></textarea>
+        <textarea class="form-control" id="mNotes" rows="4" placeholder="Revisores, decisões, observações..." style="resize:vertical"></textarea>
+      </div>
+      <div style="border-top:1px solid var(--border);margin:12px 0;padding-top:14px">
+        <div class="form-label" style="margin-bottom:10px;color:var(--blue)">Esqueleto do manuscrito</div>
+        <div class="form-group">
+          <label class="form-label">Pergunta de pesquisa</label>
+          <textarea class="form-control" id="mSkQuestion" rows="2" style="resize:vertical" placeholder="Como / Em que medida..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Hipótese</label>
+          <textarea class="form-control" id="mSkHypothesis" rows="2" style="resize:vertical" placeholder="Nossa hipótese é que..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Objetivo geral</label>
+          <textarea class="form-control" id="mSkObjGeneral" rows="2" style="resize:vertical" placeholder="Analisar / Avaliar / Desenvolver..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Objetivos específicos</label>
+          <textarea class="form-control" id="mSkObjSpecific" rows="3" style="resize:vertical" placeholder="OE1... OE2... OE3..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estrutura da revisão de literatura</label>
+          <textarea class="form-control" id="mSkLit" rows="3" style="resize:vertical" placeholder="1. Tópico principal..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Materiais e métodos</label>
+          <textarea class="form-control" id="mSkMm" rows="3" style="resize:vertical" placeholder="Área de estudo, dados, processamento..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estrutura de resultados</label>
+          <textarea class="form-control" id="mSkResults" rows="2" style="resize:vertical"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estrutura de discussão</label>
+          <textarea class="form-control" id="mSkDiscussion" rows="2" style="resize:vertical"></textarea>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -941,8 +983,10 @@ function renderCurrentView(){
 
 // ─── RISK LOGIC ───────────────────────────────────────────────
 function inactivityDays(s){
-  if(!s.lastMeet) return 9999;
-  return Math.floor((Date.now()-new Date(s.lastMeet).getTime())/(86400000));
+  if(!s.lastMeet || s.lastMeet==='' || s.lastMeet==='dd/mm/aaaa') return 9999;
+  const d=new Date(s.lastMeet);
+  if(isNaN(d.getTime())) return 9999;
+  return Math.floor((Date.now()-d.getTime())/(86400000));
 }
 
 function riskLevel(s){
@@ -1054,6 +1098,9 @@ function renderDashboard(){
     manuEl.innerHTML='<div class="empty-state" style="padding:20px"><div class="empty-icon" style="font-size:20px">◈</div>Nenhum manuscrito cadastrado. <button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="openAddManuModal()">+ Adicionar</button></div>';
   } else {
     const mSorted=[...manuscripts].sort((a,b)=>{
+      const pctA=Math.round(((a.steps||[]).length/getManuSteps(a.type).length)*100);
+      const pctB=Math.round(((b.steps||[]).length/getManuSteps(b.type).length)*100);
+      if(pctB!==pctA) return pctB-pctA; // decrescente por progresso
       const order={revisao:0,submetido:1,escrita:2,planejado:3,aceito:4,rejeitado:5,publicado:6};
       return (order[a.subStatus]??3)-(order[b.subStatus]??3);
     });
@@ -1084,10 +1131,10 @@ function renderDashboard(){
   manuscripts.forEach(m=>{
     if(!m.journal) return;
     const key=m.journal.trim();
-    if(!journalMap[key]) journalMap[key]={name:key,qualis:m.qualis||'',jcr:m.jcr||'',count:0};
-    journalMap[key].count++;
+    if(!journalMap[key]) journalMap[key]={name:key,qualis:m.qualis||'',jcr:m.jcr||'',manus:[]};
     if(m.qualis) journalMap[key].qualis=m.qualis;
     if(m.jcr)    journalMap[key].jcr=m.jcr;
+    journalMap[key].manus.push({title:m.title,type:m.type,subStatus:m.subStatus,pct:Math.round(((m.steps||[]).length/getManuSteps(m.type).length)*100)});
   });
   const journals=Object.values(journalMap).sort((a,b)=>{
     const qOrder={A1:0,A2:1,A3:2,A4:3,B1:4,B2:5,B3:6,B4:7,C:8,'':9};
@@ -1098,38 +1145,80 @@ function renderDashboard(){
   } else {
     jEl.innerHTML=journals.map(j=>{
       const qcls=qualisClass(j.qualis);
-      return `<div class="journal-row">
-        <div class="journal-name" title="${escHTML(j.name)}">${escHTML(j.name)}</div>
-        ${j.qualis?`<span class="qualis-badge ${qcls}">${j.qualis}</span>`:'<span class="qualis-badge qualis-b3">—</span>'}
-        ${j.jcr?`<span class="jcr-badge">IF ${j.jcr}</span>`:''}
-        <span class="journal-count">${j.count} ms.</span>
+      const avgPct=j.manus.length?Math.round(j.manus.reduce((s,m)=>s+m.pct,0)/j.manus.length):0;
+      const pillsHTML=j.manus.map(m=>{
+        const si=subStatusInfo(m.subStatus);
+        return `<span class="journal-ms-pill" title="${escHTML(m.title)}">${typeBadge(m.type).replace(/>/,'style="font-size:8px;padding:1px 4px">').replace('badge ','badge ')} ${escHTML((m.title||'').substring(0,40))}${(m.title||'').length>40?'…':''} <span class="sub-badge ${si.cls}" style="font-size:8px;padding:1px 5px">${si.lbl}</span></span>`;
+      }).join('');
+      return `<div class="journal-card">
+        <div class="journal-card-header">
+          <div class="journal-card-name" title="${escHTML(j.name)}">${escHTML(j.name)}</div>
+          ${j.qualis?`<span class="qualis-badge ${qcls}">${j.qualis}</span>`:'<span class="qualis-badge qualis-b3" style="opacity:.5">—</span>'}
+          ${j.jcr?`<span class="jcr-badge" style="font-family:var(--mono);font-size:10px;color:var(--text-muted)">IF ${escHTML(j.jcr)}</span>`:''}
+        </div>
+        <div class="journal-card-body">
+          <span class="journal-stat"><span class="journal-stat-val">${j.manus.length}</span> manuscrito${j.manus.length!==1?'s':''}</span>
+          <span class="journal-stat">progresso médio: <span class="journal-stat-val">${avgPct}%</span></span>
+          ${j.qualis?`<span class="journal-stat">Qualis: <span class="journal-stat-val" style="color:var(--green-bright)">${j.qualis}</span></span>`:''}
+        </div>
+        <div class="journal-ms-pills">${pillsHTML}</div>
       </div>`;
     }).join('');
   }
 
-  // ── SEÇÃO 4: LINHA DO TEMPO ──
+  // ── SEÇÃO 4: LINHA DO TEMPO COM BARRA DE PRAZO ──
   const tlEl=document.getElementById('dashTimeline');
-  const events=[];
+  const now=Date.now();
+
+  // Para cada orientando com start+end, criar evento com barra de progresso de prazo
+  const tlEvents=[];
   manuscripts.forEach(m=>{
-    if(m.subDate) events.push({date:m.subDate,label:m.title,subStatus:m.subStatus,id:m.id});
+    if(m.subDate) tlEvents.push({date:m.subDate,label:m.title,subStatus:m.subStatus,id:m.id,isStudent:false,start:null,end:m.subDate});
   });
   students.forEach(s=>{
-    if(s.end) events.push({date:s.end,label:`Prazo: ${s.name}`,subStatus:'prazo',id:s.id,isStudent:true});
+    if(s.end) tlEvents.push({date:s.end,label:s.name,subStatus:'prazo',id:s.id,isStudent:true,start:s.start||null,end:s.end});
   });
-  events.sort((a,b)=>new Date(a.date)-new Date(b.date));
-  if(!events.length){
+  tlEvents.sort((a,b)=>new Date(a.date)-new Date(b.date));
+
+  if(!tlEvents.length){
     tlEl.innerHTML='<div style="color:var(--text-dim);font-size:12px;padding:12px 0">Adicione datas de submissão nos manuscritos ou prazos nos orientandos.</div>';
   } else {
-    const now=Date.now();
-    tlEl.innerHTML=events.map(ev=>{
-      const isPast=new Date(ev.date).getTime()<now;
+    tlEl.innerHTML=tlEvents.map(ev=>{
+      const endMs=new Date(ev.date).getTime();
+      const isPast=endMs<now;
       const si=ev.isStudent?{cls:'sub-planejado',lbl:'Prazo'}:subStatusInfo(ev.subStatus);
-      const dotColor=ev.isStudent?'var(--orange)':(isPast?'var(--text-dim)':'var(--blue)');
-      return `<div class="tl-row ${isPast?'tl-past':''}" onclick="${ev.isStudent?`openStudentDetail('${ev.id}')`:`openManuDetail('${ev.id}')`}">
-        <div class="tl-date">${fmtDate(ev.date)}</div>
-        <div class="tl-dot" style="background:${dotColor}"></div>
-        <div class="tl-label" title="${escHTML(ev.label)}">${escHTML(ev.label||'')}</div>
-        <span class="sub-badge ${si.cls}">${si.lbl}</span>
+
+      // Barra de prazo: do start (ou -1 ano) ao end
+      let barHTML='';
+      if(ev.end){
+        const startMs=ev.start?new Date(ev.start).getTime():endMs-365*86400000;
+        const total=endMs-startMs;
+        const elapsed=Math.max(0,Math.min(now-startMs,total));
+        const pct=total>0?Math.round((elapsed/total)*100):100;
+        // cor: azul → amarelo → laranja → vermelho
+        const barColor=pct<50?`hsl(210,80%,55%)`:pct<75?`hsl(${210-(pct-50)*5},80%,55%)`:pct<90?`hsl(${160-(pct-75)*8},80%,50%)`:'var(--red)';
+        const markerLeft=Math.min(pct,98);
+        barHTML=`<div style="margin-top:5px;position:relative">
+          <div style="height:3px;background:var(--surface3);border-radius:2px;overflow:visible;position:relative">
+            <div style="height:100%;width:${pct}%;background:${barColor};border-radius:2px;transition:width .3s"></div>
+            <div style="position:absolute;top:-4px;left:${markerLeft}%;transform:translateX(-50%);width:10px;height:10px;border-radius:50%;background:${barColor};border:2px solid var(--bg)"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:4px">
+            <span style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">${ev.start?fmtDate(ev.start):'início'}</span>
+            <span style="font-family:var(--mono);font-size:9px;color:${isPast?'var(--red)':pct>75?'var(--orange)':'var(--text-dim)'}">${fmtDate(ev.end)} ${isPast?'(vencido)':pct>90?'(urgente)':''}</span>
+          </div>
+        </div>`;
+      }
+
+      const label=ev.isStudent?`Prazo: ${escHTML(ev.label||'')}`:escHTML(ev.label||'');
+      return `<div class="tl-row" style="flex-direction:column;align-items:stretch;cursor:pointer" onclick="${ev.isStudent?`openStudentDetail('${ev.id}')`:`openManuDetail('${ev.id}')`}">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-family:var(--mono);font-size:10px;color:var(--text-dim);flex-shrink:0;width:68px">${fmtDate(ev.date)}</span>
+          <div class="tl-dot" style="background:${ev.isStudent?'var(--orange)':isPast?'var(--text-dim)':'var(--blue)'};flex-shrink:0"></div>
+          <div style="font-size:12px;font-weight:500;color:${isPast?'var(--text-dim)':'var(--text)'};flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${label}">${label}</div>
+          <span class="sub-badge ${si.cls}" style="flex-shrink:0">${si.lbl}</span>
+        </div>
+        ${barHTML}
       </div>`;
     }).join('');
   }
@@ -1533,6 +1622,21 @@ function openGDocs(id){
   toast('Abrindo Google Docs...');
 }
 
+function clearSkeletonFields(){
+  ['mSkQuestion','mSkHypothesis','mSkObjGeneral','mSkObjSpecific','mSkLit','mSkMm','mSkResults','mSkDiscussion']
+    .forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+}
+function loadSkeletonFields(sk){
+  const map={mSkQuestion:'question',mSkHypothesis:'hypothesis',mSkObjGeneral:'objGeneral',mSkObjSpecific:'objSpecific',mSkLit:'lit',mSkMm:'mm',mSkResults:'results',mSkDiscussion:'discussion'};
+  Object.entries(map).forEach(([elId,key])=>{const el=document.getElementById(elId);if(el)el.value=(sk&&sk[key])||'';});
+}
+function readSkeletonFields(){
+  const map={question:'mSkQuestion',hypothesis:'mSkHypothesis',objGeneral:'mSkObjGeneral',objSpecific:'mSkObjSpecific',lit:'mSkLit',mm:'mSkMm',results:'mSkResults',discussion:'mSkDiscussion'};
+  const sk={};
+  Object.entries(map).forEach(([key,elId])=>{const el=document.getElementById(elId);if(el)sk[key]=el.value.trim();});
+  return sk;
+}
+
 function openAddManuModal(){
   document.getElementById('modalManuTitle').textContent='Novo Manuscrito';
   document.getElementById('mId').value='';
@@ -1546,6 +1650,7 @@ function openAddManuModal(){
   document.getElementById('mQualis').value='';
   document.getElementById('mJCR').value='';
   document.getElementById('btnDeleteManu').style.display='none';
+  clearSkeletonFields();
   renderManuStepsCheck([], 'IC');
   openModal('modalManu');
 }
@@ -1564,6 +1669,7 @@ function openEditManuModal(id){
   document.getElementById('mQualis').value=m.qualis||'';
   document.getElementById('mJCR').value=m.jcr||'';
   document.getElementById('btnDeleteManu').style.display='inline-flex';
+  loadSkeletonFields(m.skeleton||{});
   renderManuStepsCheck(m.steps||[], m.type);
   openModal('modalManu');
 }
@@ -1579,7 +1685,8 @@ function renderManuStepsCheck(done, type){
 function saveManu(){
   const id=document.getElementById('mId').value||uid();
   const steps=Array.from(document.querySelectorAll('#mStepsCheck input:checked')).map(i=>i.value);
-  const data={id,title:document.getElementById('mTitle').value.trim(),journal:document.getElementById('mJournal').value.trim(),type:document.getElementById('mType').value,authors:document.getElementById('mAuthors').value.trim(),notes:document.getElementById('mNotes').value.trim(),steps,subStatus:document.getElementById('mSubStatus').value,subDate:document.getElementById('mSubDate').value,qualis:document.getElementById('mQualis').value,jcr:document.getElementById('mJCR').value.trim()};
+  const skeleton=readSkeletonFields();
+  const data={id,title:document.getElementById('mTitle').value.trim(),journal:document.getElementById('mJournal').value.trim(),type:document.getElementById('mType').value,authors:document.getElementById('mAuthors').value.trim(),notes:document.getElementById('mNotes').value.trim(),steps,skeleton,subStatus:document.getElementById('mSubStatus').value,subDate:document.getElementById('mSubDate').value,qualis:document.getElementById('mQualis').value,jcr:document.getElementById('mJCR').value.trim()};
   if(!data.title){toast('Informe o título.');return;}
   const ei=manuscripts.findIndex(m=>m.id===id);
   if(ei>=0) Object.assign(manuscripts[ei],data);
