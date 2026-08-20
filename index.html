@@ -3,1052 +3,1184 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gestão de Manuscritos</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+<title>LabResearch · EECA/UFG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0f0f10;
-    --surface: #18181b;
-    --surface2: #222228;
-    --border: #2e2e38;
-    --accent: #c8f04a;
-    --accent2: #7c6af7;
-    --text: #e8e8ec;
-    --text-muted: #6b6b7a;
-    --danger: #f04a4a;
-    --warn: #f0a84a;
-    --ok: #4af09e;
-    --blue: #4a8ff0;
-    --radius: 10px;
-    --gap: 1.5rem;
-    /* research type colors */
-    --ic-color: #f0c44a;
-    --tcc-color: #4acef0;
-    --pos-color: #c44af0;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;
+  --surface:#161b22;
+  --surface2:#21262d;
+  --surface3:#2d333b;
+  --border:#30363d;
+  --border2:#444c56;
+  --text:#e6edf3;
+  --text-muted:#8b949e;
+  --text-dim:#6e7681;
+  --green:#2ea043;
+  --green-bright:#3fb950;
+  --green-dim:#1a4a2e;
+  --yellow:#d29922;
+  --yellow-dim:#4a3800;
+  --orange:#f0883e;
+  --orange-dim:#4a2200;
+  --red:#f85149;
+  --red-dim:#4a1515;
+  --blue:#58a6ff;
+  --blue-dim:#1a3a5c;
+  --purple:#bc8cff;
+  --purple-dim:#2d1f4a;
+  --accent:#2ea043;
+  --mono:'JetBrains Mono',monospace;
+  --sans:'Inter',sans-serif;
+  --radius:8px;
+  --radius-sm:5px;
+  --sidebar:220px;
+}
+html{font-size:14px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;display:flex}
 
-  header { padding: 1.5rem var(--gap) 1.2rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; position: sticky; top: 0; background: var(--bg); z-index: 100; }
-  .logo { font-family: 'DM Serif Display', serif; font-size: 1.5rem; letter-spacing: -0.5px; display: flex; align-items: baseline; gap: 0.5rem; }
-  .logo span { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; }
-  .header-actions { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
-  .sync-indicator { font-family: 'DM Mono', monospace; font-size: 0.7rem; display: flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.75rem; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); transition: all 0.3s; }
-  .sync-indicator.syncing { color: var(--warn); border-color: var(--warn); }
-  .sync-indicator.synced  { color: var(--ok);  border-color: var(--ok); }
-  .sync-indicator.error   { color: var(--danger); border-color: var(--danger); }
-  .spin { display: inline-block; animation: spin 1s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);min-height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100}
+.sidebar-logo{padding:20px 16px 16px;border-bottom:1px solid var(--border)}
+.sidebar-logo .brand{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--green-bright);letter-spacing:0.05em}
+.sidebar-logo .sub{font-size:10px;color:var(--text-dim);margin-top:2px;font-family:var(--mono)}
+.sidebar-nav{flex:1;padding:12px 8px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-sm);cursor:pointer;color:var(--text-muted);font-size:12.5px;font-weight:500;transition:all 0.15s;margin-bottom:2px;border:1px solid transparent;user-select:none}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:var(--green-dim);color:var(--green-bright);border-color:var(--green)33}
+.nav-icon{font-size:14px;width:18px;text-align:center}
+.sidebar-footer{padding:12px;border-top:1px solid var(--border)}
+.sync-status{font-family:var(--mono);font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--text-dim);flex-shrink:0}
+.sync-dot.ok{background:var(--green)}
+.sync-dot.err{background:var(--red);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 
-  /* TYPE FILTER BAR */
-  .type-filter-bar { display: flex; gap: 0.6rem; padding: 0.9rem var(--gap); border-bottom: 1px solid var(--border); flex-wrap: wrap; align-items: center; }
-  .type-filter-label { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-right: 0.2rem; }
-  .type-btn { font-family: 'DM Mono', monospace; font-size: 0.72rem; font-weight: 600; padding: 0.4rem 1rem; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 0.4rem; letter-spacing: 0.3px; }
-  .type-btn:hover { color: var(--text); border-color: var(--text-muted); }
-  .type-btn.active { background: var(--surface2); color: var(--text); border-color: var(--text); }
-  .type-btn[data-type=""] .type-dot { background: var(--text-muted); }
-  .type-btn[data-type="IC"].active { color: var(--ic-color); border-color: var(--ic-color); background: rgba(240,196,74,0.08); }
-  .type-btn[data-type="TCC"].active { color: var(--tcc-color); border-color: var(--tcc-color); background: rgba(74,206,240,0.08); }
-  .type-btn[data-type="Pós-Graduação"].active { color: var(--pos-color); border-color: var(--pos-color); background: rgba(196,74,240,0.08); }
-  .type-btn[data-type="Sem categoria"].active { color: var(--text-muted); border-color: var(--border); }
-  .type-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; background: currentColor; opacity: 0.7; }
-  .type-count { font-size: 0.62rem; opacity: 0.6; background: rgba(255,255,255,0.07); border-radius: 10px; padding: 0.05rem 0.4rem; }
+/* MAIN */
+.main{margin-left:var(--sidebar);flex:1;min-height:100vh;display:flex;flex-direction:column}
+.topbar{padding:16px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface)cc;backdrop-filter:blur(8px);position:sticky;top:0;z-index:50}
+.topbar-title{font-size:15px;font-weight:600;color:var(--text)}
+.topbar-actions{display:flex;gap:8px;align-items:center}
+.content{padding:24px 28px;flex:1}
 
-  /* TYPE BADGE on cards */
-  .type-tag { font-family: 'DM Mono', monospace; font-size: 0.6rem; font-weight: 600; padding: 0.15rem 0.5rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem; letter-spacing: 0.5px; text-transform: uppercase; }
-  .type-tag-IC  { background: rgba(240,196,74,0.15); color: var(--ic-color); }
-  .type-tag-TCC { background: rgba(74,206,240,0.15); color: var(--tcc-color); }
-  .type-tag-pos { background: rgba(196,74,240,0.15); color: var(--pos-color); }
-  .type-tag-none { background: rgba(107,107,122,0.15); color: var(--text-muted); }
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius-sm);font-size:12.5px;font-weight:500;cursor:pointer;border:1px solid;transition:all 0.15s;font-family:var(--sans)}
+.btn-primary{background:var(--green);border-color:var(--green);color:#fff}
+.btn-primary:hover{background:#26892f;border-color:#26892f}
+.btn-secondary{background:transparent;border-color:var(--border2);color:var(--text-muted)}
+.btn-secondary:hover{background:var(--surface2);color:var(--text);border-color:var(--text-dim)}
+.btn-danger{background:transparent;border-color:var(--red)66;color:var(--red)}
+.btn-danger:hover{background:var(--red-dim)}
+.btn-sm{padding:4px 10px;font-size:11.5px}
+.btn-icon{padding:6px 10px}
 
-  /* HELP SIDEBAR */
-  .help-sidebar { width: 280px; flex-shrink: 0; border-right: 1px solid var(--border); padding: 1.25rem; position: sticky; top: 57px; max-height: calc(100vh - 57px); overflow-y: auto; background: var(--bg); transition: width 0.25s ease, opacity 0.25s ease; }
-  .help-sidebar.collapsed { width: 40px; padding: 1rem 0; overflow: hidden; }
-  .help-sidebar-toggle { display: flex; align-items: center; justify-content: center; width: 100%; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; padding: 0.25rem; margin-bottom: 1rem; transition: color 0.15s; }
-  .help-sidebar-toggle:hover { color: var(--text); }
-  .help-sidebar.collapsed .help-sidebar-toggle { margin-bottom: 0; }
-  .help-sidebar.collapsed .help-content { display: none; }
-  .help-sidebar-title { font-family: 'DM Serif Display', serif; font-size: 1rem; font-style: italic; margin-bottom: 1.1rem; color: var(--text); display: flex; align-items: center; gap: 0.5rem; }
-  .help-step { display: flex; gap: 0.75rem; margin-bottom: 1.1rem; align-items: flex-start; }
-  .help-step-num { font-family: 'DM Mono', monospace; font-size: 0.65rem; font-weight: 700; background: var(--accent2); color: #fff; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
-  .help-step-body { font-size: 0.78rem; line-height: 1.6; color: var(--text-muted); }
-  .help-step-body b { color: var(--text); font-weight: 600; }
-  .help-step-body a { color: var(--accent2); text-decoration: none; font-size: 0.74rem; }
-  .help-step-body a:hover { text-decoration: underline; }
-  .help-divider { height: 1px; background: var(--border); margin: 1.1rem 0; }
-  .help-note { font-size: 0.72rem; font-family: 'DM Mono', monospace; color: var(--text-muted); background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.65rem 0.8rem; line-height: 1.6; }
-  .help-note b { color: var(--accent); }
-  .help-configured { background: rgba(74,240,158,0.07); border: 1px solid rgba(74,240,158,0.2); border-radius: 10px; padding: 0.8rem; text-align: center; font-size: 0.78rem; color: var(--ok); font-family: 'DM Mono', monospace; line-height: 1.6; }
-  .help-configured .big-check { font-size: 1.5rem; display: block; margin-bottom: 0.3rem; }
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.card-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-body{padding:16px}
 
-  .settings-modal { max-width: 520px; }
-  .settings-section-title { font-family: 'DM Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
-  .input-with-toggle { position: relative; }
-  .input-with-toggle input { padding-right: 3rem; }
-  .toggle-vis { position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; padding: 0; }
-  .toggle-vis:hover { color: var(--text); }
-  .hint-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.78rem; font-family: 'DM Mono', monospace; color: var(--text-muted); line-height: 1.6; margin-top: 0.5rem; }
-  .hint-box a { color: var(--accent2); text-decoration: none; }
-  .hint-box a:hover { text-decoration: underline; }
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.stat-value{font-family:var(--mono);font-size:26px;font-weight:600;color:var(--text);line-height:1}
+.stat-label{font-size:11px;color:var(--text-muted);margin-top:5px;font-weight:500;text-transform:uppercase;letter-spacing:0.05em}
+.stat-sub{font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-top:4px}
 
-  .stats-bar { display: flex; gap: 0.5rem; padding: 0.85rem var(--gap); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
-  .stat-chip { background: var(--surface); border: 1px solid var(--border); border-radius: 30px; padding: 0.3rem 0.85rem; font-size: 0.74rem; font-family: 'DM Mono', monospace; display: flex; align-items: center; gap: 0.5rem; }
-  .stat-chip .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+/* STUDENT CARDS - DASHBOARD */
+.students-grid{display:flex;flex-direction:column;gap:10px}
+.student-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;display:grid;grid-template-columns:44px 1fr auto auto;align-items:center;gap:14px;cursor:pointer;transition:all 0.15s;position:relative;overflow:hidden}
+.student-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.student-card.risk-verde::before{background:var(--green)}
+.student-card.risk-amarelo::before{background:var(--yellow)}
+.student-card.risk-laranja::before{background:var(--orange)}
+.student-card.risk-vermelho::before{background:var(--red)}
+.student-card.risk-encerrado::before{background:var(--text-dim)}
+.student-card:hover{border-color:var(--border2);background:var(--surface2);transform:translateX(2px)}
+.student-avatar{width:44px;height:44px;border-radius:50%;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:14px;font-weight:600;color:var(--text);border:2px solid var(--border)}
+.student-info{min-width:0}
+.student-name{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.student-meta{display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap}
+.badge{font-family:var(--mono);font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:0.06em}
+.badge-ic{background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue)33}
+.badge-tcc{background:var(--purple-dim);color:var(--purple);border:1px solid var(--purple)33}
+.badge-esp{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange)33}
+.student-milestone{font-size:11.5px;color:var(--text-muted);margin-top:5px;display:flex;align-items:center;gap:6px}
+.student-progress{width:160px}
+.progress-track{height:4px;background:var(--surface3);border-radius:2px;overflow:hidden;margin-bottom:4px}
+.progress-fill{height:100%;border-radius:2px;transition:width 0.4s ease}
+.progress-fill.verde{background:linear-gradient(90deg,var(--green),var(--green-bright))}
+.progress-fill.amarelo{background:linear-gradient(90deg,var(--yellow),#f0c040)}
+.progress-fill.laranja{background:linear-gradient(90deg,var(--orange),#f0a050)}
+.progress-fill.vermelho{background:linear(90deg,var(--red),#ff7070)}
+.progress-fill.encerrado{background:var(--text-dim)}
+.progress-label{font-family:var(--mono);font-size:9.5px;color:var(--text-dim);text-align:right}
+.inactivity-badge{font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:20px;white-space:nowrap}
+.inactivity-ok{background:var(--green-dim);color:var(--green-bright)}
+.inactivity-warn{background:var(--yellow-dim);color:var(--yellow)}
+.inactivity-alert{background:var(--orange-dim);color:var(--orange)}
+.inactivity-crisis{background:var(--red-dim);color:var(--red)}
 
-  .app-layout { flex: 1; display: flex; align-items: flex-start; max-width: 1400px; width: 100%; margin: 0 auto; gap: 0; }
-  main { flex: 1; padding: var(--gap); min-width: 0; }
+/* DETAIL VIEW */
+.detail-view{display:none}
+.detail-view.open{display:block}
+.detail-back{display:inline-flex;align-items:center;gap:6px;color:var(--text-muted);font-size:12.5px;cursor:pointer;margin-bottom:20px;padding:6px 0;border:none;background:none;font-family:var(--sans)}
+.detail-back:hover{color:var(--text)}
+.detail-header{display:flex;align-items:flex-start;gap:18px;margin-bottom:24px}
+.detail-avatar{width:64px;height:64px;border-radius:50%;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:22px;font-weight:700;color:var(--text);border:3px solid var(--border2);flex-shrink:0}
+.detail-info{flex:1}
+.detail-name{font-size:20px;font-weight:700;color:var(--text)}
+.detail-meta{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center}
+.detail-contact{font-size:12px;color:var(--text-muted);margin-top:4px}
 
-  .btn { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 600; border: none; border-radius: var(--radius); cursor: pointer; transition: all 0.15s ease; display: inline-flex; align-items: center; gap: 0.4rem; }
-  .btn-primary { background: var(--accent); color: #0f0f10; padding: 0.6rem 1.2rem; }
-  .btn-primary:hover { background: #d9ff55; transform: translateY(-1px); }
-  .btn-ghost { background: transparent; color: var(--text-muted); padding: 0.55rem 1rem; border: 1px solid var(--border); }
-  .btn-ghost:hover { background: var(--surface); color: var(--text); }
-  .btn-danger { background: transparent; color: var(--danger); padding: 0.4rem 0.75rem; border: 1px solid transparent; font-size: 0.75rem; }
-  .btn-danger:hover { border-color: var(--danger); background: rgba(240,74,74,0.08); }
-  .btn-google { background: #1a73e8; color: #fff; padding: 0.55rem 1rem; }
-  .btn-google:hover { background: #1557b0; }
-  .btn-docx { background: #185abd; color: #fff; padding: 0.55rem 1rem; }
-  .btn-docx:hover { background: #0f3d8a; }
-  .btn-sm { padding: 0.35rem 0.75rem !important; font-size: 0.74rem !important; }
+/* PIPELINE */
+.pipeline-section{margin-bottom:24px}
+.section-title{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.pipeline{display:flex;gap:0;overflow-x:auto;padding-bottom:4px}
+.pipeline-step{flex:1;min-width:90px;display:flex;flex-direction:column;align-items:center;position:relative;cursor:pointer}
+.pipeline-step:not(:last-child)::after{content:'';position:absolute;top:14px;left:calc(50% + 14px);right:calc(-50% + 14px);height:2px;background:var(--border);z-index:0}
+.pipeline-step.done:not(:last-child)::after,.pipeline-step.current:not(:last-child)::after{background:var(--green)66}
+.pipeline-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:var(--mono);position:relative;z-index:1;border:2px solid;transition:all 0.2s}
+.pipeline-step.done .pipeline-dot{background:var(--green);border-color:var(--green);color:#fff}
+.pipeline-step.current .pipeline-dot{background:var(--surface);border-color:var(--blue);color:var(--blue);box-shadow:0 0 0 4px var(--blue-dim)}
+.pipeline-step.pending .pipeline-dot{background:var(--surface2);border-color:var(--border2);color:var(--text-dim)}
+.pipeline-step-label{font-size:9.5px;color:var(--text-muted);text-align:center;margin-top:6px;line-height:1.3;max-width:85px;font-weight:500}
+.pipeline-step.done .pipeline-step-label{color:var(--green)}
+.pipeline-step.current .pipeline-step-label{color:var(--blue)}
 
-  .toolbar { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-  .search-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.55rem 1rem; font-family: 'Syne', sans-serif; font-size: 0.82rem; color: var(--text); flex: 1; min-width: 200px; outline: none; transition: border-color 0.15s; }
-  .search-box:focus { border-color: var(--accent2); }
-  .search-box::placeholder { color: var(--text-muted); }
-  .filter-select { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.55rem 1rem; font-family: 'Syne', sans-serif; font-size: 0.82rem; color: var(--text); outline: none; cursor: pointer; }
+/* MEETINGS LOG */
+.meetings-list{display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto}
+.meeting-entry{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;position:relative}
+.meeting-date{font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-bottom:4px}
+.meeting-text{font-size:12.5px;color:var(--text-muted);line-height:1.5}
+.meeting-del{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:12px;padding:2px 5px;border-radius:3px}
+.meeting-del:hover{background:var(--red-dim);color:var(--red)}
+.meeting-add{display:flex;gap:8px;margin-top:10px}
+.meeting-add textarea{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--sans);font-size:12.5px;padding:8px 10px;resize:vertical;min-height:60px}
+.meeting-add textarea:focus{outline:none;border-color:var(--blue)}
 
-  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.2rem; }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.4rem; transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s; position: relative; overflow: hidden; }
-  .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent-bar, var(--border)); }
-  .card:hover { border-color: var(--accent2); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
-  .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.6rem; }
-  .card-title { font-family: 'DM Serif Display', serif; font-size: 1rem; line-height: 1.3; flex: 1; cursor: pointer; }
-  .card-title:hover { color: var(--accent); }
+/* FORMS / MODALS */
+.overlay{display:none;position:fixed;inset:0;background:#00000099;z-index:200;align-items:center;justify-content:center}
+.overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:10px;width:520px;max-width:94vw;max-height:88vh;overflow-y:auto;display:flex;flex-direction:column}
+.modal-header{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:1}
+.modal-title{font-size:15px;font-weight:600}
+.modal-close{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:18px;padding:2px 6px;border-radius:4px}
+.modal-close:hover{background:var(--surface2);color:var(--text)}
+.modal-body{padding:20px;flex:1}
+.modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+.form-group{margin-bottom:14px}
+.form-label{font-size:11.5px;font-weight:600;color:var(--text-muted);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:0.05em}
+.form-control{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--sans);font-size:13px;padding:8px 10px;transition:border-color 0.15s}
+.form-control:focus{outline:none;border-color:var(--blue)}
+.form-control option{background:var(--surface2)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
-  .badge { font-family: 'DM Mono', monospace; font-size: 0.66rem; font-weight: 500; padding: 0.22rem 0.6rem; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
-  .badge-elaboracao { background: rgba(124,106,247,0.18); color: var(--accent2); }
-  .badge-submetido  { background: rgba(74,143,240,0.18); color: var(--blue); }
-  .badge-revisao    { background: rgba(240,168,74,0.18); color: var(--warn); }
-  .badge-aceito     { background: rgba(74,240,158,0.18); color: var(--ok); }
-  .badge-rejeitado  { background: rgba(240,74,74,0.18); color: var(--danger); }
+/* MANUSCRIPTS VIEW */
+.manu-list{display:flex;flex-direction:column;gap:8px}
+.manu-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;cursor:pointer;transition:all 0.15s}
+.manu-card:hover{border-color:var(--border2);background:var(--surface2)}
+.manu-title{font-size:13.5px;font-weight:600;color:var(--text)}
+.manu-meta{display:flex;gap:8px;margin-top:5px;align-items:center;flex-wrap:wrap}
+.manu-journal{font-size:11.5px;color:var(--text-muted)}
+.steps-row{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
+.step-pill{font-family:var(--mono);font-size:9.5px;padding:2px 8px;border-radius:12px;border:1px solid}
+.step-done{background:var(--green-dim);border-color:var(--green)44;color:var(--green-bright)}
+.step-wip{background:var(--blue-dim);border-color:var(--blue)44;color:var(--blue)}
+.step-pend{background:var(--surface3);border-color:var(--border);color:var(--text-dim)}
 
-  .card-meta { font-size: 0.73rem; color: var(--text-muted); font-family: 'DM Mono', monospace; margin-bottom: 0.8rem; display: flex; flex-direction: column; gap: 0.2rem; }
-  .skeleton-badge { font-size: 0.62rem; font-family: 'DM Mono', monospace; padding: 0.18rem 0.55rem; border-radius: 4px; margin-bottom: 0.75rem; display: inline-block; }
-  .skeleton-done { background: rgba(74,240,158,0.12); color: var(--ok); }
-  .skeleton-pending { background: rgba(240,168,74,0.12); color: var(--warn); }
-  .progress-wrap { margin-bottom: 0.85rem; }
-  .progress-label { display: flex; justify-content: space-between; font-size: 0.68rem; font-family: 'DM Mono', monospace; color: var(--text-muted); margin-bottom: 0.3rem; }
-  .progress-bar { height: 5px; background: var(--surface2); border-radius: 10px; overflow: hidden; }
-  .progress-fill { height: 100%; border-radius: 10px; background: var(--accent); transition: width 0.4s ease; }
-  .sections-mini { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 0.9rem; }
-  .sec-pill { font-size: 0.6rem; font-family: 'DM Mono', monospace; padding: 0.18rem 0.45rem; border-radius: 4px; border: 1px solid var(--border); color: var(--text-muted); }
-  .sec-pill.done { background: rgba(74,240,158,0.12); color: var(--ok); border-color: transparent; }
-  .sec-pill.progress { background: rgba(124,106,247,0.12); color: var(--accent2); border-color: transparent; }
-  .sec-pill.review { background: rgba(240,168,74,0.12); color: var(--warn); border-color: transparent; }
-  .card-actions { display: flex; justify-content: flex-end; margin-top: 0.75rem; gap: 0.5rem; flex-wrap: wrap; }
+/* ALERTS PANEL */
+.alerts-list{display:flex;flex-direction:column;gap:8px}
+.alert-item{display:flex;align-items:flex-start;gap:12px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px}
+.alert-dot-wrap{padding-top:3px}
+.alert-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.alert-text{font-size:12.5px;color:var(--text-muted);line-height:1.5}
+.alert-text strong{color:var(--text)}
+.empty-state{text-align:center;padding:48px 20px;color:var(--text-dim);font-size:13px}
+.empty-icon{font-size:32px;margin-bottom:12px}
 
-  .empty-state { grid-column: 1/-1; text-align: center; padding: 5rem 2rem; color: var(--text-muted); }
-  .empty-state .big-icon { font-size: 3rem; margin-bottom: 1rem; }
-  .empty-state h3 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; font-style: italic; margin-bottom: 0.5rem; color: var(--text); }
-  .empty-state p { font-size: 0.85rem; line-height: 1.6; }
+/* CALENDAR */
+.calendar-list{display:flex;flex-direction:column;gap:8px}
+.cal-item{display:flex;gap:14px;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px}
+.cal-date{font-family:var(--mono);font-size:11px;color:var(--text-muted);width:72px;flex-shrink:0}
+.cal-label{font-size:13px;font-weight:500;color:var(--text)}
+.cal-sub{font-size:11.5px;color:var(--text-muted);margin-top:2px}
+.cal-past{opacity:0.45}
+.cal-soon{border-color:var(--orange)66}
 
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 200; align-items: flex-start; justify-content: center; padding: 2rem 1rem; overflow-y: auto; }
-  .modal-overlay.open { display: flex; }
-  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 780px; flex-shrink: 0; margin: auto; animation: slideUp 0.2s ease; }
-  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-  .modal-header { padding: 1.5rem 1.5rem 0; display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.25rem; }
-  .modal-title { font-family: 'DM Serif Display', serif; font-size: 1.35rem; }
-  .modal-close { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text-muted); padding: 0.35rem 0.65rem; cursor: pointer; font-size: 1rem; transition: all 0.1s; }
-  .modal-close:hover { color: var(--text); background: var(--border); }
-  .modal-body { padding: 0 1.5rem 1.5rem; }
-
-  .tab-bar { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 1.25rem; }
-  .tab-btn { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 600; background: none; border: none; color: var(--text-muted); padding: 0.65rem 1.1rem; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; display: flex; align-items: center; gap: 0.4rem; }
-  .tab-btn:hover { color: var(--text); }
-  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
-
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
-  .form-full { grid-column: 1/-1; }
-  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
-  label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text-muted); font-family: 'DM Mono', monospace; }
-  input[type="text"], input[type="date"], textarea, select { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem 0.9rem; font-family: 'Syne', sans-serif; font-size: 0.83rem; color: var(--text); outline: none; transition: border-color 0.15s; width: 100%; }
-  input:focus, textarea:focus, select:focus { border-color: var(--accent2); }
-  textarea { resize: vertical; min-height: 70px; }
-  select option { background: var(--surface2); }
-
-  /* highlight the type select when a value is chosen */
-  select#fType option[value="IC"]:checked, select#fType:has(option[value="IC"]:checked) { color: var(--ic-color); }
-
-  .skeleton-fields { display: flex; flex-direction: column; gap: 1rem; }
-  .skeleton-field-group { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-  .skeleton-field-header { padding: 0.75rem 1rem; background: rgba(124,106,247,0.07); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.6rem; }
-  .skeleton-field-number { font-family: 'DM Mono', monospace; font-size: 0.65rem; background: var(--accent2); color: #fff; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600; }
-  .skeleton-field-label { font-size: 0.85rem; font-weight: 700; }
-  .skeleton-field-hint { font-size: 0.7rem; font-family: 'DM Mono', monospace; color: var(--text-muted); margin-top: 1px; }
-  .skeleton-field-group textarea { border: none; border-radius: 0; background: transparent; padding: 0.9rem 1rem; }
-  .skeleton-field-group textarea:focus { border-color: transparent; background: rgba(124,106,247,0.04); }
-
-  .sections-block { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 1rem; }
-  .sections-block-title { font-size: 0.7rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; font-family: 'DM Mono', monospace; color: var(--text-muted); padding: 0.7rem 1rem; background: var(--surface2); border-bottom: 1px solid var(--border); }
-  .section-row { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 0.75rem; padding: 0.7rem 1rem; border-bottom: 1px solid var(--border); transition: background 0.1s; }
-  .section-row:last-child { border-bottom: none; }
-  .section-row:hover { background: var(--surface2); }
-  .section-name { font-size: 0.83rem; font-weight: 600; }
-  .section-note-toggle { font-size: 0.7rem; font-family: 'DM Mono', monospace; color: var(--accent2); cursor: pointer; background: none; border: none; padding: 0; }
-  .section-note-toggle:hover { text-decoration: underline; }
-  .status-select { font-size: 0.7rem; padding: 0.28rem 0.55rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'Syne', sans-serif; cursor: pointer; }
-  .section-note-area { grid-column: 1/-1; padding-top: 0.25rem; display: none; }
-  .section-note-area.open { display: block; }
-  .section-note-area textarea { min-height: 55px; font-size: 0.8rem; }
-
-  .detail-view { display: none; }
-  .detail-view.open { display: block; }
-  .list-view.hidden { display: none; }
-  .detail-back { display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); font-size: 0.8rem; font-family: 'DM Mono', monospace; cursor: pointer; margin-bottom: 1.5rem; background: none; border: none; padding: 0; transition: color 0.15s; }
-  .detail-back:hover { color: var(--text); }
-  .detail-title { font-family: 'DM Serif Display', serif; font-size: 1.9rem; line-height: 1.2; margin-bottom: 0.5rem; }
-  .detail-meta { font-family: 'DM Mono', monospace; font-size: 0.73rem; color: var(--text-muted); display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.2rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--border); }
-  .detail-meta span b { color: var(--text); font-weight: 500; }
-
-  .action-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem; padding: 1rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; align-items: center; }
-  .action-row-label { font-size: 0.72rem; font-family: 'DM Mono', monospace; color: var(--text-muted); flex-shrink: 0; }
-
-  .skeleton-detail-block { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 1.5rem; overflow: hidden; }
-  .skeleton-detail-header { padding: 1rem 1.2rem; background: rgba(124,106,247,0.06); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-  .skeleton-detail-title { font-weight: 700; font-size: 0.95rem; }
-  .skeleton-item { padding: 0.9rem 1.2rem; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.35rem; }
-  .skeleton-item:last-child { border-bottom: none; }
-  .skeleton-item-label { font-size: 0.68rem; font-family: 'DM Mono', monospace; color: var(--accent2); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
-  .skeleton-item-value { font-size: 0.85rem; line-height: 1.7; white-space: pre-wrap; color: var(--text); }
-  .skeleton-item-empty { font-size: 0.82rem; color: var(--text-muted); font-style: italic; }
-
-  .detail-sections { display: flex; flex-direction: column; gap: 1rem; }
-  .detail-section-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: border-color 0.15s; }
-  .detail-section-card:hover { border-color: var(--accent2); }
-  .detail-section-header { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 1.2rem; gap: 1rem; cursor: pointer; }
-  .detail-section-name { font-weight: 700; font-size: 0.88rem; display: flex; align-items: center; gap: 0.6rem; }
-  .status-indicator { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-  .si-none     { background: var(--border); }
-  .si-progress { background: var(--accent2); box-shadow: 0 0 6px var(--accent2); }
-  .si-review   { background: var(--warn); box-shadow: 0 0 6px var(--warn); }
-  .si-done     { background: var(--ok); box-shadow: 0 0 6px var(--ok); }
-  .detail-section-body { padding: 0 1.2rem 1.2rem; border-top: 1px solid var(--border); display: none; }
-  .detail-section-body.open { display: block; }
-  .detail-section-body .form-group { margin-top: 0.75rem; }
-
-  .detail-edit-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; justify-content: flex-end; padding-top: 1.2rem; border-top: 1px solid var(--border); flex-wrap: wrap; }
-
-  /* FLOATING NAV */
-  .fab-home { position: fixed; bottom: 1.5rem; left: 1.5rem; z-index: 300; background: var(--surface2); border: 1px solid var(--border); border-radius: 30px; color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 0.75rem; padding: 0.5rem 1rem; cursor: pointer; display: none; align-items: center; gap: 0.4rem; transition: all 0.15s; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
-  .fab-home:hover { background: var(--surface); color: var(--text); border-color: var(--accent2); }
-  .fab-home.visible { display: flex; }
-
-  /* SECTION DIVIDER NAV */
-  .nav-divider { display: flex; align-items: center; gap: 1rem; margin: 1.5rem 0; }
-  .nav-divider-line { flex: 1; height: 1px; background: var(--border); }
-  .nav-divider-btn { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--text-muted); background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 0.3rem 0.85rem; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
-  .nav-divider-btn:hover { color: var(--text); border-color: var(--accent2); }
-
-  .toast-container { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999; display: flex; flex-direction: column; gap: 0.5rem; }
-  .toast { background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 8px; padding: 0.7rem 1rem; font-size: 0.8rem; font-family: 'DM Mono', monospace; animation: fadeInRight 0.2s ease; max-width: 280px; }
-  @keyframes fadeInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-
-  @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .cards-grid { grid-template-columns: 1fr; } .detail-meta { gap: 0.75rem; } }
+/* TOAST */
+.toast-wrap{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px}
+.toast{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 16px;font-size:12.5px;color:var(--text);box-shadow:0 8px 32px #00000066;animation:fadeIn 0.2s ease;font-family:var(--sans)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.scroll-hint{font-size:9.5px;color:var(--text-dim);font-family:var(--mono);padding-left:4px;margin-top:2px}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">Manuscritos <span>UFG</span></div>
-  <div class="header-actions">
-    <div class="sync-indicator" id="syncIndicator" onclick="openSettings()" title="Configurações de sincronização" style="cursor:pointer">
-      <span id="syncDot">○</span><span id="syncLabel">Configurar sync</span>
-    </div>
-    <button class="btn btn-ghost" onclick="syncNow()" title="Sincronizar agora">⟳ Sync</button>
-    <button class="btn btn-ghost" onclick="exportData()">⬇ Exportar JSON</button>
-    <button class="btn btn-ghost" onclick="triggerImport()">⬆ Importar JSON</button>
-    <button class="btn btn-ghost" onclick="openSettings()">⚙ Config</button>
-    <button class="btn btn-primary" onclick="openNewModal()">+ Novo manuscrito</button>
-    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">LAB/RESEARCH</div>
+    <div class="sub">EECA · UFG</div>
   </div>
-</header>
-
-<div class="stats-bar" id="statsBar"></div>
-
-<!-- ★ TYPE FILTER BAR ★ -->
-<div class="type-filter-bar" id="typeFilterBar"></div>
-
-<div class="app-layout">
-<aside class="help-sidebar" id="helpSidebar">
-  <button class="help-sidebar-toggle" onclick="toggleSidebar()" id="sidebarToggleBtn" title="Recolher/expandir">◀</button>
-  <div class="help-content" id="helpContent"></div>
+  <nav class="sidebar-nav">
+    <div class="nav-item active" onclick="showView('dashboard')" id="nav-dashboard">
+      <span class="nav-icon">⬡</span> Dashboard
+    </div>
+    <div class="nav-item" onclick="showView('orientandos')" id="nav-orientandos">
+      <span class="nav-icon">◎</span> Orientandos
+    </div>
+    <div class="nav-item" onclick="showView('manuscritos')" id="nav-manuscritos">
+      <span class="nav-icon">◈</span> Manuscritos
+    </div>
+    <div class="nav-item" onclick="showView('calendario')" id="nav-calendario">
+      <span class="nav-icon">◷</span> Calendário
+    </div>
+    <div class="nav-item" onclick="showView('alertas')" id="nav-alertas">
+      <span class="nav-icon">◬</span> Alertas <span id="alert-count" style="margin-left:auto;font-family:var(--mono);font-size:9px;background:var(--red);color:#fff;border-radius:10px;padding:1px 5px;display:none"></span>
+    </div>
+    <div class="nav-item" onclick="showView('configuracoes')" id="nav-configuracoes" style="margin-top:auto">
+      <span class="nav-icon">⚙</span> Configurações
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sync-status"><span class="sync-dot" id="syncDot"></span><span id="syncText">Verificando...</span></div>
+  </div>
 </aside>
-<main>
-  <div class="list-view" id="listView">
-    <div class="toolbar">
-      <input class="search-box" type="text" id="searchInput" placeholder="Buscar por título ou periódico..." autocomplete="off" oninput="renderList()">
-      <select class="filter-select" id="filterStatus" onchange="renderList()">
-        <option value="">Todos os status</option>
-        <option value="Em elaboração">Em elaboração</option>
-        <option value="Submetido">Submetido</option>
-        <option value="Em revisão">Em revisão</option>
-        <option value="Aceito">Aceito</option>
-        <option value="Rejeitado">Rejeitado</option>
-      </select>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbarTitle">Dashboard</div>
+    <div class="topbar-actions">
+      <button class="btn btn-secondary btn-sm" onclick="syncNow()">↻ Sincronizar</button>
+      <button class="btn btn-primary btn-sm" id="topbarAdd" onclick="openAddStudentModal()">+ Orientando</button>
     </div>
-    <div class="cards-grid" id="cardsGrid"></div>
   </div>
 
-  <div class="detail-view" id="detailView">
-    <button class="detail-back" onclick="closeDetail()">← Voltar à lista</button>
-    <div id="detailContent"></div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div id="view-dashboard">
+      <div class="stats-row" id="statsRow"></div>
+      <div class="students-grid" id="dashboardGrid"></div>
+    </div>
+
+    <!-- ORIENTANDOS (lista filtrada) -->
+    <div id="view-orientandos" style="display:none">
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+        <button class="btn btn-secondary btn-sm" onclick="filterStudents('todos')" id="f-todos">Todos</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterStudents('IC')" id="f-IC">IC</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterStudents('TCC')" id="f-TCC">TCC Graduação</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterStudents('ESP')" id="f-ESP">TCC Especialização</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterStudents('encerrado')" id="f-enc">Encerrados</button>
+      </div>
+      <div class="students-grid" id="orientandosGrid"></div>
+    </div>
+
+    <!-- DETAIL do orientando -->
+    <div id="view-student-detail" style="display:none">
+      <button class="detail-back" onclick="backFromDetail()">← Voltar</button>
+      <div id="studentDetailContent"></div>
+    </div>
+
+    <!-- MANUSCRITOS -->
+    <div id="view-manuscritos" style="display:none">
+      <div style="margin-bottom:14px;display:flex;gap:8px">
+        <button class="btn btn-secondary btn-sm" onclick="filterManu('todos')" id="fm-todos">Todos</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterManu('IC')" id="fm-IC">IC</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterManu('TCC')" id="fm-TCC">TCC Grad</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterManu('ESP')" id="fm-ESP">TCC Esp</button>
+        <button class="btn btn-primary btn-sm" onclick="openAddManuModal()" style="margin-left:auto">+ Manuscrito</button>
+      </div>
+      <div class="manu-list" id="manuList"></div>
+    </div>
+
+    <!-- MANUSCRITO DETAIL -->
+    <div id="view-manu-detail" style="display:none">
+      <button class="detail-back" onclick="backFromManuDetail()">← Voltar</button>
+      <div id="manuDetailContent"></div>
+    </div>
+
+    <!-- CALENDÁRIO -->
+    <div id="view-calendario" style="display:none">
+      <div class="calendar-list" id="calendarList"></div>
+    </div>
+
+    <!-- ALERTAS -->
+    <div id="view-alertas" style="display:none">
+      <div class="alerts-list" id="alertsList"></div>
+    </div>
+
+    <!-- CONFIGURAÇÕES -->
+    <div id="view-configuracoes" style="display:none">
+      <div class="card" style="max-width:480px">
+        <div class="card-header"><span style="font-size:13px;font-weight:600">Sincronização — GitHub Gist</span></div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-label">Gist ID</label>
+            <input type="text" class="form-control" id="cfgGistId" placeholder="e5d141b42a27db388a7d1f684c78e3f0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">GitHub Token (PAT)</label>
+            <input type="password" class="form-control" id="cfgToken" placeholder="ghp_...">
+          </div>
+          <div style="display:flex;gap:8px;margin-top:4px">
+            <button class="btn btn-primary" onclick="saveConfig()">Salvar configuração</button>
+            <button class="btn btn-secondary" onclick="testGist()">Testar conexão</button>
+          </div>
+          <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px">
+            <div class="form-label" style="margin-bottom:10px">Inatividade — dias para alerta</div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input type="number" class="form-control" id="cfgWarnDays" style="width:80px" value="14">
+              <span style="color:var(--text-muted);font-size:12px">dias → alerta amarelo</span>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+              <input type="number" class="form-control" id="cfgAlertDays" style="width:80px" value="30">
+              <span style="color:var(--text-muted);font-size:12px">dias → alerta vermelho</span>
+            </div>
+            <button class="btn btn-secondary" style="margin-top:10px" onclick="saveConfig()">Salvar</button>
+          </div>
+          <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px">
+            <div class="form-label" style="margin-bottom:8px">Exportar / Importar JSON</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-secondary" onclick="exportJSON()">⬇ Exportar</button>
+              <label class="btn btn-secondary" style="cursor:pointer">⬆ Importar<input type="file" accept=".json" style="display:none" onchange="importJSON(this)"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </main>
 
-<!-- MODAL -->
-<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+<!-- MODAL: Adicionar/Editar Orientando -->
+<div class="overlay" id="modalStudent">
   <div class="modal">
     <div class="modal-header">
-      <h2 class="modal-title" id="modalTitle">Novo manuscrito</h2>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <span class="modal-title" id="modalStudentTitle">Novo Orientando</span>
+      <button class="modal-close" onclick="closeModal('modalStudent')">✕</button>
     </div>
     <div class="modal-body">
-      <div class="tab-bar">
-        <button class="tab-btn active" onclick="switchTab('info')" id="tab-info">📋 Informações</button>
-        <button class="tab-btn" onclick="switchTab('skeleton')" id="tab-skeleton">🦴 Esqueleto</button>
-        <button class="tab-btn" onclick="switchTab('writing')" id="tab-writing">✍ Etapas</button>
-      </div>
-
-      <!-- INFO -->
-      <div class="tab-panel active" id="panel-info">
-        <div class="form-grid">
-          <div class="form-group form-full">
-            <label>Título do manuscrito</label>
-            <input type="text" id="fTitle" placeholder="Ex: Estimativa de biomassa no Cerrado usando QAOA...">
-          </div>
-          <div class="form-group">
-            <label>Periódico alvo</label>
-            <input type="text" id="fJournal" placeholder="Ex: Environmental Modelling & Software">
-          </div>
-          <div class="form-group">
-            <label>Status geral</label>
-            <select id="fStatus">
-              <option>Em elaboração</option><option>Submetido</option><option>Em revisão</option><option>Aceito</option><option>Rejeitado</option>
-            </select>
-          </div>
-          <!-- ★ NOVO CAMPO: Tipo de pesquisa ★ -->
-          <div class="form-group">
-            <label>Tipo de pesquisa</label>
-            <select id="fType">
-              <option value="">— Sem categoria —</option>
-              <option value="IC">IC — Iniciação Científica</option>
-              <option value="TCC">TCC — Trabalho de Conclusão de Curso</option>
-              <option value="Pós-Graduação">Pós-Graduação</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Deadline de submissão</label>
-            <input type="date" id="fDeadline">
-          </div>
-          <div class="form-group">
-            <label>Coautores</label>
-            <input type="text" id="fCoauthors" placeholder="Nomes separados por vírgula">
-          </div>
-          <div class="form-group form-full">
-            <label>Notas gerais</label>
-            <textarea id="fNotes" placeholder="Observações, decisões, pendências..."></textarea>
-          </div>
+      <input type="hidden" id="sId">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nome completo</label>
+          <input type="text" class="form-control" id="sName" placeholder="Nome do orientando">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Matrícula</label>
+          <input type="text" class="form-control" id="sMatricula" placeholder="202101234">
         </div>
       </div>
-
-      <!-- SKELETON -->
-      <div class="tab-panel" id="panel-skeleton">
-        <div class="skeleton-fields">
-          <div class="skeleton-field-group">
-            <div class="skeleton-field-header"><div class="skeleton-field-number">1</div><div><div class="skeleton-field-label">Pergunta de Pesquisa</div><div class="skeleton-field-hint">O problema central que o estudo responde</div></div></div>
-            <textarea id="sk-question" rows="3" placeholder="Qual é a pergunta central que este manuscrito responde?"></textarea>
-          </div>
-          <div class="skeleton-field-group">
-            <div class="skeleton-field-header"><div class="skeleton-field-number">2</div><div><div class="skeleton-field-label">Hipótese</div><div class="skeleton-field-hint">A resposta provisória que será testada</div></div></div>
-            <textarea id="sk-hypothesis" rows="3" placeholder="Qual hipótese o estudo testa?"></textarea>
-          </div>
-          <div class="skeleton-field-group">
-            <div class="skeleton-field-header"><div class="skeleton-field-number">3</div><div><div class="skeleton-field-label">Objetivo Geral</div><div class="skeleton-field-hint">O propósito amplo do trabalho</div></div></div>
-            <textarea id="sk-obj-general" rows="2" placeholder="Desenvolver / avaliar / propor..."></textarea>
-          </div>
-          <div class="skeleton-field-group">
-            <div class="skeleton-field-header"><div class="skeleton-field-number">4</div><div><div class="skeleton-field-label">Objetivos Específicos</div><div class="skeleton-field-hint">Liste um por linha</div></div></div>
-            <textarea id="sk-obj-specific" rows="4" placeholder="(i) Implementar...&#10;(ii) Comparar...&#10;(iii) Avaliar..."></textarea>
-          </div>
-          <div class="skeleton-field-group">
-            <div class="skeleton-field-header"><div class="skeleton-field-number">5</div><div><div class="skeleton-field-label">Estrutura da Revisão de Literatura</div><div class="skeleton-field-hint">Blocos temáticos que serão cobertos</div></div></div>
-            <textarea id="sk-lit" rows="4" placeholder="1. Tema A&#10;2. Tema B&#10;3. Lacuna identificada..."></textarea>
-          </div>
-          <div class="skeleton-field-group">
-            <div class="skeleton-field-header"><div class="skeleton-field-number">6</div><div><div class="skeleton-field-label">Estrutura de Materiais e Métodos</div><div class="skeleton-field-hint">Subseções previstas</div></div></div>
-            <textarea id="sk-mm" rows="4" placeholder="2.1 Área de estudo&#10;2.2 Dados utilizados&#10;2.3 Pipeline metodológico..."></textarea>
-          </div>
-          <div class="skeleton-field-group">
-            <div class="skeleton-field-header"><div class="skeleton-field-number">7</div><div><div class="skeleton-field-label">Estrutura de Resultados</div><div class="skeleton-field-hint">O que será apresentado e em que ordem</div></div></div>
-            <textarea id="sk-results" rows="4" placeholder="3.1 Resultado A (tabela/figura esperada)&#10;3.2 Resultado B..."></textarea>
-          </div>
-          <div class="skeleton-field-group">
-            <div class="skeleton-field-header"><div class="skeleton-field-number">8</div><div><div class="skeleton-field-label">Estrutura de Discussão</div><div class="skeleton-field-hint">Pontos que serão interpretados e confrontados com a literatura</div></div></div>
-            <textarea id="sk-discussion" rows="4" placeholder="4.1 Interpretação do resultado A&#10;4.2 Comparação com literatura&#10;4.3 Limitações..."></textarea>
-          </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Modalidade</label>
+          <select class="form-control" id="sType" onchange="updatePipelineOptions()">
+            <option value="IC">IC — Iniciação Científica</option>
+            <option value="TCC">TCC — Graduação</option>
+            <option value="ESP">TCC — Especialização</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Etapa atual</label>
+          <select class="form-control" id="sMilestone"></select>
         </div>
       </div>
-
-      <!-- WRITING -->
-      <div class="tab-panel" id="panel-writing">
-        <div class="sections-block">
-          <div class="sections-block-title">Progresso das seções de escrita</div>
-          <div id="sectionsEditor"></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">E-mail</label>
+          <input type="email" class="form-control" id="sEmail" placeholder="aluno@discente.ufg.br">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contato (WhatsApp)</label>
+          <input type="text" class="form-control" id="sPhone" placeholder="(62) 9...">
         </div>
       </div>
-
-      <div style="display:flex;justify-content:flex-end;gap:0.75rem;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)">
-        <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
-        <button class="btn btn-primary" onclick="saveManuscript()">Salvar</button>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Início da orientação</label>
+          <input type="date" class="form-control" id="sStart">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Prazo previsto de conclusão</label>
+          <input type="date" class="form-control" id="sEnd">
+        </div>
       </div>
+      <div class="form-group">
+        <label class="form-label">Tema / Título provisório</label>
+        <input type="text" class="form-control" id="sTheme" placeholder="Título ou descrição do tema">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Agência / Bolsa</label>
+        <input type="text" class="form-control" id="sGrant" placeholder="CNPQ PIBIC, FAPEG, Voluntário...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Data da última reunião</label>
+        <input type="date" class="form-control" id="sLastMeet">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Observações</label>
+        <textarea class="form-control" id="sNotes" rows="3" placeholder="Contexto, bloqueios, próximos passos..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="btnDeleteStudent" onclick="deleteStudent()" style="display:none;margin-right:auto">Excluir</button>
+      <button class="btn btn-secondary" onclick="closeModal('modalStudent')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveStudent()">Salvar</button>
     </div>
   </div>
 </div>
 
-<button class="fab-home" id="fabHome" onclick="closeDetail()">← Lista</button>
-
-<!-- SETTINGS MODAL -->
-<div class="modal-overlay" id="settingsOverlay" onclick="handleSettingsOverlay(event)">
-  <div class="modal settings-modal">
+<!-- MODAL: Manuscrito -->
+<div class="overlay" id="modalManu">
+  <div class="modal">
     <div class="modal-header">
-      <h2 class="modal-title">⚙ Sincronização GitHub Gist</h2>
-      <button class="modal-close" onclick="closeSettings()">✕</button>
+      <span class="modal-title" id="modalManuTitle">Novo Manuscrito</span>
+      <button class="modal-close" onclick="closeModal('modalManu')">✕</button>
     </div>
     <div class="modal-body">
-      <div style="margin-bottom:1.25rem">
-        <div class="settings-section-title">Como configurar</div>
-        <div class="hint-box">
-          1. Crie um Gist secreto em <a href="https://gist.github.com" target="_blank">gist.github.com</a> com um arquivo <b>manuscritos.json</b> contendo <b>[]</b><br>
-          2. Copie o ID do Gist (sequência no final da URL)<br>
-          3. Gere um token em <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a> com escopo <b>gist</b><br>
-          4. Cole os dois abaixo — ficam salvos apenas neste navegador
+      <input type="hidden" id="mId">
+      <div class="form-group">
+        <label class="form-label">Título do manuscrito</label>
+        <input type="text" class="form-control" id="mTitle" placeholder="Título provisório ou definitivo">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Periódico alvo</label>
+          <input type="text" class="form-control" id="mJournal" placeholder="Revista / Congresso">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tipo</label>
+          <select class="form-control" id="mType">
+            <option value="IC">IC</option>
+            <option value="TCC">TCC Graduação</option>
+            <option value="ESP">TCC Especialização</option>
+            <option value="proprio">Próprio</option>
+          </select>
         </div>
       </div>
-      <div class="form-group" style="margin-bottom:1rem">
-        <label>ID do Gist</label>
-        <input type="text" id="cfgGistId" placeholder="e5d141b42a27db388a7d1f684c78e3f0" autocomplete="off">
+      <div class="form-group">
+        <label class="form-label">Orientando(s) vinculado(s)</label>
+        <input type="text" class="form-control" id="mAuthors" placeholder="Nomes dos autores / orientandos">
       </div>
-      <div class="form-group" style="margin-bottom:1.25rem">
-        <label>Personal Access Token</label>
-        <div class="input-with-toggle">
-          <input type="password" id="cfgToken" placeholder="ghp_..." autocomplete="new-password">
-          <button class="toggle-vis" onclick="toggleTokenVis()">👁</button>
-        </div>
+      <div class="form-group">
+        <label class="form-label">Etapas concluídas</label>
+        <div id="mStepsCheck" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px"></div>
       </div>
-      <div style="display:flex;gap:.75rem;justify-content:space-between;align-items:center;flex-wrap:wrap">
-        <button class="btn btn-danger" onclick="clearCredentials()">🗑 Remover credenciais</button>
-        <div style="display:flex;gap:.75rem">
-          <button class="btn btn-ghost" onclick="closeSettings()">Cancelar</button>
-          <button class="btn btn-primary" onclick="saveSettings()">Salvar e sincronizar</button>
-        </div>
+      <div class="form-group">
+        <label class="form-label">Notas</label>
+        <textarea class="form-control" id="mNotes" rows="3" placeholder="Status, revisores, decisões..."></textarea>
       </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="btnDeleteManu" onclick="deleteManu()" style="display:none;margin-right:auto">Excluir</button>
+      <button class="btn btn-secondary" onclick="closeModal('modalManu')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveManu()">Salvar</button>
     </div>
   </div>
 </div>
 
-<div class="toast-container" id="toastContainer"></div>
+<!-- TOAST -->
+<div class="toast-wrap" id="toastWrap"></div>
 
 <script>
-  const SECTIONS = ['Resumo','Introdução','Revisão de Literatura','Materiais e Métodos','Resultados','Discussão','Conclusão'];
-  const STATUS_OPTS = ['Não iniciado','Em andamento','Em revisão','Concluído'];
-  const STATUS_COLORS = { 'Em elaboração':'#7c6af7','Submetido':'#4a8ff0','Em revisão':'#f0a84a','Aceito':'#4af09e','Rejeitado':'#f04a4a' };
+// ─── CONFIG ───────────────────────────────────────────────────
+const DEFAULT_GIST_ID = 'e5d141b42a27db388a7d1f684c78e3f0';
+const GIST_FILENAME_S = 'labresearch_students.json';
+const GIST_FILENAME_M = 'labresearch_manuscripts.json';
 
-  // ★ Research types configuration
-  const RESEARCH_TYPES = [
-    { value: '',              label: 'Todos',         emoji: '📚' },
-    { value: 'IC',            label: 'IC',            emoji: '🔬' },
-    { value: 'TCC',           label: 'TCC',           emoji: '🎓' },
-    { value: 'Pós-Graduação', label: 'Pós-Grad',      emoji: '🏛️' },
-    { value: '__none__',      label: 'Sem categoria',  emoji: '📄' },
-  ];
-  const TYPE_COLORS = { 'IC':'#f0c44a', 'TCC':'#4acef0', 'Pós-Graduação':'#c44af0' };
+let cfg = {
+  gistId: DEFAULT_GIST_ID,
+  token: '',
+  warnDays: 14,
+  alertDays: 30
+};
 
-  const SKELETON_FIELDS = [
-    { id:'question',    label:'Pergunta de Pesquisa' },
-    { id:'hypothesis',  label:'Hipótese' },
-    { id:'objGeneral',  label:'Objetivo Geral' },
-    { id:'objSpecific', label:'Objetivos Específicos' },
-    { id:'lit',         label:'Estrutura da Revisão de Literatura' },
-    { id:'mm',          label:'Estrutura de Materiais e Métodos' },
-    { id:'results',     label:'Estrutura de Resultados' },
-    { id:'discussion',  label:'Estrutura de Discussão' }
-  ];
-  const SK_EL_IDS = { question:'sk-question', hypothesis:'sk-hypothesis', objGeneral:'sk-obj-general', objSpecific:'sk-obj-specific', lit:'sk-lit', mm:'sk-mm', results:'sk-results', discussion:'sk-discussion' };
+// ─── PIPELINES ────────────────────────────────────────────────
+const PIPELINES = {
+  IC:  ['Plano de Trabalho','Coleta de Dados','Análise','Relatório Parcial','Relatório Final PIBIC/PIVIC','Encerrado'],
+  TCC: ['Proposta','TCC 1 (Banca)','Correções Pós-TCC1','Coleta / Análise','Escrita','TCC 2 (Defesa)','Entregue'],
+  ESP: ['Projeto','Escrita','Defesa','Entregue']
+};
 
-  let manuscripts = [];
-  let editingId = null;
-  let openSections = {};
-  let currentDetailId = null;
-  let currentTypeFilter = ''; // ★ active type filter
+const MANU_STEPS = ['Resumo','Introdução','Materiais e Métodos','Resultados','Discussão','Conclusão','Referências','Submetido'];
 
-  function load() { try { manuscripts = JSON.parse(localStorage.getItem('mss_data')||'[]'); } catch(e) { manuscripts=[]; } }
-  function save() { localStorage.setItem('mss_data', JSON.stringify(manuscripts)); syncToGist(); }
-  function genId() { return Date.now().toString(36)+Math.random().toString(36).slice(2); }
-  function getProgress(m) { return Math.round(m.sections.filter(s=>s.status==='Concluído').length/m.sections.length*100); }
-  function skeletonComplete(m) { return SKELETON_FIELDS.some(f=>m.skeleton&&m.skeleton[f.id]&&m.skeleton[f.id].trim()); }
-  function badgeClass(s) { return {'Em elaboração':'badge-elaboracao','Submetido':'badge-submetido','Em revisão':'badge-revisao','Aceito':'badge-aceito','Rejeitado':'badge-rejeitado'}[s]||'badge-elaboracao'; }
-  function pillClass(s) { if(s==='Concluído') return 'done'; if(s==='Em andamento') return 'progress'; if(s==='Em revisão') return 'review'; return ''; }
-  function daysLeft(d) { if(!d) return null; return Math.ceil((new Date(d+'T12:00:00')-new Date())/86400000); }
-  function xe(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+// ─── DATA ─────────────────────────────────────────────────────
+let students = [];
+let manuscripts = [];
+let currentView = 'dashboard';
+let detailStudentId = null;
+let detailManuId = null;
+let prevView = null;
 
-  // ★ Returns tag HTML for a research type
-  function typeTagHtml(type) {
-    if (!type) return `<span class="type-tag type-tag-none">Sem categoria</span>`;
-    if (type === 'IC')  return `<span class="type-tag type-tag-IC">🔬 IC</span>`;
-    if (type === 'TCC') return `<span class="type-tag type-tag-TCC">🎓 TCC</span>`;
-    if (type === 'Pós-Graduação') return `<span class="type-tag type-tag-pos">🏛️ Pós-Grad</span>`;
-    return `<span class="type-tag type-tag-none">${xe(type)}</span>`;
+// ─── STORAGE ──────────────────────────────────────────────────
+function loadCfg(){
+  try{const c=JSON.parse(localStorage.getItem('labcfg')||'{}');Object.assign(cfg,c);}catch(e){}
+}
+function saveCfg(){localStorage.setItem('labcfg',JSON.stringify(cfg));}
+
+async function loadData(){
+  loadCfg();
+  if(cfg.gistId && cfg.token){
+    try{
+      const r=await fetch(`https://api.github.com/gists/${cfg.gistId}`,{headers:{Authorization:`token ${cfg.token}`}});
+      if(r.ok){
+        const g=await r.json();
+        if(g.files[GIST_FILENAME_S]) students=JSON.parse(g.files[GIST_FILENAME_S].content||'[]');
+        if(g.files[GIST_FILENAME_M]) manuscripts=JSON.parse(g.files[GIST_FILENAME_M].content||'[]');
+        setSyncOk(); return;
+      }
+    }catch(e){}
   }
+  // fallback localStorage
+  try{students=JSON.parse(localStorage.getItem('labstudents')||'[]');}catch(e){students=[];}
+  try{manuscripts=JSON.parse(localStorage.getItem('labmanuscripts')||'[]');}catch(e){manuscripts=[];}
+  setSyncWarn();
+}
 
-  // ★ Render type filter buttons
-  function renderTypeFilterBar() {
-    const counts = { '': manuscripts.length };
-    manuscripts.forEach(m => {
-      const t = m.type || '';
-      if (t) counts[t] = (counts[t]||0)+1;
-      else counts['__none__'] = (counts['__none__']||0)+1;
-    });
-
-    document.getElementById('typeFilterBar').innerHTML =
-      `<span class="type-filter-label">Filtrar:</span>` +
-      RESEARCH_TYPES.map(rt => {
-        const count = rt.value === '' ? manuscripts.length : (counts[rt.value]||0);
-        if (count === 0 && rt.value !== '') return ''; // hide empty categories
-        const isActive = currentTypeFilter === rt.value;
-        return `<button class="type-btn${isActive?' active':''}" data-type="${rt.value}" onclick="setTypeFilter('${rt.value}')">
-          <span class="type-dot"></span>${rt.emoji} ${rt.label}<span class="type-count">${count}</span>
-        </button>`;
-      }).join('');
+async function saveData(){
+  localStorage.setItem('labstudents',JSON.stringify(students));
+  localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
+  if(cfg.gistId && cfg.token){
+    try{
+      const files={};
+      files[GIST_FILENAME_S]={content:JSON.stringify(students,null,2)};
+      files[GIST_FILENAME_M]={content:JSON.stringify(manuscripts,null,2)};
+      const r=await fetch(`https://api.github.com/gists/${cfg.gistId}`,{
+        method:'PATCH',headers:{'Content-Type':'application/json',Authorization:`token ${cfg.token}`},
+        body:JSON.stringify({files})
+      });
+      if(r.ok){setSyncOk();return;}
+    }catch(e){}
+    setSyncErr();
   }
+}
 
-  // ★ Set active type filter
-  function setTypeFilter(type) {
-    currentTypeFilter = type;
-    renderTypeFilterBar();
-    renderList();
-  }
+function setSyncOk(){document.getElementById('syncDot').className='sync-dot ok';document.getElementById('syncText').textContent='Sincronizado';}
+function setSyncWarn(){document.getElementById('syncDot').className='sync-dot';document.getElementById('syncText').textContent='Local (sem Gist)';}
+function setSyncErr(){document.getElementById('syncDot').className='sync-dot err';document.getElementById('syncText').textContent='Erro de sync';}
 
-  function renderStats() {
-    const total=manuscripts.length, byStatus={};
-    manuscripts.forEach(m=>{byStatus[m.status]=(byStatus[m.status]||0)+1;});
-    const avg=total?Math.round(manuscripts.reduce((a,m)=>a+getProgress(m),0)/total):0;
-    document.getElementById('statsBar').innerHTML=[
-      `<div class="stat-chip"><span class="dot" style="background:#6b6b7a"></span>${total} manuscrito${total!==1?'s':''}</div>`,
-      ...Object.entries(byStatus).map(([s,n])=>`<div class="stat-chip"><span class="dot" style="background:${STATUS_COLORS[s]||'#6b6b7a'}"></span>${n} ${s}</div>`),
-      total?`<div class="stat-chip"><span class="dot" style="background:var(--accent)"></span>Progresso médio: ${avg}%</div>`:''
-    ].join('');
-  }
+async function syncNow(){toast('Sincronizando...');await loadData();renderCurrentView();}
 
-  function renderList() {
-    const q=document.getElementById('searchInput').value.toLowerCase();
-    const fs=document.getElementById('filterStatus').value;
-    const grid=document.getElementById('cardsGrid');
+// ─── VIEWS ────────────────────────────────────────────────────
+function showView(v, skipHistory=false){
+  if(!skipHistory) prevView=currentView;
+  document.querySelectorAll('[id^="view-"]').forEach(el=>el.style.display='none');
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  const el=document.getElementById('view-'+v);
+  if(el) el.style.display='';
+  const nav=document.getElementById('nav-'+v);
+  if(nav) nav.classList.add('active');
+  currentView=v;
+  const titles={dashboard:'Dashboard',orientandos:'Orientandos',manuscritos:'Manuscritos',calendario:'Calendário de Bancas',alertas:'Alertas',configuracoes:'Configurações','student-detail':'Orientando','manu-detail':'Manuscrito'};
+  document.getElementById('topbarTitle').textContent=titles[v]||v;
+  document.getElementById('topbarAdd').textContent=v==='manuscritos'?'+ Manuscrito':'+ Orientando';
+  document.getElementById('topbarAdd').onclick=v==='manuscritos'?()=>openAddManuModal():()=>openAddStudentModal();
+  renderCurrentView();
+}
 
-    // ★ Apply type filter
-    const filtered=manuscripts.filter(m=>{
-      if (!(!q||m.title.toLowerCase().includes(q)||(m.journal||'').toLowerCase().includes(q))) return false;
-      if (fs && m.status!==fs) return false;
-      if (currentTypeFilter === '') return true; // all
-      if (currentTypeFilter === '__none__') return !m.type; // uncategorized
-      return m.type === currentTypeFilter;
-    });
+function renderCurrentView(){
+  if(currentView==='dashboard') renderDashboard();
+  else if(currentView==='orientandos') renderOrientandos('todos');
+  else if(currentView==='manuscritos') renderManuscritos('todos');
+  else if(currentView==='calendario') renderCalendario();
+  else if(currentView==='alertas') renderAlertas();
+  else if(currentView==='configuracoes') renderConfig();
+  updateAlertBadge();
+}
 
-    if(!filtered.length){grid.innerHTML=`<div class="empty-state"><div class="big-icon">📄</div><h3>Nenhum manuscrito encontrado</h3><p>${currentTypeFilter && currentTypeFilter!=='__none__' ? 'Nenhum manuscrito nesta categoria.' : 'Adicione seu primeiro manuscrito.'}</p></div>`;return;}
-    grid.innerHTML=filtered.map(m=>{
-      const prog=getProgress(m), dl=daysLeft(m.deadline), color=STATUS_COLORS[m.status]||'#6b6b7a', hasSk=skeletonComplete(m);
-      const typeBar = m.type ? (TYPE_COLORS[m.type]||color) : color;
-      const dlStr=dl===null?'':dl<0?`<span style="color:var(--danger)">Vencido há ${Math.abs(dl)}d</span>`:dl===0?`<span style="color:var(--warn)">Vence hoje</span>`:dl<=7?`<span style="color:var(--warn)">${dl}d restantes</span>`:`${dl}d restantes`;
-      return `<div class="card" style="--accent-bar:${typeBar}">
-        <div class="card-header"><div class="card-title" onclick="openDetail('${m.id}')">${xe(m.title)}</div><div class="badge ${badgeClass(m.status)}">${m.status}</div></div>
-        ${typeTagHtml(m.type||'')}
-        <div class="card-meta">${m.journal?`<div>📋 ${xe(m.journal)}</div>`:''} ${m.coauthors?`<div>👥 ${xe(m.coauthors)}</div>`:''} ${dl!==null?`<div>📅 ${dlStr}</div>`:''}</div>
-        <div class="skeleton-badge ${hasSk?'skeleton-done':'skeleton-pending'}">${hasSk?'🦴 Esqueleto preenchido':'🦴 Esqueleto pendente'}</div>
-        <div class="progress-wrap"><div class="progress-label"><span>Escrita</span><span>${prog}%</span></div><div class="progress-bar"><div class="progress-fill" style="width:${prog}%"></div></div></div>
-        <div class="sections-mini">${m.sections.map(s=>`<div class="sec-pill ${pillClass(s.status)}">${s.name.split(' ')[0]}</div>`).join('')}</div>
-        <div class="card-actions">
-          <button class="btn btn-ghost btn-sm" onclick="openDetail('${m.id}')">👁 Ver</button>
-          <button class="btn btn-ghost btn-sm" onclick="openEditModal('${m.id}')">✏ Editar</button>
-          <button class="btn btn-danger" onclick="deleteManuscript('${m.id}')">🗑</button>
+// ─── RISK LOGIC ───────────────────────────────────────────────
+function inactivityDays(s){
+  if(!s.lastMeet) return 9999;
+  return Math.floor((Date.now()-new Date(s.lastMeet).getTime())/(86400000));
+}
+
+function riskLevel(s){
+  if(s.encerrado || (s.milestone && s.milestone.toLowerCase().includes('encerrado')) || (s.milestone && s.milestone.toLowerCase().includes('entregue'))) return 'encerrado';
+  const d=inactivityDays(s);
+  if(d>=cfg.alertDays) return 'vermelho';
+  if(d>=cfg.warnDays) return 'amarelo';
+  if(d>=7) return 'laranja';
+  return 'verde';
+}
+
+function riskColor(r){return{verde:'var(--green)',amarelo:'var(--yellow)',laranja:'var(--orange)',vermelho:'var(--red)',encerrado:'var(--text-dim)'}[r]||'var(--text-dim)';}
+
+function inactivityLabel(s){
+  if(s.encerrado) return {cls:'inactivity-ok',txt:'Encerrado'};
+  const d=inactivityDays(s);
+  if(d===9999) return{cls:'inactivity-crisis',txt:'Sem registro'};
+  if(d===0) return{cls:'inactivity-ok',txt:'Hoje'};
+  if(d<=7) return{cls:'inactivity-ok',txt:`${d}d atrás`};
+  if(d<=cfg.warnDays) return{cls:'inactivity-warn',txt:`${d}d atrás`};
+  if(d<=cfg.alertDays) return{cls:'inactivity-alert',txt:`${d}d atrás`};
+  return{cls:'inactivity-crisis',txt:`${d}d atrás`};
+}
+
+function pipelineProgress(s){
+  const steps=PIPELINES[s.type]||PIPELINES.TCC;
+  const idx=steps.indexOf(s.milestone);
+  if(idx<0) return 0;
+  return Math.round((idx/Math.max(steps.length-1,1))*100);
+}
+
+function initials(name){if(!name) return '?';const p=name.trim().split(' ');return(p[0][0]+(p[1]?p[1][0]:'')).toUpperCase();}
+
+function typeBadge(t){
+  if(t==='IC') return '<span class="badge badge-ic">IC</span>';
+  if(t==='TCC') return '<span class="badge badge-tcc">TCC Grad</span>';
+  if(t==='ESP') return '<span class="badge badge-esp">TCC Esp</span>';
+  return '<span class="badge badge-tcc">'+t+'</span>';
+}
+
+// ─── DASHBOARD ────────────────────────────────────────────────
+function renderDashboard(){
+  const active=students.filter(s=>!s.encerrado);
+  const enc=students.filter(s=>s.encerrado);
+  const alertas=students.filter(s=>!s.encerrado && inactivityDays(s)>=cfg.warnDays);
+  document.getElementById('statsRow').innerHTML=`
+    <div class="stat-card"><div class="stat-value">${active.length}</div><div class="stat-label">Orientandos ativos</div><div class="stat-sub">${enc.length} encerrados</div></div>
+    <div class="stat-card"><div class="stat-value">${students.filter(s=>s.type==='IC').length}</div><div class="stat-label">IC</div><div class="stat-sub">Iniciação Científica</div></div>
+    <div class="stat-card"><div class="stat-value">${students.filter(s=>s.type==='TCC'||s.type==='ESP').length}</div><div class="stat-label">TCCs</div><div class="stat-sub">Grad + Especialização</div></div>
+    <div class="stat-card" style="border-color:${alertas.length>0?'var(--orange)44':'var(--border)'}"><div class="stat-value" style="color:${alertas.length>0?'var(--orange)':'var(--text)'}">${alertas.length}</div><div class="stat-label">Requerem atenção</div><div class="stat-sub">Inatividade ≥${cfg.warnDays}d</div></div>
+  `;
+  const sorted=[...students].sort((a,b)=>{
+    const order={vermelho:0,laranja:1,amarelo:2,verde:3,encerrado:4};
+    return (order[riskLevel(a)]||3)-(order[riskLevel(b)]||3);
+  });
+  document.getElementById('dashboardGrid').innerHTML=sorted.map(s=>studentCardHTML(s)).join('')||'<div class="empty-state"><div class="empty-icon">◎</div>Nenhum orientando cadastrado.<br><br><button class="btn btn-primary" onclick="openAddStudentModal()">+ Adicionar primeiro orientando</button></div>';
+}
+
+function studentCardHTML(s){
+  const risk=riskLevel(s);
+  const pct=pipelineProgress(s);
+  const il=inactivityLabel(s);
+  return `<div class="student-card risk-${risk}" onclick="openStudentDetail('${s.id}')">
+    <div class="student-avatar">${initials(s.name)}</div>
+    <div class="student-info">
+      <div class="student-name">${s.name||'—'}</div>
+      <div class="student-meta">${typeBadge(s.type)}<span style="font-size:11px;color:var(--text-muted)">${s.theme||''}</span></div>
+      <div class="student-milestone"><span style="color:${riskColor(risk)};font-size:10px">●</span>${s.milestone||'Sem etapa'}</div>
+    </div>
+    <div class="student-progress">
+      <div class="progress-track"><div class="progress-fill ${risk}" style="width:${pct}%"></div></div>
+      <div class="progress-label">${pct}%</div>
+    </div>
+    <span class="inactivity-badge ${il.cls}">${il.txt}</span>
+  </div>`;
+}
+
+// ─── ORIENTANDOS ──────────────────────────────────────────────
+let currentFilter='todos';
+function renderOrientandos(f){
+  currentFilter=f;
+  ['todos','IC','TCC','ESP','encerrado'].forEach(k=>{
+    const b=document.getElementById('f-'+k);
+    if(b) b.className='btn btn-'+(k===f?'primary':'secondary')+' btn-sm';
+  });
+  let list=students;
+  if(f==='encerrado') list=students.filter(s=>s.encerrado);
+  else if(f!=='todos') list=students.filter(s=>s.type===f&&!s.encerrado);
+  else list=students.filter(s=>!s.encerrado);
+  document.getElementById('orientandosGrid').innerHTML=list.map(s=>studentCardHTML(s)).join('')||'<div class="empty-state"><div class="empty-icon">◎</div>Nenhum orientando nesta categoria.</div>';
+}
+
+function filterStudents(f){renderOrientandos(f);}
+
+// ─── STUDENT DETAIL ───────────────────────────────────────────
+function openStudentDetail(id){
+  detailStudentId=id;
+  prevView=currentView;
+  showView('student-detail',true);
+  renderStudentDetail(id);
+  document.getElementById('nav-'+prevView)&&document.getElementById('nav-'+prevView).classList.remove('active');
+}
+
+function backFromDetail(){showView(prevView||'dashboard',true);}
+
+function renderStudentDetail(id){
+  const s=students.find(x=>x.id===id);if(!s) return;
+  const steps=PIPELINES[s.type]||PIPELINES.TCC;
+  const curIdx=steps.indexOf(s.milestone);
+  const il=inactivityLabel(s);
+  const pipeHTML=steps.map((step,i)=>{
+    const state=i<curIdx?'done':i===curIdx?'current':'pending';
+    return `<div class="pipeline-step ${state}" onclick="setMilestone('${id}','${step}')"><div class="pipeline-dot">${state==='done'?'✓':i+1}</div><div class="pipeline-step-label">${step}</div></div>`;
+  }).join('');
+
+  const meetings=s.meetings||[];
+  const meetingsHTML=meetings.length?meetings.slice().reverse().map((m,i)=>`
+    <div class="meeting-entry">
+      <div class="meeting-date">${m.date}</div>
+      <div class="meeting-text">${escHTML(m.text)}</div>
+      <button class="meeting-del" onclick="deleteMeeting('${id}',${meetings.length-1-i})">✕</button>
+    </div>`).join(''):'<div style="color:var(--text-dim);font-size:12px;padding:8px 0">Nenhuma reunião registrada.</div>';
+
+  document.getElementById('studentDetailContent').innerHTML=`
+    <div class="detail-header">
+      <div class="detail-avatar">${initials(s.name)}</div>
+      <div class="detail-info">
+        <div class="detail-name">${s.name}</div>
+        <div class="detail-meta">${typeBadge(s.type)}
+          <span class="inactivity-badge ${il.cls}">${il.txt}</span>
+          ${s.encerrado?'<span class="badge" style="background:var(--surface3);color:var(--text-dim);border:1px solid var(--border)">ENCERRADO</span>':''}
         </div>
-      </div>`;
-    }).join('');
-  }
+        <div class="detail-contact">${s.email||''}${s.email&&s.phone?' · ':''}${s.phone||''}</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary btn-sm" onclick="openEditStudentModal('${id}')">✎ Editar</button>
+        ${!s.encerrado?`<button class="btn btn-secondary btn-sm" onclick="toggleEncerrado('${id}')">✓ Encerrar</button>`:`<button class="btn btn-secondary btn-sm" onclick="toggleEncerrado('${id}')">↩ Reabrir</button>`}
+      </div>
+    </div>
 
-  function openDetail(id) {
-    const m=manuscripts.find(x=>x.id===id); if(!m) return;
-    currentDetailId=id; openSections={};
-    document.getElementById('listView').classList.add('hidden');
-    document.getElementById('detailView').classList.add('open');
-    document.getElementById('fabHome').classList.add('visible');
-    renderDetail(m); window.scrollTo(0,0);
-  }
+    ${s.theme?`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:20px;font-size:13px;color:var(--text-muted)"><span style="font-size:10px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px">Tema</span>${escHTML(s.theme)}</div>`:''}
 
-  function closeDetail() {
-    document.getElementById('detailView').classList.remove('open');
-    document.getElementById('listView').classList.remove('hidden');
-    document.getElementById('fabHome').classList.remove('visible');
-    currentDetailId=null; renderList();
-  }
+    <div class="pipeline-section">
+      <div class="section-title">Pipeline</div>
+      <div class="pipeline">${pipeHTML}</div>
+      <div class="scroll-hint">Clique em uma etapa para atualizar</div>
+    </div>
 
-  function renderDetail(m) {
-    const prog=getProgress(m), dl=daysLeft(m.deadline);
-    const dlStr=dl===null?'—':dl<0?`Vencido há ${Math.abs(dl)} dias`:dl===0?'Vence hoje':`${dl} dias restantes`;
-
-    const skItems=SKELETON_FIELDS.map(f=>{
-      const val=m.skeleton&&m.skeleton[f.id]?m.skeleton[f.id].trim():'';
-      return `<div class="skeleton-item"><div class="skeleton-item-label">${f.label}</div>${val?`<div class="skeleton-item-value">${xe(val)}</div>`:`<div class="skeleton-item-empty">Não preenchido</div>`}</div>`;
-    }).join('');
-
-    const sectHtml=m.sections.map((s,i)=>{
-      const siClass={'Não iniciado':'si-none','Em andamento':'si-progress','Em revisão':'si-review','Concluído':'si-done'}[s.status]||'si-none';
-      const isOpen=openSections[i];
-      return `<div class="detail-section-card">
-        <div class="detail-section-header" onclick="toggleSection(${i},'${m.id}')">
-          <div class="detail-section-name"><span class="status-indicator ${siClass}"></span>${s.name}</div>
-          <div style="display:flex;align-items:center;gap:.75rem">
-            <select class="status-select" onchange="updateSectionStatus('${m.id}',${i},this.value);event.stopPropagation()" onclick="event.stopPropagation()">
-              ${STATUS_OPTS.map(o=>`<option${o===s.status?' selected':''}>${o}</option>`).join('')}
-            </select>
-            <span style="color:var(--text-muted);font-size:.8rem">${isOpen?'▲':'▼'}</span>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+      <div>
+        <div class="section-title">Detalhes</div>
+        <div style="display:flex;flex-direction:column;gap:7px">
+          ${infoRow('Matrícula',s.matricula)}
+          ${infoRow('Início',fmtDate(s.start))}
+          ${infoRow('Prazo',fmtDate(s.end))}
+          ${infoRow('Bolsa',s.grant)}
+        </div>
+      </div>
+      <div>
+        <div class="section-title">Última reunião</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="font-family:var(--mono);font-size:13px;color:var(--text)">${s.lastMeet?fmtDate(s.lastMeet):'—'}</div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <input type="date" class="form-control" id="newMeetDate" style="width:auto;font-size:12px" value="${today()}">
+            <button class="btn btn-secondary btn-sm" onclick="updateLastMeet('${id}')">Atualizar</button>
           </div>
         </div>
-        <div class="detail-section-body${isOpen?' open':''}">
-          <div class="form-group" style="margin-top:.75rem">
-            <label>Notas</label>
-            <textarea rows="4" placeholder="Anotações, pendências..." onchange="updateSectionNote('${m.id}',${i},this.value)">${s.note||''}</textarea>
-          </div>
-        </div>
-      </div>`;
+      </div>
+    </div>
+
+    ${s.notes?`<div class="pipeline-section"><div class="section-title">Observações</div><div style="font-size:12.5px;color:var(--text-muted);line-height:1.6;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px">${escHTML(s.notes)}</div></div>`:''}
+
+    <div class="pipeline-section">
+      <div class="section-title">Log de reuniões</div>
+      <div class="meetings-list">${meetingsHTML}</div>
+      <div class="meeting-add" style="margin-top:12px">
+        <textarea id="newMeetText" placeholder="Resumo da reunião..."></textarea>
+        <button class="btn btn-primary btn-sm" onclick="addMeeting('${id}')">+ Adicionar</button>
+      </div>
+    </div>
+  `;
+}
+
+function infoRow(label,val){
+  if(!val) return '';
+  return `<div style="display:flex;gap:8px;align-items:baseline"><span style="font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em;width:60px;flex-shrink:0">${label}</span><span style="font-size:12.5px;color:var(--text-muted)">${val}</span></div>`;
+}
+
+function setMilestone(id,step){
+  const s=students.find(x=>x.id===id);if(!s)return;
+  s.milestone=step;
+  saveData();
+  renderStudentDetail(id);
+  toast(`Etapa atualizada: ${step}`);
+}
+
+function toggleEncerrado(id){
+  const s=students.find(x=>x.id===id);if(!s)return;
+  s.encerrado=!s.encerrado;
+  saveData();
+  renderStudentDetail(id);
+  toast(s.encerrado?'Orientando marcado como encerrado':'Orientando reaberto');
+}
+
+function updateLastMeet(id){
+  const s=students.find(x=>x.id===id);if(!s)return;
+  const d=document.getElementById('newMeetDate').value;
+  if(!d)return;
+  s.lastMeet=d;
+  saveData();
+  renderStudentDetail(id);
+  toast('Data de última reunião atualizada');
+}
+
+function addMeeting(id){
+  const s=students.find(x=>x.id===id);if(!s)return;
+  const txt=document.getElementById('newMeetText').value.trim();
+  if(!txt)return;
+  if(!s.meetings) s.meetings=[];
+  s.meetings.push({date:today(),text:txt});
+  s.lastMeet=today();
+  saveData();
+  renderStudentDetail(id);
+  toast('Reunião registrada');
+}
+
+function deleteMeeting(id,idx){
+  const s=students.find(x=>x.id===id);if(!s||!s.meetings)return;
+  s.meetings.splice(idx,1);
+  saveData();
+  renderStudentDetail(id);
+}
+
+// ─── STUDENTS MODAL ───────────────────────────────────────────
+function updatePipelineOptions(){
+  const type=document.getElementById('sType').value;
+  const sel=document.getElementById('sMilestone');
+  const steps=PIPELINES[type]||PIPELINES.TCC;
+  sel.innerHTML=steps.map(s=>`<option value="${s}">${s}</option>`).join('');
+}
+
+function openAddStudentModal(){
+  document.getElementById('modalStudentTitle').textContent='Novo Orientando';
+  document.getElementById('sId').value='';
+  document.getElementById('sName').value='';
+  document.getElementById('sMatricula').value='';
+  document.getElementById('sType').value='TCC';
+  document.getElementById('sEmail').value='';
+  document.getElementById('sPhone').value='';
+  document.getElementById('sStart').value=today();
+  document.getElementById('sEnd').value='';
+  document.getElementById('sTheme').value='';
+  document.getElementById('sGrant').value='';
+  document.getElementById('sLastMeet').value='';
+  document.getElementById('sNotes').value='';
+  document.getElementById('btnDeleteStudent').style.display='none';
+  updatePipelineOptions();
+  openModal('modalStudent');
+}
+
+function openEditStudentModal(id){
+  const s=students.find(x=>x.id===id);if(!s)return;
+  document.getElementById('modalStudentTitle').textContent='Editar Orientando';
+  document.getElementById('sId').value=s.id;
+  document.getElementById('sName').value=s.name||'';
+  document.getElementById('sMatricula').value=s.matricula||'';
+  document.getElementById('sType').value=s.type||'TCC';
+  document.getElementById('sEmail').value=s.email||'';
+  document.getElementById('sPhone').value=s.phone||'';
+  document.getElementById('sStart').value=s.start||'';
+  document.getElementById('sEnd').value=s.end||'';
+  document.getElementById('sTheme').value=s.theme||'';
+  document.getElementById('sGrant').value=s.grant||'';
+  document.getElementById('sLastMeet').value=s.lastMeet||'';
+  document.getElementById('sNotes').value=s.notes||'';
+  document.getElementById('btnDeleteStudent').style.display='inline-flex';
+  updatePipelineOptions();
+  document.getElementById('sMilestone').value=s.milestone||PIPELINES[s.type||'TCC'][0];
+  openModal('modalStudent');
+}
+
+function saveStudent(){
+  const id=document.getElementById('sId').value||uid();
+  const type=document.getElementById('sType').value;
+  const data={
+    id,name:document.getElementById('sName').value.trim(),
+    matricula:document.getElementById('sMatricula').value.trim(),
+    type,milestone:document.getElementById('sMilestone').value,
+    email:document.getElementById('sEmail').value.trim(),
+    phone:document.getElementById('sPhone').value.trim(),
+    start:document.getElementById('sStart').value,
+    end:document.getElementById('sEnd').value,
+    theme:document.getElementById('sTheme').value.trim(),
+    grant:document.getElementById('sGrant').value.trim(),
+    lastMeet:document.getElementById('sLastMeet').value,
+    notes:document.getElementById('sNotes').value.trim()
+  };
+  if(!data.name){toast('Informe o nome do orientando.');return;}
+  const existing=students.findIndex(s=>s.id===id);
+  if(existing>=0) Object.assign(students[existing],data);
+  else{data.meetings=[];students.push(data);}
+  saveData();
+  closeModal('modalStudent');
+  renderCurrentView();
+  toast('Orientando salvo.');
+}
+
+function deleteStudent(){
+  const id=document.getElementById('sId').value;
+  if(!id) return;
+  if(!confirm('Excluir este orientando? Esta ação não pode ser desfeita.')) return;
+  students=students.filter(s=>s.id!==id);
+  saveData();
+  closeModal('modalStudent');
+  if(currentView==='student-detail') backFromDetail();
+  else renderCurrentView();
+  toast('Orientando excluído.');
+}
+
+// ─── MANUSCRITOS ──────────────────────────────────────────────
+function renderManuscritos(f){
+  ['todos','IC','TCC','ESP'].forEach(k=>{
+    const b=document.getElementById('fm-'+k);
+    if(b) b.className='btn btn-'+(k===f?'primary':'secondary')+' btn-sm';
+  });
+  let list=manuscripts;
+  if(f!=='todos') list=manuscripts.filter(m=>m.type===f);
+  const el=document.getElementById('manuList');
+  if(!list.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">◈</div>Nenhum manuscrito cadastrado.<br><br><button class="btn btn-primary" onclick="openAddManuModal()">+ Adicionar primeiro manuscrito</button></div>';return;}
+  el.innerHTML=list.map(m=>{
+    const done=(m.steps||[]).filter(Boolean).length;
+    const stepsHTML=MANU_STEPS.map(st=>{
+      const isDone=(m.steps||[]).includes(st);
+      return `<span class="step-pill ${isDone?'step-done':'step-pend'}">${st}</span>`;
     }).join('');
+    return `<div class="manu-card" onclick="openManuDetail('${m.id}')">
+      <div class="manu-title">${escHTML(m.title||'Sem título')}</div>
+      <div class="manu-meta">${typeBadge(m.type)}<span class="manu-journal">${m.journal||''}</span><span style="font-size:11px;color:var(--text-muted)">${m.authors||''}</span></div>
+      <div class="steps-row">${stepsHTML}</div>
+    </div>`;
+  }).join('');
+}
 
-    // ★ Type label for detail view
-    const typeLabel = m.type || 'Sem categoria';
-    const typeColor = TYPE_COLORS[m.type] || 'var(--text-muted)';
+function filterManu(f){renderManuscritos(f);}
 
-    document.getElementById('detailContent').innerHTML=`
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:.5rem">
-        <h1 class="detail-title">${xe(m.title)}</h1>
-        <div class="badge ${badgeClass(m.status)}" style="font-size:.8rem;padding:.4rem 1rem">${m.status}</div>
+function openManuDetail(id){
+  detailManuId=id;
+  prevView=currentView;
+  showView('manu-detail',true);
+  renderManuDetail(id);
+}
+
+function backFromManuDetail(){showView(prevView||'manuscritos',true);}
+
+function renderManuDetail(id){
+  const m=manuscripts.find(x=>x.id===id);if(!m)return;
+  const stepsHTML=MANU_STEPS.map(st=>{
+    const isDone=(m.steps||[]).includes(st);
+    return `<label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px 10px;border-radius:var(--radius-sm);border:1px solid ${isDone?'var(--green)44':'var(--border)'};background:${isDone?'var(--green-dim)':'var(--surface2)'};margin-bottom:5px">
+      <input type="checkbox" ${isDone?'checked':''} onchange="toggleManuStep('${id}','${st}',this.checked)" style="accent-color:var(--green)">
+      <span style="font-size:13px;color:${isDone?'var(--green-bright)':'var(--text-muted)'}">${st}</span>
+    </label>`;
+  }).join('');
+  document.getElementById('manuDetailContent').innerHTML=`
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:12px">
+      <div>
+        <div style="font-size:18px;font-weight:700;color:var(--text)">${escHTML(m.title||'Sem título')}</div>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center">${typeBadge(m.type)}<span style="font-size:12px;color:var(--text-muted)">${m.journal||''}</span><span style="font-size:12px;color:var(--text-muted)">${m.authors||''}</span></div>
       </div>
-      <div style="margin-bottom:.75rem">${typeTagHtml(m.type||'')}</div>
-      <div class="detail-meta">
-        ${m.journal?`<span>Periódico<br><b>${xe(m.journal)}</b></span>`:''}
-        ${m.coauthors?`<span>Coautores<br><b>${xe(m.coauthors)}</b></span>`:''}
-        <span>Tipo de Pesquisa<br><b style="color:${typeColor}">${xe(typeLabel)}</b></span>
-        <span>Deadline<br><b>${m.deadline||'—'}</b></span>
-        <span>Prazo<br><b>${dlStr}</b></span>
+      <div style="display:flex;gap:8px;flex-shrink:0">
+        <button class="btn btn-secondary btn-sm" onclick="openEditManuModal('${id}')">✎ Editar</button>
+        <button class="btn btn-secondary btn-sm" onclick="openGDocs('${id}')">↗ Google Docs</button>
       </div>
+    </div>
+    <div class="pipeline-section"><div class="section-title">Etapas de escrita</div>${stepsHTML}</div>
+    ${m.notes?`<div class="pipeline-section"><div class="section-title">Notas</div><div style="font-size:12.5px;color:var(--text-muted);line-height:1.6;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px">${escHTML(m.notes)}</div></div>`:''}
+  `;
+}
 
-      <div class="action-row">
-        <span class="action-row-label">Ações:</span>
-        <button class="btn btn-docx btn-sm" onclick="exportSkeletonDocx('${m.id}')">📄 Exportar Esqueleto DOCX</button>
-        <button class="btn btn-google btn-sm" onclick="openGoogleDocs('${m.id}')">📝 Iniciar Escrita no Google Docs</button>
-        <button class="btn btn-ghost btn-sm" onclick="openEditModal('${m.id}')">✏ Editar manuscrito</button>
-      </div>
+function toggleManuStep(id,step,checked){
+  const m=manuscripts.find(x=>x.id===id);if(!m)return;
+  if(!m.steps) m.steps=[];
+  if(checked && !m.steps.includes(step)) m.steps.push(step);
+  else if(!checked) m.steps=m.steps.filter(s=>s!==step);
+  saveData();
+}
 
-      ${m.notes?`<div style="background:var(--surface2);border-left:3px solid var(--accent2);border-radius:0 8px 8px 0;padding:.9rem 1rem;margin-bottom:1.5rem;font-size:.82rem;line-height:1.6;color:var(--text-muted)">${xe(m.notes)}</div>`:''}
+function openGDocs(id){
+  const m=manuscripts.find(x=>x.id===id);if(!m)return;
+  navigator.clipboard.writeText(m.title||'').catch(()=>{});
+  window.open(`https://docs.google.com/document/create?title=${encodeURIComponent(m.title||'Manuscrito')}`,'_blank');
+  toast('Abrindo Google Docs...');
+}
 
-      <div class="nav-divider"><div class="nav-divider-line"></div><button class="nav-divider-btn" onclick="closeDetail()">← Voltar à lista</button><div class="nav-divider-line"></div></div>
+function openAddManuModal(){
+  document.getElementById('modalManuTitle').textContent='Novo Manuscrito';
+  document.getElementById('mId').value='';
+  document.getElementById('mTitle').value='';
+  document.getElementById('mJournal').value='';
+  document.getElementById('mType').value='IC';
+  document.getElementById('mAuthors').value='';
+  document.getElementById('mNotes').value='';
+  document.getElementById('btnDeleteManu').style.display='none';
+  renderManuStepsCheck([]);
+  openModal('modalManu');
+}
 
-      <div class="skeleton-detail-block">
-        <div class="skeleton-detail-header">
-          <div class="skeleton-detail-title">🦴 Esqueleto do Manuscrito</div>
-          <button class="btn btn-ghost btn-sm" onclick="openEditModal('${m.id}');setTimeout(()=>switchTab('skeleton'),100)">✏ Editar</button>
-        </div>
-        <div>${skItems}</div>
-      </div>
+function openEditManuModal(id){
+  const m=manuscripts.find(x=>x.id===id);if(!m)return;
+  document.getElementById('modalManuTitle').textContent='Editar Manuscrito';
+  document.getElementById('mId').value=m.id;
+  document.getElementById('mTitle').value=m.title||'';
+  document.getElementById('mJournal').value=m.journal||'';
+  document.getElementById('mType').value=m.type||'IC';
+  document.getElementById('mAuthors').value=m.authors||'';
+  document.getElementById('mNotes').value=m.notes||'';
+  document.getElementById('btnDeleteManu').style.display='inline-flex';
+  renderManuStepsCheck(m.steps||[]);
+  openModal('modalManu');
+}
 
-      <div class="nav-divider"><div class="nav-divider-line"></div><button class="nav-divider-btn" onclick="closeDetail()">← Voltar à lista</button><div class="nav-divider-line"></div></div>
+function renderManuStepsCheck(done){
+  document.getElementById('mStepsCheck').innerHTML=MANU_STEPS.map(st=>`
+    <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px;color:var(--text-muted)">
+      <input type="checkbox" ${done.includes(st)?'checked':''} value="${st}" style="accent-color:var(--green)"> ${st}
+    </label>`).join('');
+}
 
-      <div style="margin-bottom:1rem">
-        <div style="display:flex;justify-content:space-between;font-size:.78rem;font-family:'DM Mono',monospace;color:var(--text-muted);margin-bottom:.4rem"><span>Progresso da escrita</span><span style="color:var(--accent)">${prog}%</span></div>
-        <div class="progress-bar" style="height:8px"><div class="progress-fill" style="width:${prog}%"></div></div>
-      </div>
-      <div class="detail-sections" style="margin-bottom:1.5rem">${sectHtml}</div>
-      <div class="detail-edit-actions">
-        <button class="btn btn-danger" onclick="if(confirm('Remover este manuscrito?')){deleteManuscript('${m.id}');closeDetail()}">🗑 Remover manuscrito</button>
-      </div>
-    `;
-  }
+function saveManu(){
+  const id=document.getElementById('mId').value||uid();
+  const steps=Array.from(document.querySelectorAll('#mStepsCheck input:checked')).map(i=>i.value);
+  const data={id,title:document.getElementById('mTitle').value.trim(),journal:document.getElementById('mJournal').value.trim(),type:document.getElementById('mType').value,authors:document.getElementById('mAuthors').value.trim(),notes:document.getElementById('mNotes').value.trim(),steps};
+  if(!data.title){toast('Informe o título.');return;}
+  const ei=manuscripts.findIndex(m=>m.id===id);
+  if(ei>=0) Object.assign(manuscripts[ei],data);
+  else manuscripts.push(data);
+  saveData();
+  closeModal('modalManu');
+  renderCurrentView();
+  toast('Manuscrito salvo.');
+}
 
-  function toggleSection(i,id) { openSections[i]=!openSections[i]; const m=manuscripts.find(x=>x.id===id); if(m) renderDetail(m); }
-  function updateSectionStatus(id,i,val) { const m=manuscripts.find(x=>x.id===id); if(!m) return; m.sections[i].status=val; save(); renderDetail(m); renderStats(); }
-  function updateSectionNote(id,i,val) { const m=manuscripts.find(x=>x.id===id); if(!m) return; m.sections[i].note=val; save(); }
+function deleteManu(){
+  const id=document.getElementById('mId').value;
+  if(!id) return;
+  if(!confirm('Excluir este manuscrito?')) return;
+  manuscripts=manuscripts.filter(m=>m.id!==id);
+  saveData();
+  closeModal('modalManu');
+  if(currentView==='manu-detail') backFromManuDetail();
+  else renderCurrentView();
+  toast('Manuscrito excluído.');
+}
 
-  function switchTab(name) {
-    ['info','skeleton','writing'].forEach(t=>{
-      document.getElementById('tab-'+t).classList.toggle('active',t===name);
-      document.getElementById('panel-'+t).classList.toggle('active',t===name);
+// ─── CALENDÁRIO ───────────────────────────────────────────────
+function renderCalendario(){
+  const events=[];
+  students.forEach(s=>{
+    if(s.end) events.push({date:s.end,label:`Prazo — ${s.name}`,sub:`${s.type} · ${s.milestone||''}`,id:s.id});
+    // bancas no log de reuniões ou milestone
+    if(s.milestone&&(s.milestone.includes('Banca')||s.milestone.includes('Defesa'))){
+      if(s.lastMeet) events.push({date:s.lastMeet,label:`Banca/Defesa — ${s.name}`,sub:`${s.type}`,id:s.id,isBanca:true});
+    }
+  });
+  events.sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const now=Date.now();
+  const el=document.getElementById('calendarList');
+  if(!events.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">◷</div>Nenhum prazo ou evento cadastrado.<br>Adicione datas de término nos orientandos.</div>';return;}
+  el.innerHTML=events.map(e=>{
+    const isPast=new Date(e.date).getTime()<now;
+    const isSoon=!isPast&&(new Date(e.date).getTime()-now)<14*86400000;
+    return `<div class="cal-item ${isPast?'cal-past':''} ${isSoon?'cal-soon':''}" onclick="openStudentDetail('${e.id}')">
+      <div class="cal-date">${fmtDate(e.date)}</div>
+      <div><div class="cal-label">${e.label}</div><div class="cal-sub">${e.sub}</div></div>
+      ${isSoon?'<span class="inactivity-badge inactivity-alert" style="margin-left:auto">Em breve</span>':''}
+      ${isPast?'<span class="inactivity-badge inactivity-ok" style="margin-left:auto;opacity:.5">Passado</span>':''}
+    </div>`;
+  }).join('');
+}
+
+// ─── ALERTAS ──────────────────────────────────────────────────
+function renderAlertas(){
+  const alerts=[];
+  students.filter(s=>!s.encerrado).forEach(s=>{
+    const d=inactivityDays(s);
+    if(d>=cfg.alertDays) alerts.push({color:'var(--red)',s,msg:`<strong>${s.name}</strong> — sem contato há <strong>${d} dias</strong>. Etapa atual: ${s.milestone||'?'}`});
+    else if(d>=cfg.warnDays) alerts.push({color:'var(--orange)',s,msg:`<strong>${s.name}</strong> — sem contato há <strong>${d} dias</strong>. Etapa atual: ${s.milestone||'?'}`});
+    if(s.end){
+      const diasPrazo=Math.floor((new Date(s.end).getTime()-Date.now())/86400000);
+      if(diasPrazo>=0 && diasPrazo<=30) alerts.push({color:'var(--yellow)',s,msg:`<strong>${s.name}</strong> — prazo de conclusão em <strong>${diasPrazo} dias</strong> (${fmtDate(s.end)})`});
+    }
+  });
+  updateAlertBadge(alerts.length);
+  const el=document.getElementById('alertsList');
+  if(!alerts.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">✓</div>Nenhum alerta ativo. Todos os orientandos estão em dia.</div>';return;}
+  el.innerHTML=alerts.map(a=>`<div class="alert-item" onclick="openStudentDetail('${a.s.id}')">
+    <div class="alert-dot-wrap"><div class="alert-dot" style="background:${a.color}"></div></div>
+    <div class="alert-text">${a.msg}</div>
+  </div>`).join('');
+}
+
+function updateAlertBadge(n){
+  if(n===undefined){
+    n=students.filter(s=>!s.encerrado&&inactivityDays(s)>=cfg.warnDays).length;
+    students.filter(s=>!s.encerrado&&s.end).forEach(s=>{
+      const dp=Math.floor((new Date(s.end).getTime()-Date.now())/86400000);
+      if(dp>=0&&dp<=30) n++;
     });
   }
+  const badge=document.getElementById('alert-count');
+  if(n>0){badge.style.display='inline';badge.textContent=n;}
+  else badge.style.display='none';
+}
 
-  function buildSectionsEditor(sections) {
-    return SECTIONS.map((name,i)=>{
-      const sec=sections?sections[i]:null, status=sec?sec.status:'Não iniciado', note=sec?sec.note||'':'';
-      return `<div class="section-row">
-        <div class="section-name">${name}</div>
-        <button class="section-note-toggle" onclick="toggleNoteArea(${i})">+ nota</button>
-        <select class="status-select" id="sec-status-${i}">${STATUS_OPTS.map(o=>`<option${o===status?' selected':''}>${o}</option>`).join('')}</select>
-        <div class="section-note-area${note?' open':''}" id="secnote-${i}">
-          <textarea id="sec-note-${i}" placeholder="Notas...">${note}</textarea>
-        </div>
-      </div>`;
-    }).join('');
-  }
+// ─── CONFIG ───────────────────────────────────────────────────
+function renderConfig(){
+  document.getElementById('cfgGistId').value=cfg.gistId||'';
+  document.getElementById('cfgToken').value=cfg.token||'';
+  document.getElementById('cfgWarnDays').value=cfg.warnDays||14;
+  document.getElementById('cfgAlertDays').value=cfg.alertDays||30;
+}
 
-  function toggleNoteArea(i) { document.getElementById('secnote-'+i).classList.toggle('open'); }
+function saveConfig(){
+  cfg.gistId=document.getElementById('cfgGistId').value.trim();
+  cfg.token=document.getElementById('cfgToken').value.trim();
+  cfg.warnDays=parseInt(document.getElementById('cfgWarnDays').value)||14;
+  cfg.alertDays=parseInt(document.getElementById('cfgAlertDays').value)||30;
+  saveCfg();
+  toast('Configurações salvas.');
+}
 
-  function populateSkeleton(sk) {
-    Object.entries(SK_EL_IDS).forEach(([k,id])=>{ document.getElementById(id).value=(sk&&sk[k])||''; });
-  }
+async function testGist(){
+  const id=document.getElementById('cfgGistId').value.trim();
+  const token=document.getElementById('cfgToken').value.trim();
+  if(!id||!token){toast('Preencha o Gist ID e o Token.');return;}
+  try{
+    const r=await fetch(`https://api.github.com/gists/${id}`,{headers:{Authorization:`token ${token}`}});
+    if(r.ok){toast('✓ Conexão com Gist bem-sucedida!');}
+    else toast('✗ Falha: '+(await r.json()).message);
+  }catch(e){toast('✗ Erro de rede: '+e.message);}
+}
 
-  function readSkeleton() {
-    const r={};
-    Object.entries(SK_EL_IDS).forEach(([k,id])=>{ r[k]=document.getElementById(id).value.trim(); });
-    return r;
-  }
+function exportJSON(){
+  const data={students,manuscripts};
+  const a=document.createElement('a');
+  a.href='data:application/json,'+encodeURIComponent(JSON.stringify(data,null,2));
+  a.download='labresearch_backup.json';a.click();
+}
 
-  function openNewModal() {
-    editingId=null;
-    document.getElementById('modalTitle').textContent='Novo manuscrito';
-    ['fTitle','fJournal','fCoauthors','fNotes'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('fStatus').value='Em elaboração';
-    document.getElementById('fType').value=''; // ★
-    document.getElementById('fDeadline').value='';
-    populateSkeleton(null);
-    document.getElementById('sectionsEditor').innerHTML=buildSectionsEditor(null);
-    switchTab('info');
-    document.getElementById('modalOverlay').classList.add('open');
-  }
+function importJSON(input){
+  const f=input.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const d=JSON.parse(e.target.result);
+      if(d.students) students=d.students;
+      if(d.manuscripts) manuscripts=d.manuscripts;
+      saveData();renderCurrentView();toast('Dados importados com sucesso.');
+    }catch(e){toast('Erro ao importar JSON.');}
+  };r.readAsText(f);
+}
 
-  function openEditModal(id) {
-    const m=manuscripts.find(x=>x.id===id); if(!m) return;
-    editingId=id;
-    document.getElementById('modalTitle').textContent='Editar manuscrito';
-    document.getElementById('fTitle').value=m.title;
-    document.getElementById('fJournal').value=m.journal||'';
-    document.getElementById('fStatus').value=m.status;
-    document.getElementById('fType').value=m.type||''; // ★
-    document.getElementById('fDeadline').value=m.deadline||'';
-    document.getElementById('fCoauthors').value=m.coauthors||'';
-    document.getElementById('fNotes').value=m.notes||'';
-    populateSkeleton(m.skeleton||null);
-    document.getElementById('sectionsEditor').innerHTML=buildSectionsEditor(m.sections);
-    switchTab('info');
-    document.getElementById('modalOverlay').classList.add('open');
-  }
+// ─── UTILS ────────────────────────────────────────────────────
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function today(){return new Date().toISOString().slice(0,10);}
+function fmtDate(d){if(!d)return'—';try{const [y,m,dd]=d.split('-');return`${dd}/${m}/${y}`;}catch(e){return d;}}
+function escHTML(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 
-  function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
-  function handleOverlayClick(e) { if(e.target.id==='modalOverlay') closeModal(); }
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 
-  function saveManuscript() {
-    const title=document.getElementById('fTitle').value.trim();
-    if(!title){ toast('Informe o título.'); switchTab('info'); return; }
-    const sections=SECTIONS.map((name,i)=>({ name, status:document.getElementById('sec-status-'+i).value, note:(document.getElementById('sec-note-'+i)||{value:''}).value }));
-    const skeleton=readSkeleton();
-    const type=document.getElementById('fType').value; // ★
-    if(editingId) {
-      const m=manuscripts.find(x=>x.id===editingId);
-      Object.assign(m,{ title, journal:document.getElementById('fJournal').value.trim(), status:document.getElementById('fStatus').value, type, deadline:document.getElementById('fDeadline').value, coauthors:document.getElementById('fCoauthors').value.trim(), notes:document.getElementById('fNotes').value.trim(), sections, skeleton });
-      toast('Manuscrito atualizado.');
-    } else {
-      manuscripts.unshift({ id:genId(), title, journal:document.getElementById('fJournal').value.trim(), status:document.getElementById('fStatus').value, type, deadline:document.getElementById('fDeadline').value, coauthors:document.getElementById('fCoauthors').value.trim(), notes:document.getElementById('fNotes').value.trim(), sections, skeleton, createdAt:new Date().toISOString() });
-      toast('Manuscrito adicionado.');
-    }
-    save(); closeModal(); renderList(); renderStats(); renderTypeFilterBar();
-    if(currentDetailId){ const m=manuscripts.find(x=>x.id===currentDetailId); if(m) renderDetail(m); }
-  }
+function toast(msg){
+  const el=document.createElement('div');el.className='toast';el.textContent=msg;
+  document.getElementById('toastWrap').appendChild(el);
+  setTimeout(()=>el.remove(),3000);
+}
 
-  function deleteManuscript(id) {
-    if(!confirm('Remover este manuscrito?')) return;
-    manuscripts=manuscripts.filter(x=>x.id!==id); save(); renderList(); renderStats(); renderTypeFilterBar(); toast('Removido.');
-  }
-
-  function openGoogleDocs(id) {
-    const m=manuscripts.find(x=>x.id===id); if(!m) return;
-    const sk=m.skeleton||{};
-    const text=[
-      m.title,
-      m.journal?`Periódico alvo: ${m.journal}`:'',
-      m.coauthors?`Coautores: ${m.coauthors}`:'',
-      m.type?`Tipo de pesquisa: ${m.type}`:'',
-      `Data: ${new Date().toLocaleDateString('pt-BR')}`,
-      '',
-      '1. PERGUNTA DE PESQUISA', sk.question||'(não preenchido)', '',
-      '2. HIPÓTESE', sk.hypothesis||'(não preenchido)', '',
-      '3. OBJETIVO GERAL', sk.objGeneral||'(não preenchido)', '',
-      '4. OBJETIVOS ESPECÍFICOS', sk.objSpecific||'(não preenchido)', '',
-      '5. ESTRUTURA DA REVISÃO DE LITERATURA', sk.lit||'(não preenchido)', '',
-      '6. ESTRUTURA DE MATERIAIS E MÉTODOS', sk.mm||'(não preenchido)', '',
-      '7. ESTRUTURA DE RESULTADOS', sk.results||'(não preenchido)', '',
-      '8. ESTRUTURA DE DISCUSSÃO', sk.discussion||'(não preenchido)', '',
-      m.notes?`NOTAS GERAIS\n${m.notes}`:''
-    ].filter(x=>x!==undefined).join('\n');
-
-    navigator.clipboard.writeText(text).catch(()=>{});
-    window.open(`https://docs.google.com/document/create?title=${encodeURIComponent(m.title)}`,'_blank');
-    toast('📋 Esqueleto copiado! Cole com Ctrl+V no Google Docs.');
-  }
-
-  async function exportSkeletonDocx(id) {
-    const m=manuscripts.find(x=>x.id===id); if(!m) return;
-    toast('Gerando DOCX...');
-    try {
-      const zip=new JSZip();
-      zip.file('[Content_Types].xml',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>`);
-      zip.file('_rels/.rels',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`);
-      zip.file('word/_rels/document.xml.rels',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`);
-      zip.file('word/styles.xml',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:style w:type="paragraph" w:styleId="Normal" w:default="1"><w:name w:val="Normal"/><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:sz w:val="24"/></w:rPr></w:style><w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="Heading 1"/><w:basedOn w:val="Normal"/><w:pPr><w:spacing w:before="300" w:after="150"/><w:outlineLvl w:val="0"/></w:pPr><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:b/><w:sz w:val="36"/></w:rPr></w:style><w:style w:type="paragraph" w:styleId="Heading2"><w:name w:val="Heading 2"/><w:basedOn w:val="Normal"/><w:pPr><w:spacing w:before="240" w:after="100"/><w:outlineLvl w:val="1"/></w:pPr><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:b/><w:sz w:val="28"/><w:color w:val="2B4EA8"/></w:rPr></w:style><w:style w:type="paragraph" w:styleId="Body"><w:name w:val="Body"/><w:basedOn w:val="Normal"/><w:pPr><w:spacing w:before="60" w:after="60" w:line="360" w:lineRule="auto"/></w:pPr><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:sz w:val="24"/></w:rPr></w:style></w:styles>`);
-
-      function p(text,style){ return (text||'').split('\n').map(l=>`<w:p><w:pPr><w:pStyle w:val="${style||'Body'}"/></w:pPr><w:r><w:t xml:space="preserve">${xe(l)||' '}</w:t></w:r></w:p>`).join(''); }
-      function h1(t){ return `<w:p><w:pPr><w:pStyle w:val="Heading1"/></w:pPr><w:r><w:t>${xe(t)}</w:t></w:r></w:p>`; }
-      function h2(t){ return `<w:p><w:pPr><w:pStyle w:val="Heading2"/></w:pPr><w:r><w:t>${xe(t)}</w:t></w:r></w:p>`; }
-      function empty(){ return `<w:p><w:pPr><w:pStyle w:val="Body"/></w:pPr><w:r><w:t xml:space="preserve"> </w:t></w:r></w:p>`; }
-      function bold(label,val){ return `<w:p><w:pPr><w:pStyle w:val="Body"/></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t xml:space="preserve">${xe(label)}</w:t></w:r><w:r><w:t xml:space="preserve"> ${xe(val)}</w:t></w:r></w:p>`; }
-
-      const sk=m.skeleton||{}, date=new Date().toLocaleDateString('pt-BR');
-      const body=[
-        h1(m.title), empty(),
-        m.journal?bold('Periódico alvo:',m.journal):'',
-        m.coauthors?bold('Coautores:',m.coauthors):'',
-        m.type?bold('Tipo de pesquisa:',m.type):'',
-        bold('Data:',date), empty(),
-        h2('1. Pergunta de Pesquisa'), p(sk.question||'Não preenchido.'), empty(),
-        h2('2. Hipótese'), p(sk.hypothesis||'Não preenchido.'), empty(),
-        h2('3. Objetivo Geral'), p(sk.objGeneral||'Não preenchido.'), empty(),
-        h2('4. Objetivos Específicos'), p(sk.objSpecific||'Não preenchido.'), empty(),
-        h2('5. Estrutura da Revisão de Literatura'), p(sk.lit||'Não preenchido.'), empty(),
-        h2('6. Estrutura de Materiais e Métodos'), p(sk.mm||'Não preenchido.'), empty(),
-        h2('7. Estrutura de Resultados'), p(sk.results||'Não preenchido.'), empty(),
-        h2('8. Estrutura de Discussão'), p(sk.discussion||'Não preenchido.'), empty(),
-        m.notes?[h2('Notas Gerais'),p(m.notes),empty()].join(''):''
-      ].filter(Boolean).join('\n');
-
-      zip.file('word/document.xml',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1418" w:right="1418" w:bottom="1418" w:left="1418"/></w:sectPr>${body}</w:body></w:document>`);
-
-      const blob=await zip.generateAsync({type:'blob',mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
-      const a=document.createElement('a');
-      a.href=URL.createObjectURL(blob);
-      a.download=`esqueleto_${m.title.slice(0,40).replace(/[^a-zA-Z0-9]/g,'_')}.docx`;
-      a.click();
-      toast('DOCX exportado.');
-    } catch(e){ console.error(e); toast('Erro ao gerar DOCX.'); }
-  }
-
-  function exportData() {
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(new Blob([JSON.stringify(manuscripts,null,2)],{type:'application/json'}));
-    a.download=`manuscritos_${new Date().toISOString().slice(0,10)}.json`;
-    a.click(); toast('Dados exportados.');
-  }
-
-  function triggerImport() { document.getElementById('importFile').click(); }
-
-  function importData(e) {
-    const file=e.target.files[0]; if(!file) return;
-    const r=new FileReader();
-    r.onload=ev=>{ try{ const d=JSON.parse(ev.target.result); if(!Array.isArray(d)) throw new Error(); manuscripts=d; save(); renderList(); renderStats(); renderTypeFilterBar(); toast(`${d.length} manuscrito(s) importado(s).`); } catch{ toast('Arquivo inválido.'); } };
-    r.readAsText(file); e.target.value='';
-  }
-
-  function toast(msg) {
-    const el=document.createElement('div'); el.className='toast'; el.textContent=msg;
-    document.getElementById('toastContainer').appendChild(el);
-    setTimeout(()=>el.remove(),3000);
-  }
-
-  /* ---- GIST SYNC ---- */
-  function getCreds() {
-    return {
-      gistId: localStorage.getItem('mss_gist_id')||'',
-      token:  localStorage.getItem('mss_gist_token')||''
-    };
-  }
-
-  function setSyncStatus(state, label) {
-    const ind = document.getElementById('syncIndicator');
-    const dot = document.getElementById('syncDot');
-    const lbl = document.getElementById('syncLabel');
-    ind.className = 'sync-indicator ' + state;
-    lbl.textContent = label;
-    dot.innerHTML = state === 'syncing' ? '<span class="spin">↻</span>' :
-                    state === 'synced'  ? '●' :
-                    state === 'error'   ? '✕' : '○';
-  }
-
-  async function syncFromGist() {
-    const {gistId, token} = getCreds();
-    if (!gistId || !token) { setSyncStatus('offline','Sem sync'); return false; }
-    setSyncStatus('syncing','Carregando...');
-    try {
-      const res = await fetch(`https://api.github.com/gists/${gistId}`, {
-        headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
-      });
-      if (!res.ok) throw new Error('HTTP '+res.status);
-      const data = await res.json();
-      const raw = data.files['manuscritos.json']?.content || '[]';
-      const remote = JSON.parse(raw);
-      manuscripts = remote;
-      localStorage.setItem('mss_data', JSON.stringify(manuscripts));
-      setSyncStatus('synced', `Sincronizado`);
-      return true;
-    } catch(e) {
-      setSyncStatus('error','Erro ao carregar');
-      toast('Erro ao carregar do Gist: ' + e.message);
-      return false;
-    }
-  }
-
-  async function syncToGist() {
-    const {gistId, token} = getCreds();
-    if (!gistId || !token) return;
-    setSyncStatus('syncing','Salvando...');
-    try {
-      const res = await fetch(`https://api.github.com/gists/${gistId}`, {
-        method: 'PATCH',
-        headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-        body: JSON.stringify({ files: { 'manuscritos.json': { content: JSON.stringify(manuscripts, null, 2) } } })
-      });
-      if (!res.ok) throw new Error('HTTP '+res.status);
-      const now = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-      setSyncStatus('synced', `Salvo ${now}`);
-    } catch(e) {
-      setSyncStatus('error','Erro ao salvar');
-      toast('Erro ao salvar no Gist: ' + e.message);
-    }
-  }
-
-  async function syncNow() {
-    const ok = await syncFromGist();
-    if (ok) { renderList(); renderStats(); renderTypeFilterBar(); }
-  }
-
-  /* ---- SETTINGS ---- */
-  function openSettings() {
-    const {gistId, token} = getCreds();
-    document.getElementById('cfgGistId').value = gistId;
-    document.getElementById('cfgToken').value = token;
-    document.getElementById('settingsOverlay').classList.add('open');
-  }
-
-  function closeSettings() { document.getElementById('settingsOverlay').classList.remove('open'); }
-  function handleSettingsOverlay(e) { if(e.target.id==='settingsOverlay') closeSettings(); }
-
-  function toggleTokenVis() {
-    const inp = document.getElementById('cfgToken');
-    inp.type = inp.type === 'password' ? 'text' : 'password';
-  }
-
-  async function saveSettings() {
-    const gistId = document.getElementById('cfgGistId').value.trim();
-    const token  = document.getElementById('cfgToken').value.trim();
-    if (!gistId || !token) { toast('Preencha os dois campos.'); return; }
-    localStorage.setItem('mss_gist_id', gistId);
-    localStorage.setItem('mss_gist_token', token);
-    closeSettings();
-    toast('Credenciais salvas. Sincronizando...');
-    const ok = await syncFromGist();
-    if (ok) { renderList(); renderStats(); renderTypeFilterBar(); toast('Sincronização concluída!'); }
-    renderSidebar();
-  }
-
-  function clearCredentials() {
-    if (!confirm('Remover credenciais de sincronização deste dispositivo?')) return;
-    localStorage.removeItem('mss_gist_id');
-    localStorage.removeItem('mss_gist_token');
-    setSyncStatus('offline','Sem sync');
-    closeSettings();
-    toast('Credenciais removidas.');
-    renderSidebar();
-  }
-
-  /* ---- HELP SIDEBAR ---- */
-  function renderSidebar() {
-    const {gistId, token} = getCreds();
-    const configured = gistId && token;
-    const el = document.getElementById('helpContent');
-    if (!el) return;
-
-    if (configured) {
-      el.innerHTML = `
-        <div class="help-sidebar-title">🔧 Configuração</div>
-        <div class="help-configured">
-          <span class="big-check">✅</span>
-          Sincronização ativa.<br>Seus dados estão conectados ao GitHub Gist.
-        </div>
-        <div class="help-divider"></div>
-        <div class="help-step-body" style="font-size:0.74rem;color:var(--text-muted);line-height:1.7">
-          Os manuscritos são salvos automaticamente a cada alteração e carregados ao abrir em qualquer dispositivo configurado.<br><br>
-          Para alterar as credenciais, use o botão <b>⚙ Config</b> no topo.
-        </div>`;
-    } else {
-      el.innerHTML = `
-        <div class="help-sidebar-title">🚀 Primeiros passos</div>
-        <div class="help-step">
-          <div class="help-step-num">1</div>
-          <div class="help-step-body">Acesse <a href="https://gist.github.com" target="_blank">gist.github.com</a> e crie um <b>Secret Gist</b> com um arquivo chamado <b>manuscritos.json</b> contendo apenas <b>[]</b></div>
-        </div>
-        <div class="help-step">
-          <div class="help-step-num">2</div>
-          <div class="help-step-body">Copie o <b>ID do Gist</b> — a sequência alfanumérica no final da URL após criar</div>
-        </div>
-        <div class="help-step">
-          <div class="help-step-num">3</div>
-          <div class="help-step-body">Acesse <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a>, crie um token com escopo <b>gist</b> e sem expiração. Copie o token <b>ghp_...</b></div>
-        </div>
-        <div class="help-step">
-          <div class="help-step-num">4</div>
-          <div class="help-step-body">Clique em <b>⚙ Config</b> no topo, cole o ID do Gist e o token, e clique em <b>Salvar e sincronizar</b></div>
-        </div>
-        <div class="help-divider"></div>
-        <div class="help-note"><b>Por que fazer isso?</b><br>Sem configuração, os dados ficam apenas neste navegador. Com o Gist, você acessa seus manuscritos em qualquer dispositivo.</div>
-        <div class="help-divider"></div>
-        <div class="help-note" style="border-color:var(--border)">Sem configuração, a ferramenta ainda funciona normalmente — os dados ficam salvos localmente neste navegador.</div>`;
-    }
-  }
-
-  function toggleSidebar() {
-    const sidebar = document.getElementById('helpSidebar');
-    const btn = document.getElementById('sidebarToggleBtn');
-    const collapsed = sidebar.classList.toggle('collapsed');
-    btn.textContent = collapsed ? '▶' : '◀';
-    localStorage.setItem('mss_sidebar_collapsed', collapsed ? '1' : '0');
-  }
-
-  function initSidebar() {
-    renderSidebar();
-    if (localStorage.getItem('mss_sidebar_collapsed') === '1') {
-      const sidebar = document.getElementById('helpSidebar');
-      const btn = document.getElementById('sidebarToggleBtn');
-      if (sidebar) { sidebar.classList.add('collapsed'); btn.textContent = '▶'; }
-    }
-  }
-
-  /* ---- INIT ---- */
-  load();
-  renderStats();
-  renderList();
-  renderTypeFilterBar(); // ★
-  initSidebar();
-  const {gistId: _gid, token: _tok} = getCreds();
-  if (_gid && _tok) {
-    syncFromGist().then(ok => { if(ok){ renderList(); renderStats(); renderTypeFilterBar(); } });
-  } else {
-    setSyncStatus('offline','Configurar sync');
-  }
+// ─── INIT ─────────────────────────────────────────────────────
+(async()=>{
+  await loadData();
+  renderDashboard();
+  updateAlertBadge();
+})();
 </script>
 </body>
 </html>
