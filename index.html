@@ -642,7 +642,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       </div>
       <div class="form-group">
         <label class="form-label">Tema / Título provisório</label>
-        <input type="text" class="form-control" id="sTheme" placeholder="Título ou descrição do tema">
+        <textarea class="form-control" id="sTheme" rows="3" style="resize:vertical" placeholder="Título ou descrição do tema"></textarea>
       </div>
       <div class="form-group">
         <label class="form-label">Agência / Bolsa</label>
@@ -1403,7 +1403,7 @@ function studentCardHTML(s){
     <div class="student-avatar">${initials(s.name)}</div>
     <div class="student-info">
       <div class="student-name">${s.name||'—'}</div>
-      <div class="student-meta">${typeBadge(s.type)}<span style="font-size:11px;color:var(--text-muted)">${s.theme||''}</span></div>
+      <div class="student-meta">${typeBadge(s.type)}<span style="font-size:11px;color:var(--text-muted);white-space:normal;word-break:break-word;line-height:1.4">${s.theme||''}</span></div>
       ${cooriLine}
       <div class="student-milestone"><span style="color:${riskColor(risk)};font-size:10px">●</span>${s.milestone||'Sem etapa'}</div>
     </div>
