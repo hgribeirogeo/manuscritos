@@ -288,13 +288,30 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 /* TIMELINE */
 .tl-row{display:flex;flex-direction:column;gap:4px;padding:10px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);margin-bottom:6px;cursor:pointer;transition:border-color .15s}
 .tl-row:hover{border-color:var(--border2)}
-.tl-row-top{display:flex;align-items:center;gap:8px;min-width:0}
+.tl-row-top{display:flex;align-items:flex-start;gap:8px;min-width:0}
 .tl-date{font-family:var(--mono);font-size:10px;color:var(--text-dim);flex-shrink:0;width:68px}
 .tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .tl-label{font-size:12px;font-weight:500;color:var(--text);flex:1;min-width:0;line-height:1.4;white-space:normal;word-break:break-word}
 .tl-past{opacity:0.4}
 
-/* SKELETON MANUSCRITO */
+/* BANCAS */
+.banca-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:10px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
+.banca-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.banca-card.banca-futura::before{background:var(--blue)}
+.banca-card.banca-hoje::before{background:var(--green);box-shadow:0 0 8px var(--green)}
+.banca-card.banca-passada::before{background:var(--text-dim)}
+.banca-card:hover{border-color:var(--border2);background:var(--surface2)}
+.banca-type-badge{font-family:var(--mono);font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase}
+.banca-tcc1{background:#1a2040;color:#7090ff;border:1px solid #7090ff33}
+.banca-tcc2{background:#1a3040;color:#40b0ff;border:1px solid #40b0ff33}
+.banca-esp{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange)33}
+.banca-qualif{background:var(--yellow-dim);color:var(--yellow);border:1px solid var(--yellow)33}
+.banca-msc{background:var(--teal-dim);color:var(--teal);border:1px solid var(--teal)33}
+.banca-phd{background:var(--pink-dim);color:var(--pink);border:1px solid var(--pink)33}
+.banca-hoje-glow{animation:glowPulse 2s infinite}
+@keyframes glowPulse{0%,100%{border-color:var(--green)44}50%{border-color:var(--green)}}
+
+
 .sk-block{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px;overflow:hidden}
 .sk-block-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;user-select:none}
 .sk-block-header:hover{background:var(--surface3)}
@@ -328,6 +345,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     </div>
     <div class="nav-item" onclick="showView('calendario')" id="nav-calendario">
       <span class="nav-icon">◷</span> Calendário
+    </div>
+    <div class="nav-item" onclick="showView('bancas')" id="nav-bancas">
+      <span class="nav-icon">🎓</span> Bancas
     </div>
     <div class="nav-item" onclick="showView('alertas')" id="nav-alertas">
       <span class="nav-icon">◬</span> Alertas <span id="alert-count" style="margin-left:auto;font-family:var(--mono);font-size:9px;background:var(--red);color:#fff;border-radius:10px;padding:1px 5px;display:none"></span>
@@ -434,6 +454,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     <!-- CALENDÁRIO -->
     <div id="view-calendario" style="display:none">
       <div class="calendar-list" id="calendarList"></div>
+    </div>
+
+    <!-- BANCAS -->
+    <div id="view-bancas" style="display:none">
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+        <button class="btn btn-secondary btn-sm" onclick="filterBancas('todas')" id="fb-todas">Todas</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterBancas('futuras')" id="fb-futuras">Futuras</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterBancas('passadas')" id="fb-passadas">Realizadas</button>
+        <button class="btn btn-primary btn-sm" onclick="openAddBancaModal()" style="margin-left:auto">+ Nova Banca</button>
+      </div>
+      <div id="bancasList"></div>
     </div>
 
     <!-- ALERTAS -->
@@ -769,6 +800,71 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
   </div>
 </div>
 
+<!-- MODAL: Banca -->
+<div class="overlay" id="modalBanca">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modalBancaTitle">Nova Banca</span>
+      <button class="modal-close" onclick="closeModal('modalBanca')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="bId">
+      <div class="form-group">
+        <label class="form-label">Título do trabalho</label>
+        <textarea class="form-control" id="bTitle" rows="2" style="resize:vertical" placeholder="Título completo do TCC / dissertação / tese"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Autor(es)</label>
+        <input type="text" class="form-control" id="bAuthors" placeholder="Nome do(s) discente(s)">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Orientador</label>
+        <input type="text" class="form-control" id="bAdvisor" placeholder="Prof. Dr. Nome Completo">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Tipo de banca</label>
+          <select class="form-control" id="bType">
+            <option value="TCC1">TCC 1 (Banca de Projeto)</option>
+            <option value="TCC2">TCC 2 (Defesa Final)</option>
+            <option value="ESP">Especialização</option>
+            <option value="QUALIF">Qualificação (Mestrado/Doutorado)</option>
+            <option value="MSC">Defesa de Mestrado</option>
+            <option value="PHD">Defesa de Doutorado</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Local / Link</label>
+          <input type="text" class="form-control" id="bLocation" placeholder="Sala, bloco ou link Meet/Zoom">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Data</label>
+          <input type="date" class="form-control" id="bDate">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Horário</label>
+          <input type="time" class="form-control" id="bTime">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Membros da banca</label>
+        <input type="text" class="form-control" id="bMembers" placeholder="Prof. A, Prof. B, Prof. C">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Observações</label>
+        <textarea class="form-control" id="bNotes" rows="2" style="resize:vertical" placeholder="Instruções, resultado, pendências..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="btnDeleteBanca" onclick="deleteBanca()" style="display:none;margin-right:auto">Excluir</button>
+      <button class="btn btn-secondary" onclick="closeModal('modalBanca')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveBanca()">Salvar</button>
+    </div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast-wrap" id="toastWrap"></div>
 
@@ -838,6 +934,7 @@ async function driveLoad(){
     const data=await r2.json();
     if(data.students) students=data.students;
     if(data.manuscripts) manuscripts=data.manuscripts;
+    if(data.bancas) bancas=data.bancas;
     return true;
   }catch(e){return false;}
 }
@@ -845,7 +942,7 @@ async function driveLoad(){
 async function driveSave(){
   if(!(await driveEnsureToken())) return false;
   try{
-    const payload=JSON.stringify({students,manuscripts},null,2);
+    const payload=JSON.stringify({students,manuscripts,bancas},null,2);
     const boundary='labresearch_boundary';
     let fileId=cfg.driveFileId;
     if(!fileId){
@@ -898,6 +995,7 @@ function getManuSteps(type){ return type==='TCC'?MANU_STEPS_TCC:MANU_STEPS; }
 // ─── DATA ─────────────────────────────────────────────────────
 let students = [];
 let manuscripts = [];
+let bancas = [];
 let currentView = 'dashboard';
 let detailStudentId = null;
 let detailManuId = null;
@@ -924,6 +1022,7 @@ async function loadData(){
         const g=await r.json();
         if(g.files[GIST_FILENAME_S]) students=JSON.parse(g.files[GIST_FILENAME_S].content||'[]');
         if(g.files[GIST_FILENAME_M]) manuscripts=JSON.parse(g.files[GIST_FILENAME_M].content||'[]');
+        if(g.files['labresearch_bancas.json']) bancas=JSON.parse(g.files['labresearch_bancas.json'].content||'[]');
         setSyncOk('Gist'); return;
       }
     }catch(e){}
@@ -931,6 +1030,7 @@ async function loadData(){
   // 3. Fallback localStorage
   try{students=JSON.parse(localStorage.getItem('labstudents')||'[]');}catch(e){students=[];}
   try{manuscripts=JSON.parse(localStorage.getItem('labmanuscripts')||'[]');}catch(e){manuscripts=[];}
+  try{bancas=JSON.parse(localStorage.getItem('labbancas')||'[]');}catch(e){bancas=[];}
   setSyncWarn();
 }
 
@@ -938,6 +1038,7 @@ async function saveData(){
   // Sempre salva local como segurança
   localStorage.setItem('labstudents',JSON.stringify(students));
   localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
+  localStorage.setItem('labbancas',JSON.stringify(bancas));
 
   // 1. Tentar Drive
   if(cfg.syncMode==='drive' && cfg.driveToken){
@@ -977,10 +1078,10 @@ function showView(v, skipHistory=false){
   const nav=document.getElementById('nav-'+v);
   if(nav) nav.classList.add('active');
   currentView=v;
-  const titles={dashboard:'Dashboard',orientandos:'Orientandos',manuscritos:'Manuscritos',calendario:'Calendário de Bancas',alertas:'Alertas',configuracoes:'Configurações','student-detail':'Orientando','manu-detail':'Manuscrito'};
+  const titles={dashboard:'Dashboard',orientandos:'Orientandos',manuscritos:'Manuscritos',calendario:'Calendário de Bancas',bancas:'Agenda de Bancas',alertas:'Alertas',configuracoes:'Configurações','student-detail':'Orientando','manu-detail':'Manuscrito'};
   document.getElementById('topbarTitle').textContent=titles[v]||v;
-  document.getElementById('topbarAdd').textContent=v==='manuscritos'?'+ Manuscrito':'+ Orientando';
-  document.getElementById('topbarAdd').onclick=v==='manuscritos'?()=>openAddManuModal():()=>openAddStudentModal();
+  document.getElementById('topbarAdd').textContent=v==='manuscritos'?'+ Manuscrito':v==='bancas'?'+ Banca':'+ Orientando';
+  document.getElementById('topbarAdd').onclick=v==='manuscritos'?()=>openAddManuModal():v==='bancas'?()=>openAddBancaModal():()=>openAddStudentModal();
   renderCurrentView();
 }
 
@@ -989,6 +1090,7 @@ function renderCurrentView(){
   else if(currentView==='orientandos') renderOrientandos('todos');
   else if(currentView==='manuscritos') renderManuscritos('todos');
   else if(currentView==='calendario') renderCalendario();
+  else if(currentView==='bancas') renderBancas('todas');
   else if(currentView==='alertas') renderAlertas();
   else if(currentView==='configuracoes') renderConfig();
   updateAlertBadge();
@@ -1376,7 +1478,7 @@ function renderStudentDetail(id){
       </div>
     </div>
 
-    ${s.theme?`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:20px;font-size:13px;color:var(--text-muted)"><span style="font-size:10px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px">Tema</span>${escHTML(s.theme)}</div>`:''}
+    ${s.theme?`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:20px"><span style="font-size:10px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Tema</span><div style="font-size:13px;color:var(--text-muted);line-height:1.6;white-space:pre-wrap;word-break:break-word">${escHTML(s.theme)}</div></div>`:''}
 
     <div class="pipeline-section">
       <div class="section-title">Pipeline</div>
@@ -1408,7 +1510,7 @@ function renderStudentDetail(id){
       </div>
     </div>
 
-    ${s.notes?`<div class="pipeline-section"><div class="section-title">Observações</div><div style="font-size:12.5px;color:var(--text-muted);line-height:1.6;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px">${escHTML(s.notes)}</div></div>`:''}
+    ${s.notes?`<div class="pipeline-section"><div class="section-title">Observações</div><div style="font-size:12.5px;color:var(--text-muted);line-height:1.6;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;white-space:pre-wrap;word-break:break-word">${escHTML(s.notes)}</div></div>`:''}
 
     <div class="pipeline-section">
       <div class="section-title">Log de reuniões</div>
@@ -1868,6 +1970,137 @@ function renderCalendario(){
   });
 
   el.innerHTML=hasAny?html:'<div class="empty-state"><div class="empty-icon">◷</div>Nenhum orientando ativo.</div>';
+}
+
+// ─── ALERTAS ──────────────────────────────────────────────────
+// ─── BANCAS ───────────────────────────────────────────────────
+const BANCA_LABELS={TCC1:'TCC 1',TCC2:'TCC 2',ESP:'Especialização',QUALIF:'Qualificação',MSC:'Mestrado',PHD:'Doutorado'};
+const BANCA_CSS={TCC1:'banca-tcc1',TCC2:'banca-tcc2',ESP:'banca-esp',QUALIF:'banca-qualif',MSC:'banca-msc',PHD:'banca-phd'};
+
+let currentBancaFilter='todas';
+
+function renderBancas(filter){
+  currentBancaFilter=filter||'todas';
+  ['todas','futuras','passadas'].forEach(k=>{
+    const b=document.getElementById('fb-'+k);
+    if(b) b.className='btn btn-'+(k===currentBancaFilter?'primary':'secondary')+' btn-sm';
+  });
+  const now=Date.now();
+  let list=[...bancas].sort((a,b)=>new Date(a.date+' '+(a.time||'00:00'))-new Date(b.date+' '+(b.time||'00:00')));
+  if(filter==='futuras') list=list.filter(b=>new Date(b.date+'T'+(b.time||'23:59')).getTime()>=now);
+  if(filter==='passadas') list=list.filter(b=>new Date(b.date+'T'+(b.time||'23:59')).getTime()<now);
+
+  const el=document.getElementById('bancasList');
+  if(!list.length){
+    el.innerHTML=`<div class="empty-state"><div class="empty-icon">🎓</div>${filter==='futuras'?'Nenhuma banca futura agendada.':filter==='passadas'?'Nenhuma banca realizada.':'Nenhuma banca cadastrada.'}<br><br><button class="btn btn-primary" onclick="openAddBancaModal()">+ Cadastrar banca</button></div>`;
+    return;
+  }
+  el.innerHTML=list.map(b=>{
+    const dt=new Date(b.date+'T'+(b.time||'12:00'));
+    const isPast=dt.getTime()<now;
+    const isToday=!isPast&&(dt.getTime()-now)<86400000;
+    const cls=isToday?'banca-hoje':isPast?'banca-passada':'banca-futura';
+    const tcls=BANCA_CSS[b.type]||'banca-tcc1';
+    const tlabel=BANCA_LABELS[b.type]||b.type;
+    const diasStr=()=>{
+      const d=Math.ceil((dt.getTime()-now)/86400000);
+      if(isPast) return `<span class="inactivity-badge inactivity-ok" style="opacity:.6">Realizada</span>`;
+      if(isToday) return `<span class="inactivity-badge" style="background:var(--green-dim);color:var(--green-bright);animation:pulse 1.5s infinite">HOJE</span>`;
+      if(d<=7) return `<span class="inactivity-badge inactivity-alert">${d}d</span>`;
+      if(d<=14) return `<span class="inactivity-badge inactivity-warn">${d}d</span>`;
+      return `<span class="inactivity-badge inactivity-ok">${d}d</span>`;
+    };
+    return `<div class="banca-card ${cls} ${isToday?'banca-hoje-glow':''}" onclick="openEditBancaModal('${b.id}')">
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <div style="flex-shrink:0;text-align:center;min-width:52px">
+          <div style="font-family:var(--mono);font-size:18px;font-weight:700;color:var(--text);line-height:1">${String(dt.getDate()).padStart(2,'0')}</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted)">${dt.toLocaleString('pt-BR',{month:'short'}).toUpperCase()}</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim)">${dt.getFullYear()}</div>
+          ${b.time?`<div style="font-family:var(--mono);font-size:11px;color:var(--blue);margin-top:3px">${b.time}</div>`:''}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+            <span class="banca-type-badge ${tcls}">${tlabel}</span>
+            ${diasStr()}
+          </div>
+          <div style="font-size:13.5px;font-weight:600;color:var(--text);line-height:1.4;word-break:break-word">${escHTML(b.title||'Sem título')}</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px">Autor: ${escHTML(b.authors||'—')}</div>
+          <div style="font-size:11.5px;color:var(--text-muted);margin-top:2px">Orientador: ${escHTML(b.advisor||'—')}</div>
+          ${b.location?`<div style="font-size:11px;color:var(--blue);margin-top:4px;font-family:var(--mono)">📍 ${escHTML(b.location)}</div>`:''}
+          ${b.members?`<div style="font-size:11px;color:var(--text-dim);margin-top:4px">Banca: ${escHTML(b.members)}</div>`:''}
+          ${b.notes?`<div style="font-size:11px;color:var(--text-dim);margin-top:6px;font-style:italic;white-space:pre-wrap;word-break:break-word">${escHTML(b.notes)}</div>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterBancas(f){renderBancas(f);}
+
+function openAddBancaModal(){
+  document.getElementById('modalBancaTitle').textContent='Nova Banca';
+  document.getElementById('bId').value='';
+  document.getElementById('bTitle').value='';
+  document.getElementById('bAuthors').value='';
+  document.getElementById('bAdvisor').value='';
+  document.getElementById('bType').value='TCC1';
+  document.getElementById('bLocation').value='';
+  document.getElementById('bDate').value=today();
+  document.getElementById('bTime').value='';
+  document.getElementById('bMembers').value='';
+  document.getElementById('bNotes').value='';
+  document.getElementById('btnDeleteBanca').style.display='none';
+  openModal('modalBanca');
+}
+
+function openEditBancaModal(id){
+  const b=bancas.find(x=>x.id===id);if(!b)return;
+  document.getElementById('modalBancaTitle').textContent='Editar Banca';
+  document.getElementById('bId').value=b.id;
+  document.getElementById('bTitle').value=b.title||'';
+  document.getElementById('bAuthors').value=b.authors||'';
+  document.getElementById('bAdvisor').value=b.advisor||'';
+  document.getElementById('bType').value=b.type||'TCC1';
+  document.getElementById('bLocation').value=b.location||'';
+  document.getElementById('bDate').value=b.date||'';
+  document.getElementById('bTime').value=b.time||'';
+  document.getElementById('bMembers').value=b.members||'';
+  document.getElementById('bNotes').value=b.notes||'';
+  document.getElementById('btnDeleteBanca').style.display='inline-flex';
+  openModal('modalBanca');
+}
+
+function saveBanca(){
+  const id=document.getElementById('bId').value||uid();
+  const data={id,
+    title:document.getElementById('bTitle').value.trim(),
+    authors:document.getElementById('bAuthors').value.trim(),
+    advisor:document.getElementById('bAdvisor').value.trim(),
+    type:document.getElementById('bType').value,
+    location:document.getElementById('bLocation').value.trim(),
+    date:document.getElementById('bDate').value,
+    time:document.getElementById('bTime').value,
+    members:document.getElementById('bMembers').value.trim(),
+    notes:document.getElementById('bNotes').value.trim()
+  };
+  if(!data.date){toast('Informe a data da banca.');return;}
+  const ei=bancas.findIndex(b=>b.id===id);
+  if(ei>=0) Object.assign(bancas[ei],data);
+  else bancas.push(data);
+  saveData();
+  closeModal('modalBanca');
+  renderBancas(currentBancaFilter);
+  toast('Banca salva.');
+}
+
+function deleteBanca(){
+  const id=document.getElementById('bId').value;
+  if(!id||!confirm('Excluir esta banca?')) return;
+  bancas=bancas.filter(b=>b.id!==id);
+  saveData();
+  closeModal('modalBanca');
+  renderBancas(currentBancaFilter);
+  toast('Banca excluída.');
 }
 
 // ─── ALERTAS ──────────────────────────────────────────────────
