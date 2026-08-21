@@ -1649,6 +1649,19 @@ function saveStudent(){
   const existing=students.findIndex(s=>s.id===id);
   if(existing>=0) Object.assign(students[existing],data);
   else{data.meetings=[];students.push(data);}
+
+  // ── Sincronização com Manuscritos: se o tema bater com um título, garantir que o autor está lá ──
+  if(data.theme){
+    const linked=manuscripts.find(m=>m.title&&(
+      m.title===data.theme ||
+      data.theme.startsWith(m.title.substring(0,40)) ||
+      m.title.startsWith(data.theme.substring(0,40))
+    ));
+    if(linked && data.name && !linked.authors.toLowerCase().includes(data.name.toLowerCase().split(' ')[0])){
+      linked.authors = linked.authors ? linked.authors + ', ' + data.name : data.name;
+    }
+  }
+
   saveData();
   closeModal('modalStudent');
   renderCurrentView();
@@ -1855,15 +1868,94 @@ function saveManu(){
   const id=document.getElementById('mId').value||uid();
   const steps=Array.from(document.querySelectorAll('#mStepsCheck input:checked')).map(i=>i.value);
   const skeleton=readSkeletonFields();
-  const data={id,title:document.getElementById('mTitle').value.trim(),journal:document.getElementById('mJournal').value.trim(),type:document.getElementById('mType').value,authors:document.getElementById('mAuthors').value.trim(),notes:document.getElementById('mNotes').value.trim(),steps,skeleton,subStatus:document.getElementById('mSubStatus').value,subDate:document.getElementById('mSubDate').value,qualis:document.getElementById('mQualis').value,jcr:document.getElementById('mJCR').value.trim()};
+  const data={id,
+    title:document.getElementById('mTitle').value.trim(),
+    journal:document.getElementById('mJournal').value.trim(),
+    type:document.getElementById('mType').value,
+    authors:document.getElementById('mAuthors').value.trim(),
+    notes:document.getElementById('mNotes').value.trim(),
+    steps,skeleton,
+    subStatus:document.getElementById('mSubStatus').value,
+    subDate:document.getElementById('mSubDate').value,
+    qualis:document.getElementById('mQualis').value,
+    jcr:document.getElementById('mJCR').value.trim()
+  };
   if(!data.title){toast('Informe o título.');return;}
   const ei=manuscripts.findIndex(m=>m.id===id);
   if(ei>=0) Object.assign(manuscripts[ei],data);
   else manuscripts.push(data);
+
+  // ── Sincronização automática com Orientandos ──────────────────
+  const authorNames = data.authors.split(/[,;&]+/).map(a=>a.trim()).filter(Boolean);
+  const newStudents = [];
+
+  authorNames.forEach(name=>{
+    if(!name) return;
+    // Buscar orientando existente por nome (busca parcial case-insensitive)
+    const existing = students.find(s=>
+      s.name && s.name.toLowerCase().includes(name.toLowerCase().split(' ')[0]) ||
+      name.toLowerCase().includes((s.name||'').toLowerCase().split(' ')[0])
+    );
+    if(existing){
+      // Atualizar tema se estiver vazio ou for o valor padrão truncado
+      if(!existing.theme || existing.theme.length < data.title.length){
+        existing.theme = data.title;
+      }
+      // Atualizar notes se estiver vazio
+      if(!existing.notes || existing.notes.startsWith('Manuscrito vinculado:')){
+        existing.notes = 'Manuscrito vinculado: ' + data.title;
+      }
+    } else {
+      // Orientando não existe — registrar para perguntar ao usuário
+      newStudents.push(name);
+    }
+  });
+
   saveData();
   closeModal('modalManu');
   renderCurrentView();
-  toast('Manuscrito salvo.');
+
+  if(newStudents.length > 0){
+    // Oferecer criação automática dos orientandos não encontrados
+    const plural = newStudents.length > 1;
+    const nomes = newStudents.join(', ');
+    setTimeout(()=>{
+      if(confirm(`${plural?'Os autores':'O autor'} "${nomes}" não ${plural?'estão':'está'} em Orientandos.\n\nDeseja criar ${plural?'os cadastros':'o cadastro'} automaticamente?`)){
+        newStudents.forEach(name=>{
+          // Mapear tipo do manuscrito para tipo do orientando
+          const typeMap = {'IC':'IC','TCC':'TCC','ESP':'ESP','proprio':'IC'};
+          const sType = typeMap[data.type] || 'IC';
+          const pipeFirst = PIPELINES[sType][0];
+          students.push({
+            id: uid(),
+            name,
+            matricula:'',
+            type: sType,
+            milestone: pipeFirst,
+            email:'',
+            phone:'',
+            start: data.subDate||'',
+            end:'',
+            theme: data.title,
+            grant:'',
+            advisor:'',
+            program:'',
+            lastMeet:'',
+            notes: 'Manuscrito vinculado: ' + data.title,
+            meetings:[],
+            encerrado:false,
+          });
+        });
+        saveData();
+        renderCurrentView();
+        toast(`${newStudents.length} orientando${newStudents.length>1?'s':''} criado${newStudents.length>1?'s':''} automaticamente.`);
+      } else {
+        toast('Manuscrito salvo. Cadastre o orientando manualmente se necessário.');
+      }
+    }, 300);
+  } else {
+    toast('Manuscrito salvo e orientandos sincronizados.');
+  }
 }
 
 function deleteManu(){
