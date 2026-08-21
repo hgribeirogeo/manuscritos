@@ -1417,12 +1417,15 @@ function studentCardHTML(s){
   const il=inactivityLabel(s);
   const cooriLine=(s.type==='MSC'||s.type==='PHD')&&s.advisor
     ?`<div class="coori-tag">coorient. de <span>${escHTML(s.advisor)}</span>${s.program?' · '+escHTML(s.program):''}</div>`:'';
+  const groupLine=s.group
+    ?`<div style="font-size:10px;color:var(--text-dim);margin-top:2px;font-family:var(--mono)">👥 grupo: ${escHTML(s.group)}</div>`:'';
   return `<div class="student-card risk-${risk}" onclick="openStudentDetail('${s.id}')">
     <div class="student-avatar">${initials(s.name)}</div>
     <div class="student-info">
       <div class="student-name">${s.name||'—'}</div>
       <div class="student-meta">${typeBadge(s.type)}<span style="font-size:11px;color:var(--text-muted);white-space:normal;word-break:break-word;line-height:1.4">${s.theme||''}</span></div>
       ${cooriLine}
+      ${groupLine}
       <div class="student-milestone"><span style="color:${riskColor(risk)};font-size:10px">●</span>${s.milestone||'Sem etapa'}</div>
     </div>
     <div class="student-progress">
@@ -1904,25 +1907,36 @@ function saveManu(){
   else manuscripts.push(data);
 
   // ── Sincronização automática com Orientandos ──────────────────
-  // Separadores: vírgula, ponto-e-vírgula, &, " e " (português)
+  const typeMap = {'IC':'IC','TCC':'TCC','ESP':'ESP','MSC':'MSC','PHD':'PHD','proprio':'IC'};
+  const manuType = typeMap[data.type] || 'IC';
+
   const authorNames = data.authors
     .split(/,|;|&|\s+e\s+/i)
     .map(a=>a.trim())
     .filter(a=>a.length>1);
 
+  // Vincular todos os autores deste manuscrito entre si (grupo)
+  const groupNames = authorNames.length > 1 ? authorNames : [];
+
   const newStudents = [];
   authorNames.forEach(name=>{
-    const nameLower = name.toLowerCase();
-    const firstName = nameLower.split(' ')[0];
+    const parts = name.toLowerCase().split(/\s+/).filter(Boolean);
     const existing = students.find(s=>{
       if(!s.name) return false;
-      const sLower = s.name.toLowerCase();
-      const sFirst = sLower.split(' ')[0];
-      return sLower.includes(firstName) || nameLower.includes(sFirst);
+      // Tipo deve coincidir — "Nayara IC" (IC) ≠ "Nayara Epalic" (ESP)
+      if(s.type !== manuType) return false;
+      const sParts = s.name.toLowerCase().split(/\s+/).filter(Boolean);
+      // Exige pelo menos 2 partes coincidentes (nome + sobrenome)
+      const matches = parts.filter(p=>p.length>2 && sParts.includes(p));
+      return matches.length >= Math.min(2, parts.length);
     });
     if(existing){
       if(!existing.theme || existing.theme.length < data.title.length) existing.theme = data.title;
       if(!existing.notes || existing.notes.startsWith('Manuscrito vinculado:')) existing.notes = 'Manuscrito vinculado: ' + data.title;
+      // Registrar colegas de grupo no campo grupo
+      if(groupNames.length>1){
+        existing.group = groupNames.filter(n=>n!==name).join(', ');
+      }
     } else {
       newStudents.push(name);
     }
@@ -1967,6 +1981,7 @@ function confirmCreateStudents(){
   const sType = typeMap[manuData.type] || 'IC';
   const pipeFirst = PIPELINES[sType][0];
   names.forEach(name=>{
+    const colegas = names.filter(n=>n!==name);
     students.push({
       id:uid(), name, matricula:'', type:sType,
       milestone:pipeFirst, email:'', phone:'',
@@ -1974,6 +1989,7 @@ function confirmCreateStudents(){
       theme:manuData.title, grant:'',
       advisor:'', program:'', lastMeet:'',
       notes:'Manuscrito vinculado: '+manuData.title,
+      group: colegas.length>0 ? colegas.join(', ') : '',
       meetings:[], encerrado:false,
     });
   });
