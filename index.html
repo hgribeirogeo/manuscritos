@@ -1185,55 +1185,99 @@ function renderDashboard(){
   const tlEl=document.getElementById('dashTimeline');
   const now=Date.now();
 
-  // Para cada orientando com start+end, criar evento com barra de progresso de prazo
+  // Construir eventos unificados: um por orientando (título do tema + nome)
+  // Manuscritos sem orientando vinculado entram separadamente
   const tlEvents=[];
-  manuscripts.forEach(m=>{
-    if(m.subDate) tlEvents.push({date:m.subDate,label:m.title,subStatus:m.subStatus,id:m.id,isStudent:false,start:null,end:m.subDate});
+  const authorsCovered=new Set(); // nomes de autores já cobertos por orientandos
+
+  // 1. Orientandos com prazo definido — evento principal
+  students.filter(s=>!s.encerrado&&s.end).forEach(s=>{
+    // Tentar encontrar manuscrito vinculado pelo nome do autor
+    const linked=manuscripts.find(m=>(m.authors||'').toLowerCase().includes((s.name||'').toLowerCase().split(' ')[0].toLowerCase()));
+    tlEvents.push({
+      date: s.end,
+      title: s.theme || (linked?linked.title:'') || s.name,
+      author: s.name,
+      subStatus: linked?(linked.subStatus||'planejado'):'prazo',
+      id: s.id,
+      manuId: linked?linked.id:null,
+      isStudent: true,
+      start: s.start||null,
+      end: s.end,
+      type: s.type,
+    });
+    if(s.name) authorsCovered.add(s.name.toLowerCase().split(' ')[0]);
   });
-  students.forEach(s=>{
-    if(s.end) tlEvents.push({date:s.end,label:s.name,subStatus:'prazo',id:s.id,isStudent:true,start:s.start||null,end:s.end});
+
+  // 2. Manuscritos cujos autores NÃO estão cobertos por orientandos (ex: manuscritos próprios)
+  manuscripts.filter(m=>m.subDate).forEach(m=>{
+    const firstAuthor=(m.authors||'').toLowerCase().split(/[,;]/)[0].trim().split(' ')[0];
+    if(!firstAuthor||!authorsCovered.has(firstAuthor)){
+      tlEvents.push({
+        date: m.subDate,
+        title: m.title,
+        author: m.authors||'',
+        subStatus: m.subStatus||'planejado',
+        id: m.id,
+        manuId: m.id,
+        isStudent: false,
+        start: null,
+        end: m.subDate,
+        type: m.type,
+      });
+    }
   });
+
   tlEvents.sort((a,b)=>new Date(a.date)-new Date(b.date));
 
+  function buildBarHTML(ev){
+    const endMs=new Date(ev.end).getTime();
+    const isPast=endMs<now;
+    const startMs=ev.start?new Date(ev.start).getTime():endMs-365*86400000;
+    const total=endMs-startMs;
+    const elapsed=Math.max(0,Math.min(now-startMs,total));
+    const pct=total>0?Math.round((elapsed/total)*100):100;
+    const barColor=pct<50?`hsl(210,80%,55%)`:pct<75?`hsl(${210-(pct-50)*5},80%,55%)`:pct<90?`hsl(${160-(pct-75)*8},80%,50%)`:'var(--red)';
+    const markerLeft=Math.min(pct,98);
+    return `<div style="margin-top:6px">
+      <div style="height:3px;background:var(--surface3);border-radius:2px;position:relative">
+        <div style="height:100%;width:${pct}%;background:${barColor};border-radius:2px"></div>
+        <div style="position:absolute;top:-4px;left:${markerLeft}%;transform:translateX(-50%);width:10px;height:10px;border-radius:50%;background:${barColor};border:2px solid var(--bg)"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:3px">
+        <span style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">${ev.start?fmtDate(ev.start):'início'}</span>
+        <span style="font-family:var(--mono);font-size:9px;color:${isPast?'var(--red)':pct>75?'var(--orange)':'var(--text-dim)'}">${fmtDate(ev.end)}${isPast?' · vencido':pct>90?' · urgente':''}</span>
+      </div>
+    </div>`;
+  }
+
   if(!tlEvents.length){
-    tlEl.innerHTML='<div style="color:var(--text-dim);font-size:12px;padding:12px 0">Adicione datas de submissão nos manuscritos ou prazos nos orientandos.</div>';
+    tlEl.innerHTML='<div style="color:var(--text-dim);font-size:12px;padding:12px 0">Adicione prazos nos orientandos para visualizar aqui.</div>';
   } else {
-    tlEl.innerHTML=tlEvents.map(ev=>{
+    const dotColor=(ev)=>{
       const endMs=new Date(ev.date).getTime();
       const isPast=endMs<now;
-      const si=ev.isStudent?{cls:'sub-planejado',lbl:'Prazo'}:subStatusInfo(ev.subStatus);
-
-      // Barra de prazo: do start (ou -1 ano) ao end
-      let barHTML='';
-      if(ev.end){
-        const startMs=ev.start?new Date(ev.start).getTime():endMs-365*86400000;
-        const total=endMs-startMs;
-        const elapsed=Math.max(0,Math.min(now-startMs,total));
-        const pct=total>0?Math.round((elapsed/total)*100):100;
-        // cor: azul → amarelo → laranja → vermelho
-        const barColor=pct<50?`hsl(210,80%,55%)`:pct<75?`hsl(${210-(pct-50)*5},80%,55%)`:pct<90?`hsl(${160-(pct-75)*8},80%,50%)`:'var(--red)';
-        const markerLeft=Math.min(pct,98);
-        barHTML=`<div style="margin-top:5px;position:relative">
-          <div style="height:3px;background:var(--surface3);border-radius:2px;overflow:visible;position:relative">
-            <div style="height:100%;width:${pct}%;background:${barColor};border-radius:2px;transition:width .3s"></div>
-            <div style="position:absolute;top:-4px;left:${markerLeft}%;transform:translateX(-50%);width:10px;height:10px;border-radius:50%;background:${barColor};border:2px solid var(--bg)"></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;margin-top:4px">
-            <span style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">${ev.start?fmtDate(ev.start):'início'}</span>
-            <span style="font-family:var(--mono);font-size:9px;color:${isPast?'var(--red)':pct>75?'var(--orange)':'var(--text-dim)'}">${fmtDate(ev.end)} ${isPast?'(vencido)':pct>90?'(urgente)':''}</span>
-          </div>
-        </div>`;
-      }
-
-      const label=ev.isStudent?`Prazo: ${escHTML(ev.label||'')}`:escHTML(ev.label||'');
-      return `<div class="tl-row" onclick="${ev.isStudent?`openStudentDetail('${ev.id}')`:`openManuDetail('${ev.id}')`}">
+      if(ev.type==='IC') return 'var(--blue)';
+      if(ev.type==='TCC') return 'var(--purple)';
+      if(ev.type==='ESP') return 'var(--orange)';
+      if(ev.type==='MSC') return 'var(--teal)';
+      if(ev.type==='PHD') return 'var(--pink)';
+      return isPast?'var(--text-dim)':'var(--blue)';
+    };
+    tlEl.innerHTML=tlEvents.map(ev=>{
+      const si=subStatusInfo(ev.subStatus);
+      const dest=ev.isStudent?`openStudentDetail('${ev.id}')`:` openManuDetail('${ev.id}')`;
+      return `<div class="tl-row" onclick="${dest}">
         <div class="tl-row-top">
           <span class="tl-date">${fmtDate(ev.date)}</span>
-          <div class="tl-dot" style="background:${ev.isStudent?'var(--orange)':isPast?'var(--text-dim)':'var(--blue)'}"></div>
-          <div class="tl-label">${label}</div>
-          <span class="sub-badge ${si.cls}" style="flex-shrink:0;margin-left:auto">${si.lbl}</span>
+          <div class="tl-dot" style="background:${dotColor(ev)}"></div>
+          <div style="flex:1;min-width:0">
+            <div class="tl-label">${escHTML(ev.title||'—')}</div>
+            ${ev.author?`<div style="font-size:10.5px;color:var(--text-muted);margin-top:2px;font-family:var(--mono)">${typeBadge(ev.type)} ${escHTML(ev.author)}</div>`:''}
+          </div>
+          <span class="sub-badge ${si.cls}" style="flex-shrink:0;margin-left:8px">${si.lbl}</span>
         </div>
-        ${barHTML}
+        ${buildBarHTML(ev)}
       </div>`;
     }).join('');
   }
