@@ -2336,7 +2336,16 @@ function escHTML(s){if(!s)return'';const d=document.createElement('div');d.textC
 
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
-document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+// Fechar overlay APENAS com clique preciso (mousedown e mouseup no mesmo alvo)
+// Isso evita fechar ao arrastar texto dentro do modal e soltar fora
+document.querySelectorAll('.overlay').forEach(o=>{
+  let downTarget=null;
+  o.addEventListener('mousedown',e=>{downTarget=e.target;});
+  o.addEventListener('mouseup',e=>{
+    if(e.target===o && downTarget===o) o.classList.remove('open');
+    downTarget=null;
+  });
+});
 
 function toast(msg){
   const el=document.createElement('div');el.className='toast';el.textContent=msg;
