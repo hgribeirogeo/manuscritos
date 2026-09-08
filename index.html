@@ -1192,21 +1192,19 @@ function saveCfg(){localStorage.setItem('labcfg',JSON.stringify(cfg));}
 async function loadData(){
   loadCfg();
 
-  // ── PASSO 1: Carregar localStorage IMEDIATAMENTE — tela não trava ──
+  // ── PASSO 1: Carregar localStorage IMEDIATAMENTE ──
   try{students=JSON.parse(localStorage.getItem('labstudents')||'[]');}catch(e){students=[];}
   try{manuscripts=JSON.parse(localStorage.getItem('labmanuscripts')||'[]');}catch(e){manuscripts=[];}
   try{bancas=JSON.parse(localStorage.getItem('labbancas')||'[]');}catch(e){bancas=[];}
   try{producao=JSON.parse(localStorage.getItem('labproducao')||'[]');}catch(e){producao=[];}
 
-  // Renderizar imediatamente com dados locais
-  setSyncWarn();
-  renderCurrentView();
+  // Status inicial
+  if(students.length>0||manuscripts.length>0) setSyncWarn();
 
-  // ── PASSO 2: Tentar Drive em background (sem bloquear a tela) ──
+  // ── PASSO 2: Tentar Drive em background ──
   if(cfg.syncMode==='drive' && cfg.driveToken){
     driveLoad().then(ok=>{
       if(!ok){setSyncErr('Drive');return;}
-      // Merge: só substituir se Drive trouxer mais dados que o local
       const localS=JSON.parse(localStorage.getItem('labstudents')||'[]');
       const localM=JSON.parse(localStorage.getItem('labmanuscripts')||'[]');
       const localB=JSON.parse(localStorage.getItem('labbancas')||'[]');
@@ -1215,15 +1213,14 @@ async function loadData(){
       if(manuscripts.length===0 && localM.length>0) manuscripts=localM;
       if(bancas.length===0 && localB.length>0) bancas=localB;
       if(producao.length===0 && localP.length>0) producao=localP;
-      // Atualizar localStorage com versão do Drive
       localStorage.setItem('labstudents',JSON.stringify(students));
       localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
       localStorage.setItem('labbancas',JSON.stringify(bancas));
       localStorage.setItem('labproducao',JSON.stringify(producao));
       setSyncOk('Drive');
-      renderCurrentView(); // re-renderizar com dados do Drive
+      if(typeof renderCurrentView==='function') renderCurrentView();
     }).catch(e=>{setSyncErr('Drive');console.warn('Drive bg load error:',e);});
-    return; // não aguardar — tela já está renderizada
+    return;
   }
 
   // ── PASSO 3: Tentar Gist em background ──
@@ -1246,14 +1243,10 @@ async function loadData(){
       localStorage.setItem('labbancas',JSON.stringify(bancas));
       localStorage.setItem('labproducao',JSON.stringify(producao));
       setSyncOk('Gist');
-      renderCurrentView();
+      if(typeof renderCurrentView==='function') renderCurrentView();
     }).catch(e=>{console.warn('Gist load error:',e.message);});
     return;
   }
-
-  // Sem sync remoto configurado — dados locais são tudo que temos
-  if(students.length>0||manuscripts.length>0) setSyncWarn();
-  else{document.getElementById('syncText').textContent='Sem dados — importe ou cadastre';}
 }
 
 async function saveData(){
@@ -2837,6 +2830,7 @@ function toast(msg){
 // ─── INIT ─────────────────────────────────────────────────────
 (async()=>{
   await loadData();
+  // Renderizar dashboard com dados do localStorage (já carregados)
   renderDashboard();
   updateAlertBadge();
 })();
