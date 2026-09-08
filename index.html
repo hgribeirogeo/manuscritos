@@ -233,18 +233,22 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .dash-bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:0}
 
 /* SEMÁFORO COMPACTO */
-.sema-row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);margin-bottom:6px;cursor:pointer;transition:all 0.15s;position:relative;overflow:hidden}
-.sema-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
-.sema-row.risk-verde::before{background:var(--green)}
-.sema-row.risk-amarelo::before{background:var(--yellow)}
-.sema-row.risk-laranja::before{background:var(--orange)}
-.sema-row.risk-vermelho::before{background:var(--red)}
-.sema-row.risk-encerrado::before{background:var(--text-dim)}
-.sema-row:hover{background:var(--surface2);border-color:var(--border2)}
-.sema-avatar{width:30px;height:30px;border-radius:50%;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--text);flex-shrink:0}
-.sema-name{font-size:12.5px;font-weight:600;color:var(--text);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sema-detail{font-size:11px;color:var(--text-muted);flex:2;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sema-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+/* SEMÁFORO — grid de cards compactos */
+#dashSemaforo{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sema-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:5px}
+.sema-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.sema-card.risk-verde::before{background:var(--green)}
+.sema-card.risk-amarelo::before{background:var(--yellow)}
+.sema-card.risk-laranja::before{background:var(--orange)}
+.sema-card.risk-vermelho::before{background:var(--red)}
+.sema-card.risk-encerrado::before{background:var(--text-dim)}
+.sema-card:hover{border-color:var(--border2);background:var(--surface2)}
+.sema-card-top{display:flex;align-items:center;gap:7px}
+.sema-avatar{width:26px;height:26px;border-radius:50%;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;font-weight:700;color:var(--text);flex-shrink:0}
+.sema-name{font-size:12px;font-weight:600;color:var(--text);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sema-card-mid{font-size:10.5px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left:2px}
+.sema-card-bot{display:flex;align-items:center;gap:6px}
+.sema-row{display:none} /* manter por compatibilidade mas oculto */
 
 /* MANUSCRITOS DASHBOARD */
 .manu-dash-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);margin-bottom:6px;cursor:pointer;transition:all 0.15s}
@@ -1447,17 +1451,18 @@ function renderDashboard(){
       const risk=riskLevel(s);
       const il=inactivityLabel(s);
       const pct=pipelineProgress(s);
-      return `<div class="sema-row risk-${risk}" onclick="openStudentDetail('${s.id}')">
-        <div class="sema-avatar">${initials(s.name)}</div>
-        ${typeBadge(s.type)}
-        <div class="sema-name">${escHTML(s.name)}</div>
-        <div class="sema-detail">${escHTML(s.milestone||'Sem etapa')}</div>
-        <div class="sema-right">
-          <div class="manu-prog-mini">
+      return `<div class="sema-card risk-${risk}" onclick="openStudentDetail('${s.id}')">
+        <div class="sema-card-top">
+          <div class="sema-avatar">${initials(s.name)}</div>
+          ${typeBadge(s.type)}
+          <div class="sema-name">${escHTML(s.name)}</div>
+        </div>
+        <div class="sema-card-mid">⬡ ${escHTML(s.milestone||'Sem etapa')}</div>
+        <div class="sema-card-bot">
+          <div class="manu-prog-mini" style="flex:1">
             <div class="progress-track"><div class="progress-fill ${risk}" style="width:${pct}%"></div></div>
-            <div class="progress-label">${pct}%</div>
           </div>
-          <span class="inactivity-badge ${il.cls}">${il.txt}</span>
+          <span class="inactivity-badge ${il.cls}" style="font-size:9px;padding:1px 6px">${il.txt}</span>
         </div>
       </div>`;
     }).join('');
