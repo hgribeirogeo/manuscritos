@@ -1027,64 +1027,120 @@ function saveCfg(){localStorage.setItem('labcfg',JSON.stringify(cfg));}
 
 async function loadData(){
   loadCfg();
+
+  // Sempre carregar localStorage primeiro como base segura
+  let localStudents=[], localManuscripts=[], localBancas=[];
+  try{localStudents=JSON.parse(localStorage.getItem('labstudents')||'[]');}catch(e){}
+  try{localManuscripts=JSON.parse(localStorage.getItem('labmanuscripts')||'[]');}catch(e){}
+  try{localBancas=JSON.parse(localStorage.getItem('labbancas')||'[]');}catch(e){}
+
   // 1. Tentar Drive
   if(cfg.syncMode==='drive' && cfg.driveToken){
-    const ok=await driveLoad();
-    if(ok){setSyncOk('Drive');return;}
+    try{
+      const ok=await driveLoad();
+      if(ok){
+        // Proteção: nunca substituir dados locais existentes por arrays vazios vindos do Drive
+        // (pode acontecer se o arquivo Drive foi salvo por versão antiga sem bancas)
+        if(students.length===0 && localStudents.length>0) students=localStudents;
+        if(manuscripts.length===0 && localManuscripts.length>0) manuscripts=localManuscripts;
+        if(bancas.length===0 && localBancas.length>0) bancas=localBancas;
+        // Sempre atualizar localStorage com dados mais completos
+        localStorage.setItem('labstudents',JSON.stringify(students));
+        localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
+        localStorage.setItem('labbancas',JSON.stringify(bancas));
+        setSyncOk('Drive');
+        return;
+      }
+    }catch(e){console.warn('Drive load error:',e);}
   }
+
   // 2. Tentar Gist
   if(cfg.gistId && cfg.token){
     try{
       const r=await fetch(`https://api.github.com/gists/${cfg.gistId}`,{headers:{Authorization:`token ${cfg.token}`}});
       if(r.ok){
         const g=await r.json();
-        if(g.files[GIST_FILENAME_S]) students=JSON.parse(g.files[GIST_FILENAME_S].content||'[]');
-        if(g.files[GIST_FILENAME_M]) manuscripts=JSON.parse(g.files[GIST_FILENAME_M].content||'[]');
-        if(g.files['labresearch_bancas.json']) bancas=JSON.parse(g.files['labresearch_bancas.json'].content||'[]');
+        const gs=g.files[GIST_FILENAME_S]?JSON.parse(g.files[GIST_FILENAME_S].content||'[]'):[];
+        const gm=g.files[GIST_FILENAME_M]?JSON.parse(g.files[GIST_FILENAME_M].content||'[]'):[];
+        const gb=g.files['labresearch_bancas.json']?JSON.parse(g.files['labresearch_bancas.json'].content||'[]'):[];
+        students   = gs.length>0 ? gs : localStudents;
+        manuscripts= gm.length>0 ? gm : localManuscripts;
+        bancas     = gb.length>0 ? gb : localBancas;
+        localStorage.setItem('labstudents',JSON.stringify(students));
+        localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
+        localStorage.setItem('labbancas',JSON.stringify(bancas));
         setSyncOk('Gist'); return;
       }
-    }catch(e){}
+    }catch(e){console.warn('Gist load error:',e);}
   }
-  // 3. Fallback localStorage
-  try{students=JSON.parse(localStorage.getItem('labstudents')||'[]');}catch(e){students=[];}
-  try{manuscripts=JSON.parse(localStorage.getItem('labmanuscripts')||'[]');}catch(e){manuscripts=[];}
-  try{bancas=JSON.parse(localStorage.getItem('labbancas')||'[]');}catch(e){bancas=[];}
-  setSyncWarn();
+
+  // 3. Fallback puro localStorage
+  students=localStudents;
+  manuscripts=localManuscripts;
+  bancas=localBancas;
+  if(students.length>0||manuscripts.length>0) setSyncWarn();
+  else setSyncErr('sem dados');
 }
 
 async function saveData(){
-  // Sempre salva local como segurança
-  localStorage.setItem('labstudents',JSON.stringify(students));
-  localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
-  localStorage.setItem('labbancas',JSON.stringify(bancas));
+  // 1. SEMPRE salvar localStorage primeiro — nunca pular isso
+  try{
+    localStorage.setItem('labstudents',JSON.stringify(students));
+    localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
+    localStorage.setItem('labbancas',JSON.stringify(bancas));
+  }catch(e){console.error('localStorage save error:',e);}
 
-  // 1. Tentar Drive
+  // 2. Tentar Drive
   if(cfg.syncMode==='drive' && cfg.driveToken){
-    const ok=await driveSave();
-    if(ok){setSyncOk('Drive');return;}
-    setSyncErr('Drive');return;
+    try{
+      const ok=await driveSave();
+      if(ok){setSyncOk('Drive');return;}
+      setSyncErr('Drive');
+      toast('⚠ Dados salvos localmente. Falha no Drive — verifique a conexão.');
+      return;
+    }catch(e){
+      setSyncErr('Drive');
+      toast('⚠ Dados salvos localmente. Erro no Drive: '+e.message);
+      return;
+    }
   }
-  // 2. Tentar Gist
+
+  // 3. Tentar Gist
   if(cfg.gistId && cfg.token){
     try{
       const files={};
       files[GIST_FILENAME_S]={content:JSON.stringify(students,null,2)};
       files[GIST_FILENAME_M]={content:JSON.stringify(manuscripts,null,2)};
+      files['labresearch_bancas.json']={content:JSON.stringify(bancas,null,2)};
       const r=await fetch(`https://api.github.com/gists/${cfg.gistId}`,{
         method:'PATCH',headers:{'Content-Type':'application/json',Authorization:`token ${cfg.token}`},
         body:JSON.stringify({files})
       });
       if(r.ok){setSyncOk('Gist');return;}
-    }catch(e){}
+    }catch(e){console.warn('Gist save error:',e);}
     setSyncErr('Gist');
   }
 }
 
-function setSyncOk(src){document.getElementById('syncDot').className='sync-dot ok';document.getElementById('syncText').textContent=`✓ ${src||'Sync'}`;}
-function setSyncWarn(){document.getElementById('syncDot').className='sync-dot';document.getElementById('syncText').textContent='Local (sem sync)';}
-function setSyncErr(src){document.getElementById('syncDot').className='sync-dot err';document.getElementById('syncText').textContent=`Erro — ${src||'sync'}`;}
+function setSyncOk(src){
+  document.getElementById('syncDot').className='sync-dot ok';
+  document.getElementById('syncText').textContent=`✓ ${src||'Sync'} · ${new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`;
+}
+function setSyncWarn(){document.getElementById('syncDot').className='sync-dot';document.getElementById('syncText').textContent='Local (sem sync remoto)';}
+function setSyncErr(src){document.getElementById('syncDot').className='sync-dot err';document.getElementById('syncText').textContent=`⚠ Falha — ${src||'sync'}`;}
 
-async function syncNow(){toast('Sincronizando...');await loadData();renderCurrentView();}
+async function syncNow(){
+  toast('Sincronizando...');
+  // Forçar re-upload de tudo que está em memória para o Drive
+  if(cfg.syncMode==='drive' && cfg.driveToken){
+    const ok=await driveSave();
+    if(ok){setSyncOk('Drive');toast('✓ Sincronizado com Drive.');renderCurrentView();return;}
+    else toast('✗ Falha ao sincronizar com Drive. Dados mantidos localmente.');
+    return;
+  }
+  await loadData();
+  renderCurrentView();
+}
 
 // ─── VIEWS ────────────────────────────────────────────────────
 function showView(v, skipHistory=false){
