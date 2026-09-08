@@ -1061,18 +1061,28 @@ let cfg = {
 
 // ─── DRIVE SYNC ───────────────────────────────────────────────
 const DRIVE_TOKEN_URL = 'https://oauth2.googleapis.com/token';
+const DRIVE_TIMEOUT_MS = 8000;
+
+// Fetch com timeout — evita travar indefinidamente
+async function fetchWithTimeout(url, opts={}, ms=DRIVE_TIMEOUT_MS){
+  const ctrl=new AbortController();
+  const timer=setTimeout(()=>ctrl.abort(),ms);
+  try{
+    const r=await fetch(url,{...opts,signal:ctrl.signal});
+    clearTimeout(timer);
+    return r;
+  }catch(e){clearTimeout(timer);throw e;}
+}
 
 async function driveEnsureToken(){
-  // Se token válido por mais de 2 minutos, usa direto
   if(cfg.driveToken && cfg.driveTokenExpiry && Date.now() < cfg.driveTokenExpiry - 120000) return true;
-  // Tentar renovar com refresh_token
   if(!cfg.driveRefreshToken || !cfg.driveClientId || !cfg.driveClientSecret) return !!cfg.driveToken;
   try{
-    const r=await fetch(DRIVE_TOKEN_URL,{
+    const r=await fetchWithTimeout(DRIVE_TOKEN_URL,{
       method:'POST',
       headers:{'Content-Type':'application/x-www-form-urlencoded'},
       body:`client_id=${encodeURIComponent(cfg.driveClientId)}&client_secret=${encodeURIComponent(cfg.driveClientSecret)}&refresh_token=${encodeURIComponent(cfg.driveRefreshToken)}&grant_type=refresh_token`
-    });
+    }, 6000);
     if(!r.ok) return false;
     const d=await r.json();
     if(d.access_token){
@@ -1082,7 +1092,7 @@ async function driveEnsureToken(){
       return true;
     }
     return false;
-  }catch(e){return false;}
+  }catch(e){console.warn('Token refresh failed:',e.message);return false;}
 }
 
 async function driveLoad(){
@@ -1091,14 +1101,14 @@ async function driveLoad(){
     let fileId=cfg.driveFileId;
     if(!fileId){
       const q=encodeURIComponent(`name='${DRIVE_FILENAME}' and trashed=false`);
-      const r=await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)`,
+      const r=await fetchWithTimeout(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)`,
         {headers:{Authorization:`Bearer ${cfg.driveToken}`}});
       if(!r.ok) return false;
       const d=await r.json();
       if(d.files&&d.files.length>0){fileId=d.files[0].id;cfg.driveFileId=fileId;saveCfg();}
     }
     if(!fileId) return false;
-    const r2=await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
+    const r2=await fetchWithTimeout(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
       {headers:{Authorization:`Bearer ${cfg.driveToken}`}});
     if(!r2.ok) return false;
     const data=await r2.json();
@@ -1107,7 +1117,7 @@ async function driveLoad(){
     if(data.bancas) bancas=data.bancas;
     if(data.producao) producao=data.producao;
     return true;
-  }catch(e){return false;}
+  }catch(e){console.warn('Drive load failed:',e.message);return false;}
 }
 
 async function driveSave(){
@@ -1182,64 +1192,68 @@ function saveCfg(){localStorage.setItem('labcfg',JSON.stringify(cfg));}
 async function loadData(){
   loadCfg();
 
-  // Sempre carregar localStorage primeiro como base segura
-  let localStudents=[], localManuscripts=[], localBancas=[], localProducao=[];
-  try{localStudents=JSON.parse(localStorage.getItem('labstudents')||'[]');}catch(e){}
-  try{localManuscripts=JSON.parse(localStorage.getItem('labmanuscripts')||'[]');}catch(e){}
-  try{localBancas=JSON.parse(localStorage.getItem('labbancas')||'[]');}catch(e){}
-  try{localProducao=JSON.parse(localStorage.getItem('labproducao')||'[]');}catch(e){}
+  // ── PASSO 1: Carregar localStorage IMEDIATAMENTE — tela não trava ──
+  try{students=JSON.parse(localStorage.getItem('labstudents')||'[]');}catch(e){students=[];}
+  try{manuscripts=JSON.parse(localStorage.getItem('labmanuscripts')||'[]');}catch(e){manuscripts=[];}
+  try{bancas=JSON.parse(localStorage.getItem('labbancas')||'[]');}catch(e){bancas=[];}
+  try{producao=JSON.parse(localStorage.getItem('labproducao')||'[]');}catch(e){producao=[];}
 
-  // 1. Tentar Drive
+  // Renderizar imediatamente com dados locais
+  setSyncWarn();
+  renderCurrentView();
+
+  // ── PASSO 2: Tentar Drive em background (sem bloquear a tela) ──
   if(cfg.syncMode==='drive' && cfg.driveToken){
-    try{
-      const ok=await driveLoad();
-      if(ok){
-        // Proteção: nunca substituir dados locais existentes por arrays vazios vindos do Drive
-        // (pode acontecer se o arquivo Drive foi salvo por versão antiga sem bancas)
-        if(students.length===0 && localStudents.length>0) students=localStudents;
-        if(manuscripts.length===0 && localManuscripts.length>0) manuscripts=localManuscripts;
-        if(bancas.length===0 && localBancas.length>0) bancas=localBancas;
-        if(producao.length===0 && localProducao.length>0) producao=localProducao;
-        localStorage.setItem('labstudents',JSON.stringify(students));
-        localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
-        localStorage.setItem('labbancas',JSON.stringify(bancas));
-        localStorage.setItem('labproducao',JSON.stringify(producao));
-        setSyncOk('Drive');
-        return;
-      }
-    }catch(e){console.warn('Drive load error:',e);}
+    driveLoad().then(ok=>{
+      if(!ok){setSyncErr('Drive');return;}
+      // Merge: só substituir se Drive trouxer mais dados que o local
+      const localS=JSON.parse(localStorage.getItem('labstudents')||'[]');
+      const localM=JSON.parse(localStorage.getItem('labmanuscripts')||'[]');
+      const localB=JSON.parse(localStorage.getItem('labbancas')||'[]');
+      const localP=JSON.parse(localStorage.getItem('labproducao')||'[]');
+      if(students.length===0 && localS.length>0) students=localS;
+      if(manuscripts.length===0 && localM.length>0) manuscripts=localM;
+      if(bancas.length===0 && localB.length>0) bancas=localB;
+      if(producao.length===0 && localP.length>0) producao=localP;
+      // Atualizar localStorage com versão do Drive
+      localStorage.setItem('labstudents',JSON.stringify(students));
+      localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
+      localStorage.setItem('labbancas',JSON.stringify(bancas));
+      localStorage.setItem('labproducao',JSON.stringify(producao));
+      setSyncOk('Drive');
+      renderCurrentView(); // re-renderizar com dados do Drive
+    }).catch(e=>{setSyncErr('Drive');console.warn('Drive bg load error:',e);});
+    return; // não aguardar — tela já está renderizada
   }
 
-  // 2. Tentar Gist
+  // ── PASSO 3: Tentar Gist em background ──
   if(cfg.gistId && cfg.token){
-    try{
-      const r=await fetch(`https://api.github.com/gists/${cfg.gistId}`,{headers:{Authorization:`token ${cfg.token}`}});
-      if(r.ok){
-        const g=await r.json();
-        const gs=g.files[GIST_FILENAME_S]?JSON.parse(g.files[GIST_FILENAME_S].content||'[]'):[];
-        const gm=g.files[GIST_FILENAME_M]?JSON.parse(g.files[GIST_FILENAME_M].content||'[]'):[];
-        const gb=g.files['labresearch_bancas.json']?JSON.parse(g.files['labresearch_bancas.json'].content||'[]'):[];
-        const gp=g.files['labresearch_producao.json']?JSON.parse(g.files['labresearch_producao.json'].content||'[]'):[];
-        students   = gs.length>0 ? gs : localStudents;
-        manuscripts= gm.length>0 ? gm : localManuscripts;
-        bancas     = gb.length>0 ? gb : localBancas;
-        producao   = gp.length>0 ? gp : localProducao;
-        localStorage.setItem('labstudents',JSON.stringify(students));
-        localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
-        localStorage.setItem('labbancas',JSON.stringify(bancas));
-        localStorage.setItem('labproducao',JSON.stringify(producao));
-        setSyncOk('Gist'); return;
-      }
-    }catch(e){console.warn('Gist load error:',e);}
+    fetchWithTimeout(`https://api.github.com/gists/${cfg.gistId}`,
+      {headers:{Authorization:`token ${cfg.token}`}}, 8000)
+    .then(async r=>{
+      if(!r.ok) throw new Error('Gist '+r.status);
+      const g=await r.json();
+      const gs=g.files[GIST_FILENAME_S]?JSON.parse(g.files[GIST_FILENAME_S].content||'[]'):[];
+      const gm=g.files[GIST_FILENAME_M]?JSON.parse(g.files[GIST_FILENAME_M].content||'[]'):[];
+      const gb=g.files['labresearch_bancas.json']?JSON.parse(g.files['labresearch_bancas.json'].content||'[]'):[];
+      const gp=g.files['labresearch_producao.json']?JSON.parse(g.files['labresearch_producao.json'].content||'[]'):[];
+      if(gs.length>0) students=gs;
+      if(gm.length>0) manuscripts=gm;
+      if(gb.length>0) bancas=gb;
+      if(gp.length>0) producao=gp;
+      localStorage.setItem('labstudents',JSON.stringify(students));
+      localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
+      localStorage.setItem('labbancas',JSON.stringify(bancas));
+      localStorage.setItem('labproducao',JSON.stringify(producao));
+      setSyncOk('Gist');
+      renderCurrentView();
+    }).catch(e=>{console.warn('Gist load error:',e.message);});
+    return;
   }
 
-  // 3. Fallback puro localStorage
-  students=localStudents;
-  manuscripts=localManuscripts;
-  bancas=localBancas;
-  producao=localProducao;
+  // Sem sync remoto configurado — dados locais são tudo que temos
   if(students.length>0||manuscripts.length>0) setSyncWarn();
-  else setSyncErr('sem dados');
+  else{document.getElementById('syncText').textContent='Sem dados — importe ou cadastre';}
 }
 
 async function saveData(){
