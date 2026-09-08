@@ -294,6 +294,29 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .tl-label{font-size:12px;font-weight:500;color:var(--text);flex:1;min-width:0;line-height:1.4;white-space:normal;word-break:break-word}
 .tl-past{opacity:0.4}
 
+/* PRODUÇÃO INTELECTUAL */
+.prod-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:all .15s;display:flex;gap:14px;align-items:flex-start}
+.prod-card:hover{border-color:var(--border2);background:var(--surface2)}
+.prod-pts{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--green-bright);min-width:44px;text-align:center;padding-top:2px;line-height:1}
+.prod-pts-label{font-family:var(--mono);font-size:9px;color:var(--text-dim);text-align:center}
+.prod-body{flex:1;min-width:0}
+.prod-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.4;word-break:break-word}
+.prod-meta{font-size:11.5px;color:var(--text-muted);margin-top:4px}
+.prod-tipo-badge{font-family:var(--mono);font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase;margin-right:6px}
+.prod-artigo{background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue)33}
+.prod-livro{background:var(--purple-dim);color:var(--purple);border:1px solid var(--purple)33}
+.prod-capitulo{background:var(--teal-dim);color:var(--teal);border:1px solid var(--teal)33}
+.prod-congresso{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange)33}
+.prod-outro{background:var(--surface3);color:var(--text-muted);border:1px solid var(--border)}
+.prod-resumo-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;display:flex;gap:20px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.prod-resumo-num{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--green-bright);line-height:1}
+.prod-resumo-label{font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+/* BANCA DASHBOARD */
+.banca-dash-item{display:flex;gap:12px;align-items:center;padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:6px;cursor:pointer;transition:all .15s}
+.banca-dash-item:hover{border-color:var(--border2);background:var(--surface2)}
+.banca-dash-item.urgente{border-color:var(--orange)66}
+.banca-dash-item.hoje{border-color:var(--green);animation:glowPulse 2s infinite}
+
 /* BANCAS */
 .banca-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:10px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
 .banca-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
@@ -349,6 +372,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     <div class="nav-item" onclick="showView('bancas')" id="nav-bancas">
       <span class="nav-icon">🎓</span> Bancas
     </div>
+    <div class="nav-item" onclick="showView('producao')" id="nav-producao">
+      <span class="nav-icon">📄</span> Produção
+    </div>
     <div class="nav-item" onclick="showView('alertas')" id="nav-alertas">
       <span class="nav-icon">◬</span> Alertas <span id="alert-count" style="margin-left:auto;font-family:var(--mono);font-size:9px;background:var(--red);color:#fff;border-radius:10px;padding:1px 5px;display:none"></span>
     </div>
@@ -377,6 +403,15 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     <div id="view-dashboard">
       <!-- STAT CARDS -->
       <div class="stats-row" id="statsRow"></div>
+
+      <!-- BANCAS FUTURAS -->
+      <div class="dash-section" id="dashBancasSection">
+        <div class="dash-section-header">
+          <span class="dash-section-title">🎓 Bancas Futuras</span>
+          <button class="btn btn-secondary btn-sm" onclick="showView('bancas')">Ver agenda →</button>
+        </div>
+        <div id="dashBancasFuturas"></div>
+      </div>
 
       <!-- SEÇÃO 1: SEMÁFORO DE ORIENTANDOS -->
       <div class="dash-section">
@@ -465,6 +500,25 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <button class="btn btn-primary btn-sm" onclick="openAddBancaModal()" style="margin-left:auto">+ Nova Banca</button>
       </div>
       <div id="bancasList"></div>
+    </div>
+
+    <!-- PRODUÇÃO INTELECTUAL -->
+    <div id="view-producao" style="display:none">
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+        <button class="btn btn-secondary btn-sm" onclick="filterProducao('todos')" id="fp-todos">Todos</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterProducao('artigo')" id="fp-artigo">Artigos</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterProducao('livro')" id="fp-livro">Livros</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterProducao('capitulo')" id="fp-capitulo">Capítulos</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterProducao('congresso')" id="fp-congresso">Congressos</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterProducao('outro')" id="fp-outro">Outros</button>
+        <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+          <div style="font-family:var(--mono);font-size:12px;color:var(--text-muted)">Total RADOC: <span id="totalPontos" style="color:var(--green-bright);font-weight:700">0 pts</span></div>
+          <button class="btn btn-primary btn-sm" onclick="openAddProducaoModal()">+ Nova produção</button>
+        </div>
+      </div>
+      <!-- Resumo por ano -->
+      <div id="producaoResumo" style="margin-bottom:16px"></div>
+      <div id="producaoList"></div>
     </div>
 
     <!-- ALERTAS -->
@@ -865,6 +919,104 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
   </div>
 </div>
 
+<!-- MODAL: Produção Intelectual -->
+<div class="overlay" id="modalProducao">
+  <div class="modal" style="width:560px">
+    <div class="modal-header">
+      <span class="modal-title" id="modalProducaoTitle">Nova Produção</span>
+      <button class="modal-close" onclick="closeModal('modalProducao')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="pId">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Tipo de produção (CONSUNI 17/2018)</label>
+          <select class="form-control" id="pTipo" onchange="updatePontos()">
+            <optgroup label="Artigos em Periódicos">
+              <option value="artigo_a1" data-pts="25" data-cat="artigo">1.1 Artigo Qualis A (25 pts)</option>
+              <option value="artigo_a2" data-pts="20" data-cat="artigo">1.2 Artigo Qualis B (20 pts)</option>
+              <option value="artigo_a3" data-pts="15" data-cat="artigo">1.3 Artigo Qualis C (15 pts)</option>
+              <option value="artigo_sem" data-pts="10" data-cat="artigo">1.4 Artigo sem Qualis (10 pts)</option>
+              <option value="resumo_periodico" data-pts="5" data-cat="artigo">2. Resumo em periódico especializado (5 pts)</option>
+              <option value="repositorio" data-pts="5" data-cat="artigo">3. Artigo em repositório eletrônico (5 pts)</option>
+            </optgroup>
+            <optgroup label="Congressos e Anais">
+              <option value="resumo_exp_int" data-pts="8" data-cat="congresso">4.1 Resumo expandido — Internacional (8 pts)</option>
+              <option value="resumo_exp_nac" data-pts="6" data-cat="congresso">4.2 Resumo expandido — Nacional (6 pts)</option>
+              <option value="resumo_exp_reg" data-pts="4" data-cat="congresso">4.3 Resumo expandido — Regional (4 pts)</option>
+              <option value="resumo_int" data-pts="4" data-cat="congresso">5.1 Resumo simples — Internacional (4 pts)</option>
+              <option value="resumo_nac" data-pts="3" data-cat="congresso">5.2 Resumo simples — Nacional (3 pts)</option>
+              <option value="resumo_reg" data-pts="2" data-cat="congresso">5.3 Resumo simples — Regional (2 pts)</option>
+              <option value="completo_congresso" data-pts="10" data-cat="congresso">6. Trabalho completo em anais (10 pts)</option>
+            </optgroup>
+            <optgroup label="Livros e Capítulos">
+              <option value="livro_editorial" data-pts="40" data-cat="livro">7. Livro com corpo editorial (40 pts)</option>
+              <option value="livro_sem" data-pts="10" data-cat="livro">8. Livro sem corpo editorial (10 pts)</option>
+              <option value="capitulo" data-pts="10" data-cat="capitulo">9. Capítulo de livro c/ corpo editorial (10 pts)</option>
+              <option value="edicao_livro" data-pts="12" data-cat="livro">10. Edição/organização de livro (12 pts)</option>
+              <option value="capitulo_trad" data-pts="5" data-cat="capitulo">11. Capítulo traduzido (5 pts)</option>
+              <option value="livro_trad" data-pts="20" data-cat="livro">12. Tradução de livro (20 pts)</option>
+              <option value="artigo_trad" data-pts="10" data-cat="artigo">13. Tradução de artigo Qualis (10 pts)</option>
+              <option value="livro_didatico" data-pts="10" data-cat="livro">16. Livro didático institucional (10 pts)</option>
+            </optgroup>
+            <optgroup label="Outros">
+              <option value="resenha" data-pts="5" data-cat="outro">14. Resenha, prefácio ou verbete (5 pts)</option>
+              <option value="resenha_trad" data-pts="2" data-cat="outro">15. Tradução de resenha/prefácio (2 pts)</option>
+              <option value="editor_anais_int" data-pts="15" data-cat="outro">17.1 Editor de anais — Internacional (15 pts)</option>
+              <option value="editor_anais_nac" data-pts="10" data-cat="outro">17.2 Editor de anais — Nacional (10 pts)</option>
+              <option value="editor_anais_reg" data-pts="5" data-cat="outro">17.3 Editor de anais — Regional (5 pts)</option>
+              <option value="mestrado_autor" data-pts="20" data-cat="outro">18. Dissertação de Mestrado (autor) (20 pts)</option>
+              <option value="doutorado_autor" data-pts="40" data-cat="outro">19. Tese de Doutorado (autor) (40 pts)</option>
+              <option value="bolsa_cnpq" data-pts="20" data-cat="outro">20. Bolsista Produtividade CNPq (20 pts)</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="form-group" style="max-width:110px">
+          <label class="form-label">Pontos</label>
+          <div id="pPontosDisplay" style="font-family:var(--mono);font-size:22px;font-weight:700;color:var(--green-bright);padding:8px 0;line-height:1">25</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Título</label>
+        <textarea class="form-control" id="pTitulo" rows="2" style="resize:vertical" placeholder="Título completo da publicação"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Autores</label>
+          <input type="text" class="form-control" id="pAutores" placeholder="Ribeiro, H.J.; Silva, A.B.">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ano</label>
+          <input type="number" class="form-control" id="pAno" placeholder="2025" min="1990" max="2040">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Veículo (revista / editora / evento)</label>
+          <input type="text" class="form-control" id="pVeiculo" placeholder="Natural Hazards, Springer">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Qualis / ISSN / DOI</label>
+          <input type="text" class="form-control" id="pQualis" placeholder="A2 / 10.1007/...">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Link / URL</label>
+        <input type="url" class="form-control" id="pUrl" placeholder="https://doi.org/...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notas</label>
+        <textarea class="form-control" id="pNotas" rows="2" style="resize:vertical" placeholder="Observações, número de páginas, volume..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="btnDeleteProducao" onclick="deleteProducao()" style="display:none;margin-right:auto">Excluir</button>
+      <button class="btn btn-secondary" onclick="closeModal('modalProducao')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveProducao()">Salvar</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: Confirmar criação de orientandos -->
 <div class="overlay" id="modalConfirmStudents">
   <div class="modal" style="max-width:460px">
@@ -953,6 +1105,7 @@ async function driveLoad(){
     if(data.students) students=data.students;
     if(data.manuscripts) manuscripts=data.manuscripts;
     if(data.bancas) bancas=data.bancas;
+    if(data.producao) producao=data.producao;
     return true;
   }catch(e){return false;}
 }
@@ -960,7 +1113,7 @@ async function driveLoad(){
 async function driveSave(){
   if(!(await driveEnsureToken())) return false;
   try{
-    const payload=JSON.stringify({students,manuscripts,bancas},null,2);
+    const payload=JSON.stringify({students,manuscripts,bancas,producao},null,2);
     const boundary='labresearch_boundary';
     let fileId=cfg.driveFileId;
     if(!fileId){
@@ -1014,6 +1167,7 @@ function getManuSteps(type){ return type==='TCC'?MANU_STEPS_TCC:MANU_STEPS; }
 let students = [];
 let manuscripts = [];
 let bancas = [];
+let producao = [];
 let currentView = 'dashboard';
 let detailStudentId = null;
 let detailManuId = null;
@@ -1029,10 +1183,11 @@ async function loadData(){
   loadCfg();
 
   // Sempre carregar localStorage primeiro como base segura
-  let localStudents=[], localManuscripts=[], localBancas=[];
+  let localStudents=[], localManuscripts=[], localBancas=[], localProducao=[];
   try{localStudents=JSON.parse(localStorage.getItem('labstudents')||'[]');}catch(e){}
   try{localManuscripts=JSON.parse(localStorage.getItem('labmanuscripts')||'[]');}catch(e){}
   try{localBancas=JSON.parse(localStorage.getItem('labbancas')||'[]');}catch(e){}
+  try{localProducao=JSON.parse(localStorage.getItem('labproducao')||'[]');}catch(e){}
 
   // 1. Tentar Drive
   if(cfg.syncMode==='drive' && cfg.driveToken){
@@ -1044,10 +1199,11 @@ async function loadData(){
         if(students.length===0 && localStudents.length>0) students=localStudents;
         if(manuscripts.length===0 && localManuscripts.length>0) manuscripts=localManuscripts;
         if(bancas.length===0 && localBancas.length>0) bancas=localBancas;
-        // Sempre atualizar localStorage com dados mais completos
+        if(producao.length===0 && localProducao.length>0) producao=localProducao;
         localStorage.setItem('labstudents',JSON.stringify(students));
         localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
         localStorage.setItem('labbancas',JSON.stringify(bancas));
+        localStorage.setItem('labproducao',JSON.stringify(producao));
         setSyncOk('Drive');
         return;
       }
@@ -1063,12 +1219,15 @@ async function loadData(){
         const gs=g.files[GIST_FILENAME_S]?JSON.parse(g.files[GIST_FILENAME_S].content||'[]'):[];
         const gm=g.files[GIST_FILENAME_M]?JSON.parse(g.files[GIST_FILENAME_M].content||'[]'):[];
         const gb=g.files['labresearch_bancas.json']?JSON.parse(g.files['labresearch_bancas.json'].content||'[]'):[];
+        const gp=g.files['labresearch_producao.json']?JSON.parse(g.files['labresearch_producao.json'].content||'[]'):[];
         students   = gs.length>0 ? gs : localStudents;
         manuscripts= gm.length>0 ? gm : localManuscripts;
         bancas     = gb.length>0 ? gb : localBancas;
+        producao   = gp.length>0 ? gp : localProducao;
         localStorage.setItem('labstudents',JSON.stringify(students));
         localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
         localStorage.setItem('labbancas',JSON.stringify(bancas));
+        localStorage.setItem('labproducao',JSON.stringify(producao));
         setSyncOk('Gist'); return;
       }
     }catch(e){console.warn('Gist load error:',e);}
@@ -1078,6 +1237,7 @@ async function loadData(){
   students=localStudents;
   manuscripts=localManuscripts;
   bancas=localBancas;
+  producao=localProducao;
   if(students.length>0||manuscripts.length>0) setSyncWarn();
   else setSyncErr('sem dados');
 }
@@ -1088,6 +1248,7 @@ async function saveData(){
     localStorage.setItem('labstudents',JSON.stringify(students));
     localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
     localStorage.setItem('labbancas',JSON.stringify(bancas));
+    localStorage.setItem('labproducao',JSON.stringify(producao));
   }catch(e){console.error('localStorage save error:',e);}
 
   // 2. Tentar Drive
@@ -1152,10 +1313,10 @@ function showView(v, skipHistory=false){
   const nav=document.getElementById('nav-'+v);
   if(nav) nav.classList.add('active');
   currentView=v;
-  const titles={dashboard:'Dashboard',orientandos:'Orientandos',manuscritos:'Manuscritos',calendario:'Calendário de Bancas',bancas:'Agenda de Bancas',alertas:'Alertas',configuracoes:'Configurações','student-detail':'Orientando','manu-detail':'Manuscrito'};
+  const titles={dashboard:'Dashboard',orientandos:'Orientandos',manuscritos:'Manuscritos',calendario:'Calendário',bancas:'Agenda de Bancas',producao:'Produção Intelectual',alertas:'Alertas',configuracoes:'Configurações','student-detail':'Orientando','manu-detail':'Manuscrito'};
   document.getElementById('topbarTitle').textContent=titles[v]||v;
-  document.getElementById('topbarAdd').textContent=v==='manuscritos'?'+ Manuscrito':v==='bancas'?'+ Banca':'+ Orientando';
-  document.getElementById('topbarAdd').onclick=v==='manuscritos'?()=>openAddManuModal():v==='bancas'?()=>openAddBancaModal():()=>openAddStudentModal();
+  document.getElementById('topbarAdd').textContent=v==='manuscritos'?'+ Manuscrito':v==='bancas'?'+ Banca':v==='producao'?'+ Produção':'+ Orientando';
+  document.getElementById('topbarAdd').onclick=v==='manuscritos'?()=>openAddManuModal():v==='bancas'?()=>openAddBancaModal():v==='producao'?()=>openAddProducaoModal():()=>openAddStudentModal();
   renderCurrentView();
 }
 
@@ -1165,6 +1326,7 @@ function renderCurrentView(){
   else if(currentView==='manuscritos') renderManuscritos('todos');
   else if(currentView==='calendario') renderCalendario();
   else if(currentView==='bancas') renderBancas('todas');
+  else if(currentView==='producao') renderProducao('todos');
   else if(currentView==='alertas') renderAlertas();
   else if(currentView==='configuracoes') renderConfig();
   updateAlertBadge();
@@ -1261,6 +1423,9 @@ function renderDashboard(){
     <div class="stat-card"><div class="stat-value">${students.filter(s=>s.type==='MSC'||s.type==='PHD').length}</div><div class="stat-label">Pós-Grad</div><div class="stat-sub">Mestrado + Doutorado</div></div>
     <div class="stat-card" style="border-color:${alertas.length>0?'var(--orange)44':'var(--border)'}"><div class="stat-value" style="color:${alertas.length>0?'var(--orange)':'var(--text)'}">${alertas.length}</div><div class="stat-label">Requerem atenção</div><div class="stat-sub">Inatividade ≥${cfg.warnDays}d</div></div>
   `;
+
+  // ── BANCAS FUTURAS ──
+  renderDashBancas();
 
   // ── SEÇÃO 1: SEMÁFORO ──
   const semaEl=document.getElementById('dashSemaforo');
@@ -1843,6 +2008,7 @@ function renderManuDetail(id){
       <div style="display:flex;gap:8px;flex-shrink:0">
         <button class="btn btn-secondary btn-sm" onclick="openEditManuModal('${id}')">✎ Editar</button>
         <button class="btn btn-secondary btn-sm" onclick="openGDocs('${id}')">↗ Google Docs</button>
+        ${m.subStatus!=='publicado'?`<button class="btn btn-primary btn-sm" onclick="marcarPublicado('${id}')" style="background:var(--green);border-color:var(--green)">✓ Publicado</button>`:`<span class="sub-badge sub-publicado" style="padding:6px 12px">Publicado ✓</span>`}
       </div>
     </div>
 
@@ -2150,8 +2316,223 @@ function renderCalendario(){
   el.innerHTML=hasAny?html:'<div class="empty-state"><div class="empty-icon">◷</div>Nenhum orientando ativo.</div>';
 }
 
+}
+
+// ─── BANCAS DASHBOARD ─────────────────────────────────────────
+function renderDashBancas(){
+  const now=Date.now();
+  const futuras=[...bancas]
+    .filter(b=>{const dt=new Date(b.date+'T'+(b.time||'23:59'));return dt.getTime()>=now;})
+    .sort((a,b)=>new Date(a.date+'T'+(a.time||'00:00'))-new Date(b.date+'T'+(b.time||'00:00')))
+    .slice(0,5);
+  const el=document.getElementById('dashBancasFuturas');
+  const sec=document.getElementById('dashBancasSection');
+  if(!el||!sec) return;
+  if(!futuras.length){
+    sec.style.display='none'; return;
+  }
+  sec.style.display='';
+  el.innerHTML=futuras.map(b=>{
+    const dt=new Date(b.date+'T'+(b.time||'12:00'));
+    const dias=Math.ceil((dt.getTime()-now)/86400000);
+    const isHoje=dias<=0;
+    const isUrgente=dias<=7&&dias>0;
+    const tcls=BANCA_LABELS[b.type]?`<span class="banca-type-badge ${BANCA_CSS[b.type]||'banca-tcc1'}">${BANCA_LABELS[b.type]}</span>`:'';
+    return `<div class="banca-dash-item ${isHoje?'hoje':isUrgente?'urgente':''}" onclick="showView('bancas')">
+      <div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text);flex-shrink:0;width:68px">${String(dt.getDate()).padStart(2,'0')}/${String(dt.getMonth()+1).padStart(2,'0')}</div>
+      ${b.time?`<div style="font-family:var(--mono);font-size:11px;color:var(--blue);flex-shrink:0">${b.time}</div>`:''}
+      ${tcls}
+      <div style="flex:1;min-width:0;font-size:12.5px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHTML(b.title||'')}</div>
+      <span class="inactivity-badge ${isHoje?'inactivity-ok':isUrgente?'inactivity-alert':'inactivity-warn'}" style="flex-shrink:0">${isHoje?'HOJE':dias+'d'}</span>
+    </div>`;
+  }).join('');
+}
+
+// ─── PRODUÇÃO INTELECTUAL ──────────────────────────────────────
+const PROD_TIPOS={
+  artigo_a1:{label:'Artigo Qualis A',cat:'artigo',pts:25},
+  artigo_a2:{label:'Artigo Qualis B',cat:'artigo',pts:20},
+  artigo_a3:{label:'Artigo Qualis C',cat:'artigo',pts:15},
+  artigo_sem:{label:'Artigo s/ Qualis',cat:'artigo',pts:10},
+  resumo_periodico:{label:'Resumo periódico',cat:'artigo',pts:5},
+  repositorio:{label:'Repositório eletrônico',cat:'artigo',pts:5},
+  resumo_exp_int:{label:'Res. expandido Intl.',cat:'congresso',pts:8},
+  resumo_exp_nac:{label:'Res. expandido Nac.',cat:'congresso',pts:6},
+  resumo_exp_reg:{label:'Res. expandido Reg.',cat:'congresso',pts:4},
+  resumo_int:{label:'Resumo Intl.',cat:'congresso',pts:4},
+  resumo_nac:{label:'Resumo Nac.',cat:'congresso',pts:3},
+  resumo_reg:{label:'Resumo Reg.',cat:'congresso',pts:2},
+  completo_congresso:{label:'Trabalho completo anais',cat:'congresso',pts:10},
+  livro_editorial:{label:'Livro c/ editorial',cat:'livro',pts:40},
+  livro_sem:{label:'Livro s/ editorial',cat:'livro',pts:10},
+  capitulo:{label:'Capítulo livro',cat:'capitulo',pts:10},
+  edicao_livro:{label:'Edição/organização livro',cat:'livro',pts:12},
+  capitulo_trad:{label:'Capítulo traduzido',cat:'capitulo',pts:5},
+  livro_trad:{label:'Tradução de livro',cat:'livro',pts:20},
+  artigo_trad:{label:'Tradução artigo Qualis',cat:'artigo',pts:10},
+  livro_didatico:{label:'Livro didático',cat:'livro',pts:10},
+  resenha:{label:'Resenha/prefácio/verbete',cat:'outro',pts:5},
+  resenha_trad:{label:'Tradução resenha',cat:'outro',pts:2},
+  editor_anais_int:{label:'Editor anais Intl.',cat:'outro',pts:15},
+  editor_anais_nac:{label:'Editor anais Nac.',cat:'outro',pts:10},
+  editor_anais_reg:{label:'Editor anais Reg.',cat:'outro',pts:5},
+  mestrado_autor:{label:'Dissertação (autor)',cat:'outro',pts:20},
+  doutorado_autor:{label:'Tese (autor)',cat:'outro',pts:40},
+  bolsa_cnpq:{label:'Bolsista CNPq',cat:'outro',pts:20},
+};
+
+const PROD_CAT_CSS={artigo:'prod-artigo',livro:'prod-livro',capitulo:'prod-capitulo',congresso:'prod-congresso',outro:'prod-outro'};
+let currentProducaoFilter='todos';
+
+function updatePontos(){
+  const sel=document.getElementById('pTipo');
+  const opt=sel.selectedOptions[0];
+  const pts=opt?opt.dataset.pts:'0';
+  document.getElementById('pPontosDisplay').textContent=pts;
+}
+
+function renderProducao(f){
+  currentProducaoFilter=f||'todos';
+  ['todos','artigo','livro','capitulo','congresso','outro'].forEach(k=>{
+    const b=document.getElementById('fp-'+k);
+    if(b) b.className='btn btn-'+(k===currentProducaoFilter?'primary':'secondary')+' btn-sm';
+  });
+  let list=[...producao].sort((a,b)=>(b.ano||0)-(a.ano||0));
+  if(currentProducaoFilter!=='todos'){
+    list=list.filter(p=>{const t=PROD_TIPOS[p.tipo];return t&&t.cat===currentProducaoFilter;});
+  }
+  const totalPts=producao.reduce((s,p)=>{const t=PROD_TIPOS[p.tipo];return s+(t?t.pts:0);},0);
+  document.getElementById('totalPontos').textContent=totalPts+' pts';
+
+  // Resumo por ano
+  const anos={};
+  producao.forEach(p=>{const a=p.ano||'?';if(!anos[a])anos[a]={pts:0,n:0};const t=PROD_TIPOS[p.tipo];anos[a].pts+=(t?t.pts:0);anos[a].n++;});
+  const anosOrdenados=Object.keys(anos).sort((a,b)=>b-a);
+  document.getElementById('producaoResumo').innerHTML=`<div class="prod-resumo-card">
+    <div><div class="prod-resumo-num">${totalPts}</div><div class="prod-resumo-label">Total RADOC</div></div>
+    <div style="width:1px;background:var(--border);align-self:stretch"></div>
+    <div><div class="prod-resumo-num">${producao.length}</div><div class="prod-resumo-label">Publicações</div></div>
+    <div style="width:1px;background:var(--border);align-self:stretch"></div>
+    ${anosOrdenados.slice(0,4).map(a=>`<div><div class="prod-resumo-num" style="font-size:18px">${anos[a].pts}</div><div class="prod-resumo-label">${a} · ${anos[a].n} prod.</div></div>`).join('')}
+  </div>`;
+
+  const el=document.getElementById('producaoList');
+  if(!list.length){
+    el.innerHTML=`<div class="empty-state"><div class="empty-icon">📄</div>Nenhuma produção cadastrada nesta categoria.<br><br><button class="btn btn-primary" onclick="openAddProducaoModal()">+ Cadastrar produção</button></div>`;
+    return;
+  }
+  el.innerHTML=list.map(p=>{
+    const tipo=PROD_TIPOS[p.tipo]||{label:p.tipo,cat:'outro',pts:0};
+    const catCss=PROD_CAT_CSS[tipo.cat]||'prod-outro';
+    return `<div class="prod-card" onclick="openEditProducaoModal('${p.id}')">
+      <div><div class="prod-pts">${tipo.pts}</div><div class="prod-pts-label">pts</div></div>
+      <div class="prod-body">
+        <div class="prod-title">${escHTML(p.titulo||'Sem título')}</div>
+        <div class="prod-meta">
+          <span class="prod-tipo-badge ${catCss}">${tipo.label}</span>
+          ${p.ano?`<span style="font-family:var(--mono);font-size:10px">${p.ano}</span> · `:''}
+          ${escHTML(p.autores||'')}
+          ${p.veiculo?` · <em>${escHTML(p.veiculo)}</em>`:''}
+          ${p.qualis?` · <span style="color:var(--green-bright);font-weight:600">${escHTML(p.qualis)}</span>`:''}
+        </div>
+        ${p.url?`<div style="margin-top:4px"><a href="${escHTML(p.url)}" target="_blank" onclick="event.stopPropagation()" style="font-family:var(--mono);font-size:10px;color:var(--blue)">↗ ${escHTML(p.url.replace('https://','').substring(0,50))}</a></div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterProducao(f){renderProducao(f);}
+
+function openAddProducaoModal(){
+  document.getElementById('modalProducaoTitle').textContent='Nova Produção';
+  document.getElementById('pId').value='';
+  document.getElementById('pTipo').value='artigo_a1';
+  document.getElementById('pTitulo').value='';
+  document.getElementById('pAutores').value='';
+  document.getElementById('pAno').value=new Date().getFullYear();
+  document.getElementById('pVeiculo').value='';
+  document.getElementById('pQualis').value='';
+  document.getElementById('pUrl').value='';
+  document.getElementById('pNotas').value='';
+  document.getElementById('btnDeleteProducao').style.display='none';
+  updatePontos();
+  openModal('modalProducao');
+}
+
+function openEditProducaoModal(id){
+  const p=producao.find(x=>x.id===id);if(!p)return;
+  document.getElementById('modalProducaoTitle').textContent='Editar Produção';
+  document.getElementById('pId').value=p.id;
+  document.getElementById('pTipo').value=p.tipo||'artigo_a1';
+  document.getElementById('pTitulo').value=p.titulo||'';
+  document.getElementById('pAutores').value=p.autores||'';
+  document.getElementById('pAno').value=p.ano||'';
+  document.getElementById('pVeiculo').value=p.veiculo||'';
+  document.getElementById('pQualis').value=p.qualis||'';
+  document.getElementById('pUrl').value=p.url||'';
+  document.getElementById('pNotas').value=p.notas||'';
+  document.getElementById('btnDeleteProducao').style.display='inline-flex';
+  updatePontos();
+  openModal('modalProducao');
+}
+
+function saveProducao(){
+  const id=document.getElementById('pId').value||uid();
+  const data={id,
+    tipo:document.getElementById('pTipo').value,
+    titulo:document.getElementById('pTitulo').value.trim(),
+    autores:document.getElementById('pAutores').value.trim(),
+    ano:parseInt(document.getElementById('pAno').value)||new Date().getFullYear(),
+    veiculo:document.getElementById('pVeiculo').value.trim(),
+    qualis:document.getElementById('pQualis').value.trim(),
+    url:document.getElementById('pUrl').value.trim(),
+    notas:document.getElementById('pNotas').value.trim()
+  };
+  if(!data.titulo){toast('Informe o título.');return;}
+  const ei=producao.findIndex(p=>p.id===id);
+  if(ei>=0) Object.assign(producao[ei],data);
+  else producao.push(data);
+  saveData();
+  closeModal('modalProducao');
+  renderProducao(currentProducaoFilter);
+  toast('Produção salva.');
+}
+
+function deleteProducao(){
+  const id=document.getElementById('pId').value;
+  if(!id||!confirm('Excluir esta produção?')) return;
+  producao=producao.filter(p=>p.id!==id);
+  saveData();
+  closeModal('modalProducao');
+  renderProducao(currentProducaoFilter);
+  toast('Produção excluída.');
+}
+
+// Botão "Publicado" nos manuscritos → cria entrada em Produção
+function marcarPublicado(manuId){
+  const m=manuscripts.find(x=>x.id===manuId);if(!m)return;
+  m.subStatus='publicado';
+  // Verificar se já existe entrada de produção para este manuscrito
+  const jaExiste=producao.some(p=>p.titulo===m.title);
+  if(!jaExiste){
+    producao.push({
+      id:uid(),
+      tipo: m.qualis?'artigo_a'+({'A1':1,'A2':2,'A3':3,'B1':2,'B2':2}[m.qualis]||2):'artigo_a2',
+      titulo:m.title,
+      autores:m.authors||'',
+      ano:new Date().getFullYear(),
+      veiculo:m.journal||'',
+      qualis:m.qualis||'',
+      url:'',
+      notas:'Gerado automaticamente ao marcar manuscrito como publicado.'
+    });
+  }
+  saveData();
+  renderCurrentView();
+  toast('✓ Manuscrito marcado como Publicado e registrado em Produção Intelectual.');
+}
+
 // ─── ALERTAS ──────────────────────────────────────────────────
-// ─── BANCAS ───────────────────────────────────────────────────
 const BANCA_LABELS={TCC1:'TCC 1',TCC2:'TCC 2',ESP:'Especialização',QUALIF:'Qualificação',MSC:'Mestrado',PHD:'Doutorado'};
 const BANCA_CSS={TCC1:'banca-tcc1',TCC2:'banca-tcc2',ESP:'banca-esp',QUALIF:'banca-qualif',MSC:'banca-msc',PHD:'banca-phd'};
 
