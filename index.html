@@ -534,67 +534,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     <div id="view-configuracoes" style="display:none">
       <div style="display:flex;flex-direction:column;gap:16px;max-width:520px">
 
-        <!-- DRIVE -->
+        <!-- GIST — sync principal -->
         <div class="card">
           <div class="card-header">
-            <span style="font-size:13px;font-weight:600">☁ Google Drive — Sync automático</span>
-            <span id="driveSyncBadge" style="font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:12px;background:var(--surface3);color:var(--text-dim)">inativo</span>
+            <span style="font-size:13px;font-weight:600">⎇ GitHub Gist — Sincronização</span>
+            <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:12px;background:var(--green-dim);color:var(--green-bright)">ativo</span>
           </div>
           <div class="card-body">
-            <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;line-height:1.6">Salva <code style="font-family:var(--mono);font-size:11px;background:var(--surface3);padding:1px 5px;border-radius:3px">labresearch_data.json</code> no Drive. Token renovado automaticamente — configure uma vez, funciona para sempre.</p>
-
-            <details style="margin-bottom:14px">
-              <summary style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;cursor:pointer;user-select:none">▶ Como obter as credenciais (clique para expandir)</summary>
-              <div style="margin-top:10px;font-size:11.5px;color:var(--text-muted);line-height:1.8;background:var(--surface3);border-radius:var(--radius-sm);padding:12px 14px">
-                <b style="color:var(--text)">Passo 1 — Criar credenciais no Google Cloud</b><br>
-                1. Acesse <a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="color:var(--blue)">console.cloud.google.com/apis/credentials</a><br>
-                2. Crie um projeto (ou use um existente)<br>
-                3. Ative a <b>Google Drive API</b> em "APIs e serviços"<br>
-                4. Em "Credenciais" → "Criar credenciais" → <b>ID do cliente OAuth 2.0</b><br>
-                5. Tipo: <b>Aplicativo da Web</b><br>
-                6. Em "URIs de redirecionamento autorizados" adicione: <code style="font-family:var(--mono);font-size:10px;background:var(--surface2);padding:1px 4px">https://developers.google.com/oauthplayground</code><br>
-                7. Salve e copie o <b>Client ID</b> e o <b>Client Secret</b><br><br>
-                <b style="color:var(--text)">Passo 2 — Obter refresh_token no OAuth Playground</b><br>
-                1. Acesse <a href="https://developers.google.com/oauthplayground" target="_blank" style="color:var(--blue)">developers.google.com/oauthplayground</a><br>
-                2. Clique no ⚙ (canto superior direito) → marque <b>"Use your own OAuth credentials"</b><br>
-                3. Cole seu Client ID e Client Secret<br>
-                4. Na lista de APIs, selecione <b>Drive API v3</b> → <code style="font-family:var(--mono);font-size:10px">https://www.googleapis.com/auth/drive.file</code><br>
-                5. Clique <b>"Authorize APIs"</b> → faça login → autorize<br>
-                6. Clique <b>"Exchange authorization code for tokens"</b><br>
-                7. Copie o <b>refresh_token</b> da resposta JSON
-              </div>
-            </details>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Client ID</label>
-                <input type="text" class="form-control" id="cfgDriveClientId" placeholder="123456789.apps.googleusercontent.com">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Client Secret</label>
-                <input type="password" class="form-control" id="cfgDriveClientSecret" placeholder="GOCSPX-...">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Refresh Token</label>
-              <input type="password" class="form-control" id="cfgDriveRefreshToken" placeholder="1//042Ark...">
-            </div>
-            <div class="form-group" style="display:none" id="driveTokenManualGroup">
-              <label class="form-label">Access Token manual (opcional — só se não tiver refresh token)</label>
-              <input type="password" class="form-control" id="cfgDriveToken" placeholder="ya29.a0...">
-            </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <button class="btn btn-primary" onclick="saveDriveConfig()">Ativar Drive</button>
-              <button class="btn btn-secondary" onclick="testDrive()">Testar conexão</button>
-              <button class="btn btn-secondary" onclick="disableDrive()">Desativar</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- GIST (fallback) -->
-        <div class="card">
-          <div class="card-header"><span style="font-size:13px;font-weight:600">⎇ GitHub Gist — Fallback</span></div>
-          <div class="card-body">
+            <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.6">Salva automaticamente em um Gist privado do GitHub. O token PAT não expira — configure uma vez, funciona para sempre.</p>
             <div class="form-group">
               <label class="form-label">Gist ID</label>
               <input type="text" class="form-control" id="cfgGistId" placeholder="e5d141b42a27db388a7d1f684c78e3f0">
@@ -602,10 +549,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="form-group">
               <label class="form-label">GitHub Token (PAT)</label>
               <input type="password" class="form-control" id="cfgToken" placeholder="ghp_...">
+              <div style="font-size:11px;color:var(--text-dim);margin-top:5px">Obtenha em <a href="https://github.com/settings/tokens" target="_blank" style="color:var(--blue)">github.com/settings/tokens</a> → "Generate new token (classic)" → marque <b>gist</b> → sem data de expiração.</div>
             </div>
             <div style="display:flex;gap:8px">
-              <button class="btn btn-secondary" onclick="saveConfig()">Salvar Gist</button>
-              <button class="btn btn-secondary" onclick="testGist()">Testar</button>
+              <button class="btn btn-primary" onclick="saveConfig()">Salvar</button>
+              <button class="btn btn-secondary" onclick="testGist()">Testar conexão</button>
             </div>
           </div>
         </div>
@@ -1190,6 +1138,8 @@ let prevView = null;
 // ─── STORAGE ──────────────────────────────────────────────────
 function loadCfg(){
   try{const c=JSON.parse(localStorage.getItem('labcfg')||'{}');Object.assign(cfg,c);}catch(e){}
+  // Drive OAuth expira em 7 dias com conta pessoal Gmail — forçar Gist como primário
+  if(cfg.syncMode==='drive') cfg.syncMode='gist';
 }
 function saveCfg(){localStorage.setItem('labcfg',JSON.stringify(cfg));}
 
@@ -1202,32 +1152,7 @@ async function loadData(){
   try{bancas=JSON.parse(localStorage.getItem('labbancas')||'[]');}catch(e){bancas=[];}
   try{producao=JSON.parse(localStorage.getItem('labproducao')||'[]');}catch(e){producao=[];}
 
-  // Status inicial
-  if(students.length>0||manuscripts.length>0) setSyncWarn();
-
-  // ── PASSO 2: Tentar Drive em background ──
-  if(cfg.syncMode==='drive' && cfg.driveToken){
-    driveLoad().then(ok=>{
-      if(!ok){setSyncErr('Drive');return;}
-      const localS=JSON.parse(localStorage.getItem('labstudents')||'[]');
-      const localM=JSON.parse(localStorage.getItem('labmanuscripts')||'[]');
-      const localB=JSON.parse(localStorage.getItem('labbancas')||'[]');
-      const localP=JSON.parse(localStorage.getItem('labproducao')||'[]');
-      if(students.length===0 && localS.length>0) students=localS;
-      if(manuscripts.length===0 && localM.length>0) manuscripts=localM;
-      if(bancas.length===0 && localB.length>0) bancas=localB;
-      if(producao.length===0 && localP.length>0) producao=localP;
-      localStorage.setItem('labstudents',JSON.stringify(students));
-      localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
-      localStorage.setItem('labbancas',JSON.stringify(bancas));
-      localStorage.setItem('labproducao',JSON.stringify(producao));
-      setSyncOk('Drive');
-      if(typeof renderCurrentView==='function') renderCurrentView();
-    }).catch(e=>{setSyncErr('Drive');console.warn('Drive bg load error:',e);});
-    return;
-  }
-
-  // ── PASSO 3: Tentar Gist em background ──
+  // ── PASSO 2: Sincronizar com Gist em background ──
   if(cfg.gistId && cfg.token){
     fetchWithTimeout(`https://api.github.com/gists/${cfg.gistId}`,
       {headers:{Authorization:`token ${cfg.token}`}}, 8000)
@@ -1238,59 +1163,56 @@ async function loadData(){
       const gm=g.files[GIST_FILENAME_M]?JSON.parse(g.files[GIST_FILENAME_M].content||'[]'):[];
       const gb=g.files['labresearch_bancas.json']?JSON.parse(g.files['labresearch_bancas.json'].content||'[]'):[];
       const gp=g.files['labresearch_producao.json']?JSON.parse(g.files['labresearch_producao.json'].content||'[]'):[];
-      if(gs.length>0) students=gs;
-      if(gm.length>0) manuscripts=gm;
-      if(gb.length>0) bancas=gb;
-      if(gp.length>0) producao=gp;
+      // Merge: só substituir se Gist tiver mais dados que o local
+      if(gs.length>0 && gs.length>=students.length) students=gs;
+      if(gm.length>0 && gm.length>=manuscripts.length) manuscripts=gm;
+      if(gb.length>0 && gb.length>=bancas.length) bancas=gb;
+      if(gp.length>0 && gp.length>=producao.length) producao=gp;
       localStorage.setItem('labstudents',JSON.stringify(students));
       localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
       localStorage.setItem('labbancas',JSON.stringify(bancas));
       localStorage.setItem('labproducao',JSON.stringify(producao));
       setSyncOk('Gist');
       if(typeof renderCurrentView==='function') renderCurrentView();
-    }).catch(e=>{console.warn('Gist load error:',e.message);});
+    }).catch(e=>{
+      console.warn('Gist load error:',e.message);
+      setSyncWarn();
+    });
     return;
   }
+
+  // Sem sync remoto — usar apenas localStorage
+  setSyncWarn();
 }
 
 async function saveData(){
-  // 1. SEMPRE salvar localStorage primeiro — nunca pular isso
+  // 1. Sempre salvar localStorage
   try{
     localStorage.setItem('labstudents',JSON.stringify(students));
     localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
     localStorage.setItem('labbancas',JSON.stringify(bancas));
     localStorage.setItem('labproducao',JSON.stringify(producao));
-  }catch(e){console.error('localStorage save error:',e);}
+  }catch(e){console.error('localStorage error:',e);}
 
-  // 2. Tentar Drive
-  if(cfg.syncMode==='drive' && cfg.driveToken){
-    try{
-      const ok=await driveSave();
-      if(ok){setSyncOk('Drive');return;}
-      setSyncErr('Drive');
-      toast('⚠ Dados salvos localmente. Falha no Drive — verifique a conexão.');
-      return;
-    }catch(e){
-      setSyncErr('Drive');
-      toast('⚠ Dados salvos localmente. Erro no Drive: '+e.message);
-      return;
-    }
-  }
-
-  // 3. Tentar Gist
+  // 2. Gist como único sync remoto
   if(cfg.gistId && cfg.token){
     try{
       const files={};
       files[GIST_FILENAME_S]={content:JSON.stringify(students,null,2)};
       files[GIST_FILENAME_M]={content:JSON.stringify(manuscripts,null,2)};
       files['labresearch_bancas.json']={content:JSON.stringify(bancas,null,2)};
-      const r=await fetch(`https://api.github.com/gists/${cfg.gistId}`,{
-        method:'PATCH',headers:{'Content-Type':'application/json',Authorization:`token ${cfg.token}`},
+      files['labresearch_producao.json']={content:JSON.stringify(producao,null,2)};
+      const r=await fetchWithTimeout(`https://api.github.com/gists/${cfg.gistId}`,{
+        method:'PATCH',
+        headers:{'Content-Type':'application/json',Authorization:`token ${cfg.token}`},
         body:JSON.stringify({files})
-      });
+      }, 10000);
       if(r.ok){setSyncOk('Gist');return;}
-    }catch(e){console.warn('Gist save error:',e);}
-    setSyncErr('Gist');
+      throw new Error('HTTP '+r.status);
+    }catch(e){
+      console.warn('Gist save error:',e.message);
+      setSyncErr('Gist');
+    }
   }
 }
 
@@ -1302,16 +1224,26 @@ function setSyncWarn(){document.getElementById('syncDot').className='sync-dot';d
 function setSyncErr(src){document.getElementById('syncDot').className='sync-dot err';document.getElementById('syncText').textContent=`⚠ Falha — ${src||'sync'}`;}
 
 async function syncNow(){
-  toast('Sincronizando...');
-  // Forçar re-upload de tudo que está em memória para o Drive
-  if(cfg.syncMode==='drive' && cfg.driveToken){
-    const ok=await driveSave();
-    if(ok){setSyncOk('Drive');toast('✓ Sincronizado com Drive.');renderCurrentView();return;}
-    else toast('✗ Falha ao sincronizar com Drive. Dados mantidos localmente.');
+  toast('Sincronizando com Gist...');
+  // Forçar upload de tudo para o Gist
+  if(cfg.gistId && cfg.token){
+    try{
+      const files={};
+      files[GIST_FILENAME_S]={content:JSON.stringify(students,null,2)};
+      files[GIST_FILENAME_M]={content:JSON.stringify(manuscripts,null,2)};
+      files['labresearch_bancas.json']={content:JSON.stringify(bancas,null,2)};
+      files['labresearch_producao.json']={content:JSON.stringify(producao,null,2)};
+      const r=await fetchWithTimeout(`https://api.github.com/gists/${cfg.gistId}`,{
+        method:'PATCH',
+        headers:{'Content-Type':'application/json',Authorization:`token ${cfg.token}`},
+        body:JSON.stringify({files})
+      }, 10000);
+      if(r.ok){setSyncOk('Gist');toast('✓ Sincronizado com Gist.');renderCurrentView();return;}
+    }catch(e){}
+    toast('✗ Falha ao sincronizar. Verifique o token do Gist em Configurações.');
     return;
   }
-  await loadData();
-  renderCurrentView();
+  toast('Configure o Gist em Configurações para sincronizar.');
 }
 
 // ─── VIEWS ────────────────────────────────────────────────────
@@ -2712,18 +2644,6 @@ function renderConfig(){
   document.getElementById('cfgToken').value=cfg.token||'';
   document.getElementById('cfgWarnDays').value=cfg.warnDays||14;
   document.getElementById('cfgAlertDays').value=cfg.alertDays||30;
-  document.getElementById('cfgDriveClientId').value=cfg.driveClientId||'';
-  document.getElementById('cfgDriveClientSecret').value=cfg.driveClientSecret||'';
-  document.getElementById('cfgDriveRefreshToken').value=cfg.driveRefreshToken||'';
-  const badge=document.getElementById('driveSyncBadge');
-  if(badge){
-    if(cfg.syncMode==='drive'&&(cfg.driveRefreshToken||cfg.driveToken)){
-      const temRefresh=!!cfg.driveRefreshToken;
-      badge.textContent=temRefresh?'✓ ativo (auto-renova)':'✓ ativo (manual)';
-      badge.style.background=temRefresh?'var(--green-dim)':'var(--yellow-dim)';
-      badge.style.color=temRefresh?'var(--green-bright)':'var(--yellow)';
-    } else {badge.textContent='inativo';badge.style.background='var(--surface3)';badge.style.color='var(--text-dim)';}
-  }
 }
 
 function saveConfig(){
@@ -2735,44 +2655,6 @@ function saveConfig(){
   toast('Configurações salvas.');
 }
 
-function saveDriveConfig(){
-  const clientId=document.getElementById('cfgDriveClientId').value.trim();
-  const clientSecret=document.getElementById('cfgDriveClientSecret').value.trim();
-  const refreshToken=document.getElementById('cfgDriveRefreshToken').value.trim();
-  const manualToken=document.getElementById('cfgDriveToken')?document.getElementById('cfgDriveToken').value.trim():'';
-
-  if(!refreshToken && !manualToken){toast('Informe pelo menos o Refresh Token ou um Access Token manual.');return;}
-  if(refreshToken && (!clientId||!clientSecret)){toast('Para auto-renovação, informe também o Client ID e o Client Secret.');return;}
-
-  cfg.driveClientId=clientId;
-  cfg.driveClientSecret=clientSecret;
-  cfg.driveRefreshToken=refreshToken;
-  if(manualToken){cfg.driveToken=manualToken;cfg.driveTokenExpiry=Date.now()+3500000;}
-  cfg.syncMode='drive';
-  cfg.driveFileId='';
-  saveCfg();
-  renderConfig();
-  toast('Drive configurado. Testando...');
-  testDrive();
-}
-
-function disableDrive(){
-  cfg.driveToken='';cfg.driveRefreshToken='';cfg.driveClientId='';cfg.driveClientSecret='';
-  cfg.driveTokenExpiry=0;cfg.syncMode='gist';cfg.driveFileId='';
-  saveCfg();renderConfig();
-  toast('Drive desativado. Usando Gist/local.');
-}
-
-async function testDrive(){
-  const ok=await driveEnsureToken();
-  if(!ok||!cfg.driveToken){toast('✗ Não foi possível obter token. Verifique Client ID, Secret e Refresh Token.');return;}
-  try{
-    const r=await fetch('https://www.googleapis.com/drive/v3/about?fields=user',
-      {headers:{Authorization:`Bearer ${cfg.driveToken}`}});
-    if(r.ok){const d=await r.json();toast(`✓ Drive conectado: ${d.user?.displayName||'OK'}`);}
-    else{const e=await r.json();toast('✗ '+( e.error?.message||'Erro desconhecido'));}
-  }catch(e){toast('✗ Erro de rede: '+e.message);}
-}
 
 async function testGist(){
   const id=document.getElementById('cfgGistId').value.trim();
@@ -2786,7 +2668,7 @@ async function testGist(){
 }
 
 function exportJSON(){
-  const data={students,manuscripts};
+  const data={students,manuscripts,bancas,producao};
   const a=document.createElement('a');
   a.href='data:application/json,'+encodeURIComponent(JSON.stringify(data,null,2));
   a.download='labresearch_backup.json';a.click();
