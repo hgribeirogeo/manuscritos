@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0d1117">
+<meta name="theme-color" content="#0d1117" id="metaTheme">
+<script>try{if(localStorage.getItem('labtheme')==='light'){document.documentElement.setAttribute('data-theme','light');}}catch(e){}</script>
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>LabResearch · EECA/UFG</title>
@@ -366,9 +367,145 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .sk-block-body.open{display:block}
 .sk-toggle{font-size:12px;color:var(--text-dim);transition:transform .2s}
 .sk-toggle.open{transform:rotate(180deg)}
+.toast-wrap{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
 .toast{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 16px;font-size:12.5px;color:var(--text);box-shadow:0 8px 32px #00000066;animation:fadeIn 0.2s ease;font-family:var(--sans)}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .scroll-hint{font-size:9.5px;color:var(--text-dim);font-family:var(--mono);padding-left:4px;margin-top:2px}
+/* ═══ TEMA CLARO ═══ */
+:root[data-theme="light"]{
+  --bg:#f6f8fa;--surface:#ffffff;--surface2:#f6f8fa;--surface3:#eaeef2;--border:#d0d7de;--border2:#afb8c1;
+  --text:#1f2328;--text-muted:#59636e;--text-dim:#818b98;
+  --green:#1f883d;--green-bright:#1a7f37;--green-dim:#dafbe1;--yellow:#9a6700;--yellow-dim:#fff8c5;
+  --orange:#bc4c00;--orange-dim:#fff1e5;--red:#cf222e;--red-dim:#ffebe9;--blue:#0969da;--blue-dim:#ddf4ff;
+  --purple:#8250df;--purple-dim:#fbefff;--teal:#1b7c83;--teal-dim:#d8f3f6;--pink:#bf3989;--pink-dim:#ffeff7;
+}
+:root[data-theme="light"] .qualis-a1,:root[data-theme="light"] .qualis-a2,:root[data-theme="light"] .qualis-a3{background:#dafbe1;color:#1a7f37;border-color:#1a7f3766}
+:root[data-theme="light"] .qualis-a4,:root[data-theme="light"] .qualis-b1{background:#eef8d9;color:#4d7a0b;border-color:#4d7a0b66}
+:root[data-theme="light"] .qualis-b2{background:#fff8c5;color:#9a6700;border-color:#9a670066}
+:root[data-theme="light"] .banca-tcc1{background:#ddf4ff;color:#0550ae;border-color:#0550ae55}
+:root[data-theme="light"] .banca-tcc2{background:#ddf4ff;color:#0969da;border-color:#0969da55}
+:root[data-theme="light"] .sub-publicado{background:#d8f3f6;color:#1b7c83}
+:root[data-theme="light"] .modal{box-shadow:0 12px 40px #1f232833}
+
+/* ═══ ÍCONES ═══ */
+.ic{display:inline-block;vertical-align:middle;flex-shrink:0}
+.nav-icon{display:inline-flex;align-items:center;justify-content:center}
+.nl-short{display:none}
+.nav-mais{display:none}
+.btn-ico{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+
+/* ═══ NOVO DASHBOARD ═══ */
+.dh-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.dh-hello{flex:1;min-width:200px}
+.dh-title{font-size:19px;font-weight:600;color:var(--text)}
+.dh-sub{font-size:12px;color:var(--text-muted);margin-top:2px}
+.dh-search{display:inline-flex;align-items:center;gap:8px;min-width:200px;padding:7px 10px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text-dim);font-size:12.5px;cursor:pointer;font-family:var(--sans)}
+.dh-search:hover{border-color:var(--text-dim)}
+.dh-search kbd{margin-left:auto;font-family:var(--mono);font-size:10px;border:1px solid var(--border);border-radius:4px;padding:1px 5px}
+.dh-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.dh-card-h{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px}
+.dh-card-h .dh-cnt{margin-left:auto;font-size:11.5px;font-weight:400;color:var(--text-muted)}
+.dh-grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin:12px 0 20px}
+.pv-list{display:flex;flex-direction:column;gap:6px}
+.pv-item{display:flex;align-items:center;gap:9px;padding:8px 11px;border-radius:var(--radius-sm);font-size:12.5px;cursor:pointer;line-height:1.4}
+.pv-item:hover{filter:brightness(1.08)}
+.pv-txt{flex:1;min-width:0}
+.pv-act{font-size:11.5px;opacity:.85;flex-shrink:0}
+.pv-red{background:var(--red-dim);color:var(--red)}
+.pv-orange{background:var(--orange-dim);color:var(--orange)}
+.pv-yellow{background:var(--yellow-dim);color:var(--yellow)}
+.pv-blue{background:var(--blue-dim);color:var(--blue)}
+.pv-green{background:var(--green-dim);color:var(--green-bright)}
+.pv-ok{font-size:12.5px;color:var(--green-bright);display:flex;align-items:center;gap:7px}
+.sm-row{display:flex;gap:10px;align-items:baseline;font-size:12.5px;padding:4px 0;cursor:pointer;color:var(--text)}
+.sm-row:hover .sm-t{text-decoration:underline}
+.sm-d{font-family:var(--mono);font-size:11px;color:var(--text-muted);width:62px;flex-shrink:0}
+.sm-t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sm-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;align-self:center}
+.on-row{display:flex;align-items:center;gap:8px;font-size:12px;padding:3px 0;cursor:pointer}
+.on-l{width:108px;color:var(--text-muted);flex-shrink:0}
+.on-bar{flex:1;height:8px;background:var(--surface3);border-radius:4px;overflow:hidden}
+.on-bar>div{height:100%;background:var(--purple);border-radius:4px}
+.on-n{width:20px;text-align:right;font-family:var(--mono);color:var(--text)}
+.dh-alunos{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.al-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:border-color .15s;display:flex;flex-direction:column;gap:7px}
+.al-card:hover{border-color:var(--border2)}
+.al-top{display:flex;align-items:center;gap:9px}
+.al-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+.al-nome{font-size:13px;font-weight:600;color:var(--text);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.al-dias{font-size:11px;font-family:var(--mono);flex-shrink:0}
+.al-txt{font-size:12px;color:var(--text-muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:36px}
+.al-txt.vazio{font-style:italic;color:var(--text-dim)}
+.al-etapa{font-size:10.5px;color:var(--text-dim);font-family:var(--mono)}
+.al-bar{height:4px;background:var(--surface3);border-radius:2px;overflow:hidden}
+.al-bar>div{height:100%;border-radius:2px}
+.fab{display:none}
+
+/* ═══ REGISTRAR REUNIÃO / BUSCA / MAIS ═══ */
+.rr-chips{display:flex;flex-wrap:wrap;gap:6px}
+.rr-chip{padding:5px 10px;border-radius:14px;border:1px solid var(--border2);background:transparent;color:var(--text-muted);font-size:12px;cursor:pointer;font-family:var(--sans)}
+.rr-chip.sel{background:var(--blue-dim);color:var(--blue);border-color:var(--blue)}
+.bs-input{width:100%;padding:10px 12px;font-size:15px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);font-family:var(--sans)}
+.bs-input:focus{outline:none;border-color:var(--blue)}
+.bs-res{margin-top:10px;display:flex;flex-direction:column;gap:2px;max-height:55vh;overflow-y:auto}
+.bs-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-sm);cursor:pointer}
+.bs-item:hover,.bs-item.first{background:var(--surface2)}
+.bs-tipo{font-family:var(--mono);font-size:9.5px;color:var(--text-dim);width:74px;flex-shrink:0;text-transform:uppercase}
+.bs-tit{font-size:13px;color:var(--text);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bs-sub{font-size:11px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40%}
+.mais-item{display:flex;align-items:center;gap:12px;padding:13px 12px;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;color:var(--text)}
+.mais-item:hover{background:var(--surface2)}
+
+/* ═══ AGENDA ═══ */
+.ag-tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid var(--border)}
+.ag-tab{background:none;border:none;border-bottom:2px solid transparent;padding:8px 14px;font-size:13px;color:var(--text-muted);cursor:pointer;font-family:var(--sans);margin-bottom:-1px}
+.ag-tab.on{color:var(--text);border-bottom-color:var(--green);font-weight:600}
+.ag-mes-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.ag-mes-tit{font-size:15px;font-weight:600;color:var(--text);min-width:150px;text-align:center}
+.ag-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.ag-dow{font-size:10.5px;color:var(--text-dim);text-align:center;padding:4px 0;font-family:var(--mono);text-transform:uppercase}
+.ag-cel{min-height:86px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 5px;display:flex;flex-direction:column;gap:2px;overflow:hidden}
+.ag-cel.fora{opacity:.4}
+.ag-cel.hoje{border-color:var(--green);box-shadow:inset 0 0 0 1px var(--green)}
+.ag-num{font-size:11px;font-family:var(--mono);color:var(--text-muted)}
+.ag-cel.hoje .ag-num{color:var(--green-bright);font-weight:700}
+.ag-ev{font-size:10.5px;padding:1px 5px;border-radius:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.ag-mais{font-size:10px;color:var(--text-dim);padding-left:3px}
+.ev-banca{background:var(--yellow-dim);color:var(--yellow)}
+.ev-prazo{background:var(--red-dim);color:var(--red)}
+.ev-submissao{background:var(--blue-dim);color:var(--blue)}
+.ag-leg{display:flex;gap:14px;font-size:11px;color:var(--text-muted);margin:10px 0 18px;flex-wrap:wrap}
+.ag-leg span{display:inline-flex;align-items:center;gap:5px}
+.ag-leg i{display:inline-block;width:10px;height:10px;border-radius:2px}
+.ag-leg i.ev-banca{background:var(--yellow)}.ag-leg i.ev-prazo{background:var(--red)}.ag-leg i.ev-submissao{background:var(--blue)}
+.ag-lista-mes{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 6px}
+.ag-item{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:6px;cursor:pointer}
+.ag-item:hover{border-color:var(--border2)}
+.ag-item-d{font-family:var(--mono);font-size:11px;color:var(--text-muted);width:78px;flex-shrink:0}
+.ag-item-t{flex:1;min-width:0;font-size:12.5px;color:var(--text)}
+.ag-item-s{font-size:11px;color:var(--text-dim);margin-top:2px;line-height:1.4}
+.ag-tag{font-size:10px;font-family:var(--mono);padding:2px 7px;border-radius:10px;flex-shrink:0}
+
+/* ═══ PERIÓDICOS (cadastro único) ═══ */
+.jq-line{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.jq-chip{font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:10px}
+.jc2{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;cursor:pointer;transition:border-color .15s}
+.jc2:hover{border-color:var(--border2)}
+.jc2-head{display:flex;align-items:flex-start;gap:6px}
+.jc2-name{font-size:12.5px;font-weight:600;color:var(--text);flex:1;min-width:0;line-height:1.35;word-break:break-word}
+.jc2-sub{font-size:10.5px;color:var(--text-dim);margin:3px 0 8px;font-family:var(--mono)}
+.jc2-bar{display:flex;height:6px;border-radius:3px;overflow:hidden;background:var(--surface3)}
+.jc2-stats{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 8px;font-size:10.5px;color:var(--text-muted);margin:5px 0 8px;font-family:var(--mono)}
+.jc2-chips{display:flex;flex-wrap:wrap;gap:4px}
+.jc2-chip{font-size:10.5px;padding:2px 7px;border-radius:4px;border:1px solid}
+.jc2-titles{display:none;margin-top:10px;padding-top:6px;border-top:1px solid var(--border)}
+.jc2.open .jc2-titles{display:block}
+.jc2-t{font-size:11.5px;color:var(--text-muted);line-height:1.45;padding:5px 0;cursor:pointer}
+.jc2-t:hover{color:var(--text)}
+.jc2-icon{color:var(--text-dim);font-size:13px;padding:0 3px;cursor:pointer;flex-shrink:0;background:none;border:none;text-decoration:none;line-height:1.3}
+.jc2-icon:hover{color:var(--text)}
+.migr-group{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:8px}
+
 /* ═══ CONFIGURAR DISPOSITIVO ═══ */
 #setupLinkBox{display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
 #setupQR{background:#fff;padding:10px;border-radius:6px;display:inline-block;margin:8px 0}
@@ -379,12 +516,27 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
   /* Sidebar vira barra de navegação inferior */
   .sidebar{top:auto;bottom:0;left:0;right:0;width:100%;min-height:0;height:auto;flex-direction:row;border-right:none;border-top:1px solid var(--border);z-index:150;padding-bottom:env(safe-area-inset-bottom)}
   .sidebar-logo,.sidebar-footer{display:none}
-  .sidebar::after{content:'';position:absolute;right:0;top:0;bottom:0;width:28px;background:linear-gradient(to right,transparent,var(--surface));pointer-events:none}
-  .sidebar-nav{display:flex;flex-direction:row;padding:4px;gap:2px;overflow-x:auto;width:100%;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-  .sidebar-nav::-webkit-scrollbar{display:none}
-  .nav-item{flex:0 0 auto;flex-direction:column;justify-content:center;min-width:66px;gap:3px;padding:6px 4px;margin:0 !important;font-size:9.5px;text-align:center;position:relative}
-  .nav-icon{font-size:17px;width:auto}
-  #alert-count{position:absolute;top:2px;right:8px;margin:0 !important}
+  .sidebar-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:4px;gap:2px;width:100%}
+  .nav-item{flex-direction:column;justify-content:center;min-width:0;gap:3px;padding:6px 2px;margin:0 !important;font-size:10px;text-align:center;position:relative}
+  .nav-icon .ic{width:20px;height:20px}
+  .nav-extra{display:none !important}
+  .nav-mais{display:flex}
+  .nl-full{display:none}
+  .nl-short{display:inline}
+  .tb-lbl{display:none}
+  .fab{display:flex;position:fixed;right:16px;bottom:calc(76px + env(safe-area-inset-bottom));width:52px;height:52px;border-radius:50%;background:var(--green);color:#fff;border:none;align-items:center;justify-content:center;box-shadow:0 6px 18px #0006;z-index:140;cursor:pointer}
+  .dh-hello{flex-basis:100%}
+  .dh-search{flex:1;min-width:0}
+  .dh-search kbd{display:none}
+  .nav-item:hover{background:transparent;color:var(--text-muted)}
+  .nav-item.active:hover{background:var(--green-dim);color:var(--green-bright)}
+  .dh-head .btn-registrar{display:none}
+  .dh-grid2{grid-template-columns:1fr}
+  .dh-alunos{grid-template-columns:1fr}
+  .ag-cel{min-height:54px;padding:3px}
+  .ag-ev{font-size:0;height:6px;padding:0;border-radius:3px}
+  .ag-item-d{width:62px}
+  #alert-count,#alert-count-mais{position:absolute;top:2px;right:22%;margin:0 !important}
   /* Conteúdo ocupa a largura toda */
   .main{margin-left:0;max-width:100vw;padding-bottom:72px}
   .topbar{padding:10px 14px;gap:8px}
@@ -424,28 +576,28 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
   </div>
   <nav class="sidebar-nav">
     <div class="nav-item active" onclick="showView('dashboard')" id="nav-dashboard">
-      <span class="nav-icon">⬡</span> Dashboard
+      <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> <span>Início</span>
     </div>
     <div class="nav-item" onclick="showView('orientandos')" id="nav-orientandos">
-      <span class="nav-icon">◎</span> Orientandos
+      <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> <span class="nl-full">Orientandos</span><span class="nl-short">Alunos</span>
     </div>
     <div class="nav-item" onclick="showView('manuscritos')" id="nav-manuscritos">
-      <span class="nav-icon">◈</span> Manuscritos
+      <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span> <span class="nl-full">Manuscritos</span><span class="nl-short">Textos</span>
     </div>
-    <div class="nav-item" onclick="showView('calendario')" id="nav-calendario">
-      <span class="nav-icon">◷</span> Calendário
+    <div class="nav-item" onclick="showView('agenda')" id="nav-agenda">
+      <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg></span> <span>Agenda</span>
     </div>
-    <div class="nav-item" onclick="showView('bancas')" id="nav-bancas">
-      <span class="nav-icon">🎓</span> Bancas
+    <div class="nav-item nav-extra" onclick="showView('producao')" id="nav-producao">
+      <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></span> <span>Produção</span>
     </div>
-    <div class="nav-item" onclick="showView('producao')" id="nav-producao">
-      <span class="nav-icon">📄</span> Produção
+    <div class="nav-item nav-extra" onclick="showView('alertas')" id="nav-alertas">
+      <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span> <span>Alertas</span> <span id="alert-count" style="margin-left:auto;font-family:var(--mono);font-size:9px;background:var(--red);color:#fff;border-radius:10px;padding:1px 5px;display:none"></span>
     </div>
-    <div class="nav-item" onclick="showView('alertas')" id="nav-alertas">
-      <span class="nav-icon">◬</span> Alertas <span id="alert-count" style="margin-left:auto;font-family:var(--mono);font-size:9px;background:var(--red);color:#fff;border-radius:10px;padding:1px 5px;display:none"></span>
+    <div class="nav-item nav-extra" onclick="showView('configuracoes')" id="nav-configuracoes" style="margin-top:auto">
+      <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></svg></span> <span>Configurações</span>
     </div>
-    <div class="nav-item" onclick="showView('configuracoes')" id="nav-configuracoes" style="margin-top:auto">
-      <span class="nav-icon">⚙</span> Configurações
+    <div class="nav-item nav-mais" onclick="openModal('modalMais')" id="nav-mais">
+      <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></span> <span>Mais</span> <span id="alert-count-mais" style="font-family:var(--mono);font-size:9px;background:var(--red);color:#fff;border-radius:10px;padding:1px 5px;display:none"></span>
     </div>
   </nav>
   <div class="sidebar-footer">
@@ -456,9 +608,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 <!-- MAIN -->
 <main class="main">
   <div class="topbar">
-    <div class="topbar-title" id="topbarTitle">Dashboard</div>
+    <div class="topbar-title" id="topbarTitle">Início</div>
     <div class="topbar-actions">
-      <button class="btn btn-secondary btn-sm" onclick="syncNow()">↻ Sincronizar</button>
+      <button class="btn btn-secondary btn-sm btn-ico" onclick="openBusca()" title="Buscar (Ctrl K)"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></button>
+      <button class="btn btn-secondary btn-sm btn-ico" id="btnTema" onclick="alternarTema()" title="Alternar tema claro/escuro"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></button>
+      <button class="btn btn-secondary btn-sm btn-ico" onclick="syncNow()" title="Sincronizar com o Gist"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg><span class="tb-lbl">Sincronizar</span></button>
       <button class="btn btn-primary btn-sm" id="topbarAdd" onclick="openAddStudentModal()">+ Orientando</button>
     </div>
   </div>
@@ -467,33 +621,22 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 
     <!-- DASHBOARD -->
     <div id="view-dashboard">
-      <!-- STAT CARDS -->
-      <div class="stats-row" id="statsRow"></div>
-
-      <!-- BANCAS FUTURAS -->
-      <div class="dash-section" id="dashBancasSection">
-        <div class="dash-section-header">
-          <span class="dash-section-title">🎓 Bancas Futuras</span>
-          <button class="btn btn-secondary btn-sm" onclick="showView('bancas')">Ver agenda →</button>
-        </div>
-        <div id="dashBancasFuturas"></div>
+      <div class="dh-head">
+        <div class="dh-hello"><div class="dh-title" id="dhSaudacao"></div><div class="dh-sub" id="dhSub"></div></div>
+        <button class="dh-search" onclick="openBusca()"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> Buscar <kbd>Ctrl K</kbd></button>
+        <button class="btn btn-primary btn-ico btn-registrar" onclick="openRegistrarReuniao()"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg> Registrar reunião</button>
       </div>
-
-      <!-- SEÇÃO 1: SEMÁFORO DE ORIENTANDOS -->
+      <div class="dh-card" id="dhPrecisa"></div>
+      <div class="dh-grid2">
+        <div class="dh-card" id="dhSemana"></div>
+        <div class="dh-card" id="dhOnde"></div>
+      </div>
       <div class="dash-section">
         <div class="dash-section-header">
-          <span class="dash-section-title">Orientandos — Semáforo de Contato</span>
+          <span class="dash-section-title">Orientandos — última reunião</span>
           <button class="btn btn-secondary btn-sm" onclick="showView('orientandos')">Ver todos →</button>
         </div>
-        <div id="dashSemaforo"></div>
-      </div>
-
-      <!-- SEÇÃO 1b: ÚLTIMAS REUNIÕES -->
-      <div class="dash-section" id="dashReunioesSection">
-        <div class="dash-section-header">
-          <span class="dash-section-title">📋 Últimas Reuniões</span>
-        </div>
-        <div id="dashReunioes"></div>
+        <div class="dh-alunos" id="dhAlunos"></div>
       </div>
 
       <!-- SEÇÃO 2: MANUSCRITOS EM ANDAMENTO -->
@@ -510,7 +653,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <div class="dash-section" style="margin-bottom:0">
           <div class="dash-section-header">
             <span class="dash-section-title">Periódicos Alvo — Qualis / JCR</span>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-primary btn-sm" id="btnMigrarJ" onclick="openMigracaoPeriodicos()" style="display:none">Organizar</button>
+              <button class="btn btn-secondary btn-sm" onclick="openListaPeriodicos()">Gerenciar</button>
+            </div>
           </div>
+          <div id="dashJournalsResumo"></div>
           <div id="dashJournals"></div>
         </div>
         <div class="dash-section" style="margin-bottom:0">
@@ -560,20 +708,38 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div id="manuDetailContent"></div>
     </div>
 
-    <!-- CALENDÁRIO -->
-    <div id="view-calendario" style="display:none">
-      <div class="calendar-list" id="calendarList"></div>
-    </div>
-
-    <!-- BANCAS -->
-    <div id="view-bancas" style="display:none">
-      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
-        <button class="btn btn-secondary btn-sm" onclick="filterBancas('todas')" id="fb-todas">Todas</button>
-        <button class="btn btn-secondary btn-sm" onclick="filterBancas('futuras')" id="fb-futuras">Futuras</button>
-        <button class="btn btn-secondary btn-sm" onclick="filterBancas('passadas')" id="fb-passadas">Realizadas</button>
-        <button class="btn btn-primary btn-sm" onclick="openAddBancaModal()" style="margin-left:auto">+ Nova Banca</button>
+    <!-- AGENDA (Calendário + Bancas + Prazos por nível) -->
+    <div id="view-agenda" style="display:none">
+      <div class="ag-tabs">
+        <button class="ag-tab on" id="agt-mes" onclick="setAgendaTab('mes')">Calendário</button>
+        <button class="ag-tab" id="agt-bancas" onclick="setAgendaTab('bancas')">Bancas</button>
+        <button class="ag-tab" id="agt-nivel" onclick="setAgendaTab('nivel')">Prazos por nível</button>
       </div>
-      <div id="bancasList"></div>
+      <div id="agPane-mes">
+        <div class="ag-mes-head">
+          <button class="btn btn-secondary btn-sm btn-ico" onclick="mudarMesAgenda(-1)" title="Mês anterior"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+          <span class="ag-mes-tit" id="agMesTitulo"></span>
+          <button class="btn btn-secondary btn-sm btn-ico" onclick="mudarMesAgenda(1)" title="Próximo mês"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+          <button class="btn btn-secondary btn-sm" onclick="mudarMesAgenda(0)">Hoje</button>
+          <button class="btn btn-primary btn-sm" onclick="openAddBancaModal()" style="margin-left:auto">+ Banca</button>
+        </div>
+        <div class="ag-grid" id="agGrid"></div>
+        <div class="ag-leg"><span><i class="ev-banca"></i>Banca</span><span><i class="ev-prazo"></i>Prazo de orientando</span><span><i class="ev-submissao"></i>Submissão de manuscrito</span></div>
+        <div class="dash-section-header"><span class="dash-section-title">Próximos 90 dias</span></div>
+        <div id="agLista"></div>
+      </div>
+      <div id="agPane-bancas" style="display:none">
+        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+          <button class="btn btn-secondary btn-sm" onclick="filterBancas('todas')" id="fb-todas">Todas</button>
+          <button class="btn btn-secondary btn-sm" onclick="filterBancas('futuras')" id="fb-futuras">Futuras</button>
+          <button class="btn btn-secondary btn-sm" onclick="filterBancas('passadas')" id="fb-passadas">Realizadas</button>
+          <button class="btn btn-primary btn-sm" onclick="openAddBancaModal()" style="margin-left:auto">+ Nova Banca</button>
+        </div>
+        <div id="bancasList"></div>
+      </div>
+      <div id="agPane-nivel" style="display:none">
+        <div class="calendar-list" id="calendarList"></div>
+      </div>
     </div>
 
     <!-- PRODUÇÃO INTELECTUAL -->
@@ -636,6 +802,21 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
                 <button class="btn btn-secondary btn-sm" onclick="copiarLinkSetup()">Copiar</button>
               </div>
               <div style="font-size:11px;color:var(--orange);margin-top:8px;line-height:1.5">⚠ Este link contém seu token de acesso — trate como senha. Não compartilhe em grupos nem publique.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- APARÊNCIA -->
+        <div class="card">
+          <div class="card-header"><span style="font-size:13px;font-weight:600">Aparência</span></div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Seu nome (saudação do início)</label>
+              <input type="text" class="form-control" id="cfgNome" placeholder="Hugo">
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <button class="btn btn-primary" onclick="cfg.nomeUsuario=document.getElementById('cfgNome').value.trim();saveCfg();toast('Nome salvo.')">Salvar nome</button>
+              <button class="btn btn-secondary btn-ico" onclick="alternarTema()"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg> Alternar tema claro/escuro</button>
             </div>
           </div>
         </div>
@@ -791,7 +972,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Periódico alvo</label>
-          <input type="text" class="form-control" id="mJournal" placeholder="Revista / Congresso">
+          <input type="text" class="form-control" id="mJournal" list="dlPeriodicos" autocomplete="off" oninput="preencherQualisDoPeriodico()" placeholder="Digite e escolha da lista">
+          <div id="mJournalHint" style="font-size:10.5px;color:var(--text-dim);margin-top:4px"></div>
         </div>
         <div class="form-group">
           <label class="form-label">Tipo</label>
@@ -802,6 +984,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <option value="proprio">Próprio</option>
           </select>
         </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Plano B (periódico alternativo, opcional)</label>
+        <input type="text" class="form-control" id="mPlanoB" list="dlPeriodicos" autocomplete="off" placeholder="Se o alvo recusar">
+        <datalist id="dlPeriodicos"></datalist>
       </div>
       <div class="form-group">
         <label class="form-label">Orientando(s) vinculado(s)</label>
@@ -831,7 +1018,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">Qualis CAPES</label>
+          <label class="form-label">Qualis do periódico</label>
           <select class="form-control" id="mQualis">
             <option value="">—</option>
             <option value="A1">A1</option>
@@ -846,7 +1033,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label">JCR / Impact Factor</label>
+          <label class="form-label">JCR / IF do periódico</label>
           <input type="text" class="form-control" id="mJCR" placeholder="ex: 4.2">
         </div>
       </div>
@@ -1061,6 +1248,116 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
   </div>
 </div>
 
+<!-- MODAL: Registrar reunião -->
+<div class="overlay" id="modalReuniao">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Registrar reunião</span>
+      <button class="modal-close" onclick="closeModal('modalReuniao')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="rrAluno">
+      <div class="form-group"><label class="form-label">Orientando</label><div class="rr-chips" id="rrChips"></div></div>
+      <div class="form-group"><label class="form-label">Data</label><input type="date" class="form-control" id="rrData"></div>
+      <div class="form-group"><label class="form-label">O que foi discutido</label><textarea class="form-control" id="rrTexto" rows="4" style="resize:vertical" placeholder="Andamento, decisões, próximos passos..."></textarea></div>
+      <div class="form-group"><label class="form-label">Etapa do pipeline</label><select class="form-control" id="rrEtapa"><option value="">Selecione o orientando</option></select></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modalReuniao')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarReuniaoRapida()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Busca -->
+<div class="overlay" id="modalBusca">
+  <div class="modal" style="width:620px;align-self:flex-start;margin-top:10vh">
+    <div class="modal-body">
+      <input type="text" class="bs-input" id="bsInput" placeholder="Buscar orientando, manuscrito, banca, periódico..." oninput="executarBusca()" autocomplete="off">
+      <div class="bs-res" id="bsRes"></div>
+      <div style="font-size:10.5px;color:var(--text-dim);margin-top:8px;font-family:var(--mono)">Enter abre o primeiro resultado · Esc fecha</div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Mais (celular) -->
+<div class="overlay" id="modalMais">
+  <div class="modal" style="width:360px">
+    <div class="modal-header">
+      <span class="modal-title">Mais</span>
+      <button class="modal-close" onclick="closeModal('modalMais')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="mais-item" onclick="closeModal('modalMais');showView('producao')"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg> Produção intelectual</div>
+      <div class="mais-item" onclick="closeModal('modalMais');showView('alertas')"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg> Alertas <span id="maisAlertas" style="margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--red)"></span></div>
+      <div class="mais-item" onclick="closeModal('modalMais');showView('configuracoes')"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></svg> Configurações</div>
+      <div class="mais-item" onclick="alternarTema()"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg> Alternar tema claro/escuro</div>
+    </div>
+  </div>
+</div>
+
+<button class="fab" onclick="openRegistrarReuniao()" title="Registrar reunião" aria-label="Registrar reunião"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h8"/><path d="M12 8v8"/></svg></button>
+
+<!-- MODAL: Lista de periódicos -->
+<div class="overlay" id="modalPeriodicosLista">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Periódicos cadastrados</span>
+      <button class="modal-close" onclick="closeModal('modalPeriodicosLista')">✕</button>
+    </div>
+    <div class="modal-body"><div id="listaPeriodicosBody"></div></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modalPeriodicosLista')">Fechar</button>
+      <button class="btn btn-primary" onclick="openEditPeriodicoModal('')">+ Novo periódico</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Periódico -->
+<div class="overlay" id="modalPeriodico">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modalPeriodicoTitle">Periódico</span>
+      <button class="modal-close" onclick="closeModal('modalPeriodico')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="jId">
+      <div class="form-group"><label class="form-label">Nome do periódico</label><input type="text" class="form-control" id="jNome" placeholder="Natural Hazards"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Editora</label><input type="text" class="form-control" id="jEditora" placeholder="Springer"></div>
+        <div class="form-group"><label class="form-label">ISSN</label><input type="text" class="form-control" id="jIssn" placeholder="1573-0840"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Qualis CAPES</label>
+          <select class="form-control" id="jQualis"><option value="">—</option><option>A1</option><option>A2</option><option>A3</option><option>A4</option><option>B1</option><option>B2</option><option>B3</option><option>B4</option><option>C</option></select></div>
+        <div class="form-group"><label class="form-label">JCR / Impact Factor</label><input type="text" class="form-control" id="jJcr" placeholder="3.0"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Link (submissão ou normas)</label><input type="url" class="form-control" id="jUrl" placeholder="https://..."></div>
+      <div style="font-size:11px;color:var(--text-dim)">Alterações aqui valem para todos os manuscritos deste periódico.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="btnDeletePeriodico" onclick="deletePeriodico()" style="display:none;margin-right:auto">Excluir</button>
+      <button class="btn btn-secondary" onclick="closeModal('modalPeriodico')">Cancelar</button>
+      <button class="btn btn-primary" onclick="savePeriodico()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Migração de periódicos -->
+<div class="overlay" id="modalMigracaoJ">
+  <div class="modal" style="width:600px">
+    <div class="modal-header">
+      <span class="modal-title">Organizar periódicos</span>
+      <button class="modal-close" onclick="closeModal('modalMigracaoJ')">✕</button>
+    </div>
+    <div class="modal-body"><div id="migracaoBody"></div></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modalMigracaoJ')">Cancelar</button>
+      <button class="btn btn-primary" onclick="aplicarMigracaoPeriodicos()">Baixar backup e aplicar</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: Confirmar criação de orientandos -->
 <div class="overlay" id="modalConfirmStudents">
   <div class="modal" style="max-width:460px">
@@ -1222,6 +1519,7 @@ let students = [];
 let manuscripts = [];
 let bancas = [];
 let producao = [];
+let periodicos = [];
 let currentView = 'dashboard';
 let detailStudentId = null;
 let detailManuId = null;
@@ -1243,6 +1541,7 @@ async function loadData(){
   try{manuscripts=JSON.parse(localStorage.getItem('labmanuscripts')||'[]');}catch(e){manuscripts=[];}
   try{bancas=JSON.parse(localStorage.getItem('labbancas')||'[]');}catch(e){bancas=[];}
   try{producao=JSON.parse(localStorage.getItem('labproducao')||'[]');}catch(e){producao=[];}
+  try{periodicos=JSON.parse(localStorage.getItem('labperiodicos')||'[]');}catch(e){periodicos=[];}
 
   // ── PASSO 2: Sincronizar com Gist em background ──
   if(cfg.gistId && cfg.token){
@@ -1260,15 +1559,18 @@ async function loadData(){
       const gm=g.files[GIST_FILENAME_M]?JSON.parse(g.files[GIST_FILENAME_M].content||'[]'):[];
       const gb=g.files['labresearch_bancas.json']?JSON.parse(g.files['labresearch_bancas.json'].content||'[]'):[];
       const gp=g.files['labresearch_producao.json']?JSON.parse(g.files['labresearch_producao.json'].content||'[]'):[];
+      const gj=g.files['labresearch_periodicos.json']?JSON.parse(g.files['labresearch_periodicos.json'].content||'[]'):[];
       // Merge: só substituir se Gist tiver mais dados que o local
       if(gs.length>0 && gs.length>=students.length) students=gs;
       if(gm.length>0 && gm.length>=manuscripts.length) manuscripts=gm;
       if(gb.length>0 && gb.length>=bancas.length) bancas=gb;
       if(gp.length>0 && gp.length>=producao.length) producao=gp;
+      if(gj.length>0 && gj.length>=periodicos.length) periodicos=gj;
       localStorage.setItem('labstudents',JSON.stringify(students));
       localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
       localStorage.setItem('labbancas',JSON.stringify(bancas));
       localStorage.setItem('labproducao',JSON.stringify(producao));
+      localStorage.setItem('labperiodicos',JSON.stringify(periodicos));
       setSyncOk('Gist');
       if(typeof renderCurrentView==='function') renderCurrentView();
     }).catch(e=>{
@@ -1289,6 +1591,7 @@ async function saveData(){
     localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
     localStorage.setItem('labbancas',JSON.stringify(bancas));
     localStorage.setItem('labproducao',JSON.stringify(producao));
+    localStorage.setItem('labperiodicos',JSON.stringify(periodicos));
   }catch(e){console.error('localStorage error:',e);}
 
   // 2. Gist como único sync remoto
@@ -1299,6 +1602,7 @@ async function saveData(){
       files[GIST_FILENAME_M]={content:JSON.stringify(manuscripts,null,2)};
       files['labresearch_bancas.json']={content:JSON.stringify(bancas,null,2)};
       files['labresearch_producao.json']={content:JSON.stringify(producao,null,2)};
+      files['labresearch_periodicos.json']={content:JSON.stringify(periodicos,null,2)};
       const r=await fetchWithTimeout(`https://api.github.com/gists/${cfg.gistId}`,{
         method:'PATCH',
         headers:{'Content-Type':'application/json',Authorization:`token ${cfg.token}`},
@@ -1331,6 +1635,7 @@ async function syncNow(){
       files[GIST_FILENAME_M]={content:JSON.stringify(manuscripts,null,2)};
       files['labresearch_bancas.json']={content:JSON.stringify(bancas,null,2)};
       files['labresearch_producao.json']={content:JSON.stringify(producao,null,2)};
+      files['labresearch_periodicos.json']={content:JSON.stringify(periodicos,null,2)};
       const r=await fetchWithTimeout(`https://api.github.com/gists/${cfg.gistId}`,{
         method:'PATCH',
         headers:{'Content-Type':'application/json',Authorization:`token ${cfg.token}`},
@@ -1346,6 +1651,9 @@ async function syncNow(){
 
 // ─── VIEWS ────────────────────────────────────────────────────
 function showView(v, skipHistory=false){
+  // Calendário e Bancas agora são abas da Agenda
+  if(v==='bancas'){agendaTab='bancas';v='agenda';}
+  else if(v==='calendario'){agendaTab='nivel';v='agenda';}
   if(!skipHistory) prevView=currentView;
   document.querySelectorAll('[id^="view-"]').forEach(el=>el.style.display='none');
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
@@ -1353,12 +1661,12 @@ function showView(v, skipHistory=false){
   if(el) el.style.display='';
   const nav=document.getElementById('nav-'+v);
   if(nav) nav.classList.add('active');
-  if(nav && window.innerWidth<=768 && nav.scrollIntoView) nav.scrollIntoView({inline:'center',block:'nearest'});
+  if(window.innerWidth<=768 && ['producao','alertas','configuracoes'].includes(v)){const nm=document.getElementById('nav-mais');if(nm) nm.classList.add('active');}
   currentView=v;
-  const titles={dashboard:'Dashboard',orientandos:'Orientandos',manuscritos:'Manuscritos',calendario:'Calendário',bancas:'Agenda de Bancas',producao:'Produção Intelectual',alertas:'Alertas',configuracoes:'Configurações','student-detail':'Orientando','manu-detail':'Manuscrito'};
+  const titles={dashboard:'Início',agenda:'Agenda',orientandos:'Orientandos',manuscritos:'Manuscritos',calendario:'Calendário',bancas:'Agenda de Bancas',producao:'Produção Intelectual',alertas:'Alertas',configuracoes:'Configurações','student-detail':'Orientando','manu-detail':'Manuscrito'};
   document.getElementById('topbarTitle').textContent=titles[v]||v;
-  document.getElementById('topbarAdd').textContent=v==='manuscritos'?'+ Manuscrito':v==='bancas'?'+ Banca':v==='producao'?'+ Produção':'+ Orientando';
-  document.getElementById('topbarAdd').onclick=v==='manuscritos'?()=>openAddManuModal():v==='bancas'?()=>openAddBancaModal():v==='producao'?()=>openAddProducaoModal():()=>openAddStudentModal();
+  document.getElementById('topbarAdd').textContent=v==='manuscritos'?'+ Manuscrito':(v==='bancas'||v==='agenda')?'+ Banca':v==='producao'?'+ Produção':'+ Orientando';
+  document.getElementById('topbarAdd').onclick=v==='manuscritos'?()=>openAddManuModal():(v==='bancas'||v==='agenda')?()=>openAddBancaModal():v==='producao'?()=>openAddProducaoModal():()=>openAddStudentModal();
   renderCurrentView();
 }
 
@@ -1369,6 +1677,7 @@ function renderCurrentView(){
   else if(currentView==='calendario') renderCalendario();
   else if(currentView==='bancas') renderBancas('todas');
   else if(currentView==='producao') renderProducao('todos');
+  else if(currentView==='agenda') renderAgenda();
   else if(currentView==='alertas') renderAlertas();
   else if(currentView==='configuracoes') renderConfig();
   updateAlertBadge();
@@ -1457,50 +1766,8 @@ function renderDashboard(){
   const alertas=students.filter(s=>!s.encerrado && inactivityDays(s)>=cfg.warnDays);
   const manuAtivos=manuscripts.filter(m=>m.subStatus!=='publicado');
 
-  // ── STAT CARDS ──
-  document.getElementById('statsRow').innerHTML=`
-    <div class="stat-card"><div class="stat-value">${active.length}</div><div class="stat-label">Orientandos ativos</div><div class="stat-sub">${enc.length} encerrado${enc.length!==1?'s':''}</div></div>
-    <div class="stat-card"><div class="stat-value">${students.filter(s=>s.type==='IC').length}</div><div class="stat-label">IC</div><div class="stat-sub">Iniciação Científica</div></div>
-    <div class="stat-card"><div class="stat-value">${students.filter(s=>s.type==='TCC'||s.type==='ESP').length}</div><div class="stat-label">TCCs</div><div class="stat-sub">Grad + Especialização</div></div>
-    <div class="stat-card"><div class="stat-value">${students.filter(s=>s.type==='MSC'||s.type==='PHD').length}</div><div class="stat-label">Pós-Grad</div><div class="stat-sub">Mestrado + Doutorado</div></div>
-    <div class="stat-card" style="border-color:${alertas.length>0?'var(--orange)44':'var(--border)'}"><div class="stat-value" style="color:${alertas.length>0?'var(--orange)':'var(--text)'}">${alertas.length}</div><div class="stat-label">Requerem atenção</div><div class="stat-sub">Inatividade ≥${cfg.warnDays}d</div></div>
-  `;
-
-  // ── BANCAS FUTURAS ──
-  renderDashBancas();
-
-  // ── ÚLTIMAS REUNIÕES ──
-  renderDashReunioes();
-
-  // ── SEÇÃO 1: SEMÁFORO ──
-  const semaEl=document.getElementById('dashSemaforo');
-  if(!active.length){
-    semaEl.innerHTML='<div class="empty-state" style="padding:20px"><div class="empty-icon" style="font-size:20px">◎</div>Nenhum orientando cadastrado. <button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="openAddStudentModal()">+ Adicionar</button></div>';
-  } else {
-    const sorted=[...active].sort((a,b)=>{
-      const order={vermelho:0,laranja:1,amarelo:2,verde:3,encerrado:4};
-      return (order[riskLevel(a)]||3)-(order[riskLevel(b)]||3);
-    });
-    semaEl.innerHTML=sorted.map(s=>{
-      const risk=riskLevel(s);
-      const il=inactivityLabel(s);
-      const pct=pipelineProgress(s);
-      return `<div class="sema-card risk-${risk}" onclick="openStudentDetail('${s.id}')">
-        <div class="sema-card-top">
-          <div class="sema-avatar">${initials(s.name)}</div>
-          ${typeBadge(s.type)}
-          <div class="sema-name">${escHTML(s.name)}</div>
-        </div>
-        <div class="sema-card-mid">⬡ ${escHTML(s.milestone||'Sem etapa')}</div>
-        <div class="sema-card-bot">
-          <div class="manu-prog-mini" style="flex:1">
-            <div class="progress-track"><div class="progress-fill ${risk}" style="width:${pct}%"></div></div>
-          </div>
-          <span class="inactivity-badge ${il.cls}" style="font-size:9px;padding:1px 6px">${il.txt}</span>
-        </div>
-      </div>`;
-    }).join('');
-  }
+  // ── NOVO PAINEL: saudação, precisa de você, próximos dias, onde estão, orientandos ──
+  renderDashNovo();
 
   // ── SEÇÃO 2: MANUSCRITOS ──
   const manuEl=document.getElementById('dashManu');
@@ -1536,45 +1803,7 @@ function renderDashboard(){
   }
 
   // ── SEÇÃO 3: PERIÓDICOS / QUALIS ──
-  const jEl=document.getElementById('dashJournals');
-  const journalMap={};
-  manuscripts.forEach(m=>{
-    if(!m.journal) return;
-    const key=m.journal.trim();
-    if(!journalMap[key]) journalMap[key]={name:key,qualis:m.qualis||'',jcr:m.jcr||'',manus:[]};
-    if(m.qualis) journalMap[key].qualis=m.qualis;
-    if(m.jcr)    journalMap[key].jcr=m.jcr;
-    journalMap[key].manus.push({title:m.title,type:m.type,subStatus:m.subStatus,pct:Math.round(((m.steps||[]).length/getManuSteps(m.type).length)*100)});
-  });
-  const journals=Object.values(journalMap).sort((a,b)=>{
-    const qOrder={A1:0,A2:1,A3:2,A4:3,B1:4,B2:5,B3:6,B4:7,C:8,'':9};
-    return (qOrder[a.qualis]??9)-(qOrder[b.qualis]??9);
-  });
-  if(!journals.length){
-    jEl.innerHTML='<div style="color:var(--text-dim);font-size:12px;padding:12px 0">Cadastre periódicos nos manuscritos para visualizar aqui.</div>';
-  } else {
-    jEl.innerHTML=journals.map(j=>{
-      const qcls=qualisClass(j.qualis);
-      const avgPct=j.manus.length?Math.round(j.manus.reduce((s,m)=>s+m.pct,0)/j.manus.length):0;
-      const pillsHTML=j.manus.map(m=>{
-        const si=subStatusInfo(m.subStatus);
-        return `<span class="journal-ms-pill" title="${escHTML(m.title)}">${typeBadge(m.type).replace(/>/,'style="font-size:8px;padding:1px 4px">').replace('badge ','badge ')} ${escHTML(m.title||'')} <span class="sub-badge ${si.cls}" style="font-size:8px;padding:1px 5px">${si.lbl}</span></span>`;
-      }).join('');
-      return `<div class="journal-card">
-        <div class="journal-card-header">
-          <div class="journal-card-name" title="${escHTML(j.name)}">${escHTML(j.name)}</div>
-          ${j.qualis?`<span class="qualis-badge ${qcls}">${j.qualis}</span>`:'<span class="qualis-badge qualis-b3" style="opacity:.5">—</span>'}
-          ${j.jcr?`<span class="jcr-badge" style="font-family:var(--mono);font-size:10px;color:var(--text-muted)">IF ${escHTML(j.jcr)}</span>`:''}
-        </div>
-        <div class="journal-card-body">
-          <span class="journal-stat"><span class="journal-stat-val">${j.manus.length}</span> manuscrito${j.manus.length!==1?'s':''}</span>
-          <span class="journal-stat">progresso médio: <span class="journal-stat-val">${avgPct}%</span></span>
-          ${j.qualis?`<span class="journal-stat">Qualis: <span class="journal-stat-val" style="color:var(--green-bright)">${j.qualis}</span></span>`:''}
-        </div>
-        <div class="journal-ms-pills">${pillsHTML}</div>
-      </div>`;
-    }).join('');
-  }
+  renderDashPeriodicos();
 
   // ── SEÇÃO 4: LINHA DO TEMPO COM BARRA DE PRAZO ──
   const tlEl=document.getElementById('dashTimeline');
@@ -2044,6 +2273,7 @@ function renderManuDetail(id){
         <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center">
           ${typeBadge(m.type)}
           <span style="font-size:12px;color:var(--text-muted)">${escHTML(m.journal||'')}</span>
+          ${m.planoB?`<span style="font-size:11px;color:var(--text-dim)">plano B: ${escHTML(m.planoB)}</span>`:''}
           <span style="font-size:12px;color:var(--text-muted)">${escHTML(m.authors||'')}</span>
           ${m.qualis?`<span class="qualis-badge ${qcls}">${m.qualis}</span>`:''}
           ${m.jcr?`<span class="jcr-badge" style="font-family:var(--mono);font-size:10px;color:var(--text-muted)">IF ${escHTML(m.jcr)}</span>`:''}
@@ -2113,6 +2343,8 @@ function openAddManuModal(){
   document.getElementById('mId').value='';
   document.getElementById('mTitle').value='';
   document.getElementById('mJournal').value='';
+  document.getElementById('mPlanoB').value='';
+  refreshDatalistPeriodicos();preencherQualisDoPeriodico();
   document.getElementById('mType').value='IC';
   document.getElementById('mAuthors').value='';
   document.getElementById('mNotes').value='';
@@ -2139,6 +2371,8 @@ function openEditManuModal(id){
   document.getElementById('mSubDate').value=m.subDate||'';
   document.getElementById('mQualis').value=m.qualis||'';
   document.getElementById('mJCR').value=m.jcr||'';
+  document.getElementById('mPlanoB').value=m.planoB||'';
+  refreshDatalistPeriodicos();atualizarHintPeriodico();
   document.getElementById('btnDeleteManu').style.display='inline-flex';
   loadSkeletonFields(m.skeleton||{});
   renderManuStepsCheck(m.steps||[], m.type);
@@ -2170,9 +2404,11 @@ function saveManu(){
     jcr:document.getElementById('mJCR').value.trim()
   };
   if(!data.title){toast('Informe o título.');return;}
+  vincularPeriodicoAoManuscrito(data);
   const ei=manuscripts.findIndex(m=>m.id===id);
   if(ei>=0) Object.assign(manuscripts[ei],data);
   else manuscripts.push(data);
+  if(data.journalId) propagarPeriodico(data.journalId);
 
   // ── Sincronização automática com Orientandos ──────────────────
   const typeMap = {'IC':'IC','TCC':'TCC','ESP':'ESP','MSC':'MSC','PHD':'PHD','proprio':'IC'};
@@ -2390,6 +2626,459 @@ function renderDashBancas(){
       <span class="inactivity-badge ${isHoje?'inactivity-ok':isUrgente?'inactivity-alert':'inactivity-warn'}" style="flex-shrink:0">${isHoje?'HOJE':dias+'d'}</span>
     </div>`;
   }).join('');
+}
+
+const IC_P={"home": "<path d=\"m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/><polyline points=\"9 22 9 12 15 12 15 22\"/>", "users": "<path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M22 21v-2a4 4 0 0 0-3-3.87\"/><path d=\"M16 3.13a4 4 0 0 1 0 7.75\"/>", "file": "<path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"/><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"/><path d=\"M16 13H8\"/><path d=\"M16 17H8\"/>", "cal": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"/><path d=\"M16 2v4\"/><path d=\"M8 2v4\"/><path d=\"M3 10h18\"/>", "award": "<circle cx=\"12\" cy=\"8\" r=\"6\"/><path d=\"M15.477 12.89 17 22l-5-3-5 3 1.523-9.11\"/>", "bell": "<path d=\"M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9\"/><path d=\"M10.3 21a1.94 1.94 0 0 0 3.4 0\"/>", "sliders": "<line x1=\"21\" x2=\"14\" y1=\"4\" y2=\"4\"/><line x1=\"10\" x2=\"3\" y1=\"4\" y2=\"4\"/><line x1=\"21\" x2=\"12\" y1=\"12\" y2=\"12\"/><line x1=\"8\" x2=\"3\" y1=\"12\" y2=\"12\"/><line x1=\"21\" x2=\"16\" y1=\"20\" y2=\"20\"/><line x1=\"12\" x2=\"3\" y1=\"20\" y2=\"20\"/><line x1=\"14\" x2=\"14\" y1=\"2\" y2=\"6\"/><line x1=\"8\" x2=\"8\" y1=\"10\" y2=\"14\"/><line x1=\"16\" x2=\"16\" y1=\"18\" y2=\"22\"/>", "dots": "<circle cx=\"12\" cy=\"12\" r=\"1\"/><circle cx=\"19\" cy=\"12\" r=\"1\"/><circle cx=\"5\" cy=\"12\" r=\"1\"/>", "search": "<circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/>", "plus": "<path d=\"M5 12h14\"/><path d=\"M12 5v14\"/>", "sun": "<circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2\"/><path d=\"M12 20v2\"/><path d=\"m4.93 4.93 1.41 1.41\"/><path d=\"m17.66 17.66 1.41 1.41\"/><path d=\"M2 12h2\"/><path d=\"M20 12h2\"/><path d=\"m6.34 17.66-1.41 1.41\"/><path d=\"m19.07 4.93-1.41 1.41\"/>", "moon": "<path d=\"M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z\"/>", "refresh": "<path d=\"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8\"/><path d=\"M21 3v5h-5\"/><path d=\"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16\"/><path d=\"M8 16H3v5\"/>", "msg": "<path d=\"M7.9 20A9 9 0 1 0 4 16.1L2 22Z\"/><path d=\"M8 12h8\"/><path d=\"M12 8v8\"/>", "user": "<path d=\"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/>", "cap": "<path d=\"M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z\"/><path d=\"M22 10v6\"/><path d=\"M6 12.5V16a6 3 0 0 0 12 0v-3.5\"/>", "clock": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><polyline points=\"12 6 12 12 16 14\"/>", "check": "<path d=\"M20 6 9 17l-5-5\"/>", "chart": "<path d=\"M3 3v18h18\"/><path d=\"M18 17V9\"/><path d=\"M13 17V5\"/><path d=\"M8 17v-3\"/>", "send": "<path d=\"m22 2-7 20-4-9-9-4Z\"/><path d=\"M22 2 11 13\"/>", "left": "<path d=\"m15 18-6-6 6-6\"/>", "right": "<path d=\"m9 18 6-6-6-6\"/>"};
+function ic(n,s){s=s||16;return '<svg class="ic" width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(IC_P[n]||'')+'</svg>';}
+
+// ─── TEMA ─────────────────────────────────────────────────────
+function aplicarTemaUI(){
+  const claro=document.documentElement.getAttribute('data-theme')==='light';
+  const m=document.getElementById('metaTheme'); if(m) m.setAttribute('content',claro?'#f6f8fa':'#0d1117');
+  const b=document.getElementById('btnTema'); if(b) b.innerHTML=ic(claro?'moon':'sun',14);
+}
+function alternarTema(){
+  const claro=document.documentElement.getAttribute('data-theme')==='light';
+  if(claro){document.documentElement.removeAttribute('data-theme');localStorage.setItem('labtheme','dark');}
+  else{document.documentElement.setAttribute('data-theme','light');localStorage.setItem('labtheme','light');}
+  aplicarTemaUI();
+}
+
+// ─── EVENTOS (fonte única para Agenda e Início) ───────────────
+function addDiasISO(iso,n){const d=new Date(iso+'T12:00:00');d.setDate(d.getDate()+n);return isoLocal(d);}
+function coletarEventos(){
+  const ev=[];
+  bancas.forEach(b=>{if(b.date) ev.push({date:b.date,time:b.time||'',tipo:'banca',titulo:(BANCA_LABELS[b.type]||'Banca')+' · '+(b.authors||'—'),sub:b.title||'',acao:`openEditBancaModal('${b.id}')`});});
+  students.filter(s=>!s.encerrado&&s.end).forEach(s=>ev.push({date:s.end,time:'',tipo:'prazo',titulo:'Prazo · '+s.name,sub:s.milestone?('Etapa atual: '+s.milestone):'',acao:`openStudentDetail('${s.id}')`}));
+  manuscripts.filter(m=>m.subDate&&!['aceito','publicado'].includes(m.subStatus)).forEach(m=>ev.push({date:m.subDate,time:'',tipo:'submissao',titulo:'Submissão · '+((m.authors||'').trim()||'manuscrito'),sub:m.title||'',acao:`openManuDetail('${m.id}')`}));
+  return ev.sort((a,b)=>(a.date+(a.time||'99')).localeCompare(b.date+(b.time||'99')));
+}
+const EV_TAG={banca:['Banca','ev-banca'],prazo:['Prazo','ev-prazo'],submissao:['Submissão','ev-submissao']};
+const EV_COR={banca:'var(--yellow)',prazo:'var(--red)',submissao:'var(--blue)'};
+
+// ─── INÍCIO (novo dashboard) ──────────────────────────────────
+function ultimoContato(s){
+  const m=s.meetings&&s.meetings.length?s.meetings.reduce((a,b)=>(b.date||'')>(a.date||'')?b:a):null;
+  const d=m?m.date:(s.lastMeet||'');
+  return {data:d,texto:m?m.text:''};
+}
+function renderDashNovo(){
+  const hoje=today(), ativos=students.filter(s=>!s.encerrado);
+  const h=new Date().getHours(), sauda=h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
+  const el=id=>document.getElementById(id);
+  if(!el('dhSaudacao')) return;
+  el('dhSaudacao').textContent=sauda+(cfg.nomeUsuario?', '+cfg.nomeUsuario:'');
+  const dt=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+  const cnt=t=>ativos.filter(s=>t.includes(s.type)).length;
+  el('dhSub').textContent=dt.charAt(0).toUpperCase()+dt.slice(1)+` · ${ativos.length} orientandos ativos · ${cnt(['IC'])} IC · ${cnt(['TCC','ESP'])} TCC · ${cnt(['MSC','PHD'])} pós`;
+
+  // Precisa de você
+  const itens=[];
+  const listaNomes=arr=>arr.length<=2?arr.map(s=>s.name).join(' e '):arr.slice(0,2).map(s=>s.name).join(', ')+` e mais ${arr.length-2}`;
+  const criticos=ativos.filter(s=>inactivityDays(s)>=cfg.alertDays).sort((a,b)=>inactivityDays(b)-inactivityDays(a));
+  if(criticos.length){const d=inactivityDays(criticos[0]);
+    itens.push({cls:'pv-red',ico:'user',txt:`Sem contato há mais de ${cfg.alertDays} dias: ${escHTML(listaNomes(criticos))}`,act:'Ver',acao:"showView('alertas')"});}
+  const atencao=ativos.filter(s=>{const d=inactivityDays(s);return d>=cfg.warnDays&&d<cfg.alertDays;});
+  if(atencao.length) itens.push({cls:'pv-orange',ico:'clock',txt:`Sem contato há ${cfg.warnDays}–${cfg.alertDays} dias: ${escHTML(listaNomes(atencao))}`,act:'Ver',acao:"showView('alertas')"});
+  const ate7=addDiasISO(hoje,7);
+  bancas.filter(b=>b.date&&b.date>=hoje&&b.date<=ate7).sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||''))).forEach(b=>{
+    const d=Math.round((new Date(b.date+'T12:00:00')-new Date(hoje+'T12:00:00'))/86400000);
+    const quando=d===0?'hoje':d===1?'amanhã':`em ${d} dias`;
+    itens.push({cls:'pv-yellow',ico:'cap',txt:`Banca ${quando}: ${escHTML(BANCA_LABELS[b.type]||'')} de ${escHTML(b.authors||b.title||'')}${b.time?' · '+escHTML(b.time):''}`,act:'Abrir',acao:`openEditBancaModal('${b.id}')`});});
+  const ate30=addDiasISO(hoje,30);
+  ativos.filter(s=>s.end&&s.end>=hoje&&s.end<=ate30).forEach(s=>{
+    itens.push({cls:'pv-blue',ico:'clock',txt:`Prazo de conclusão em ${fmtDate(s.end)}: ${escHTML(s.name)} (${escHTML(s.milestone||'sem etapa')})`,act:'Abrir',acao:`openStudentDetail('${s.id}')`});});
+  manuscripts.filter(m=>m.subDate&&m.subDate<hoje&&['planejado','escrita'].includes(m.subStatus||'planejado')).forEach(m=>{
+    itens.push({cls:'pv-red',ico:'file',txt:`Prazo de submissão vencido (${fmtDate(m.subDate)}): ${escHTML((m.title||'').slice(0,70))}${(m.title||'').length>70?'…':''}`,act:'Abrir',acao:`openManuDetail('${m.id}')`});});
+  manuscripts.filter(m=>{const pct=Math.round(((m.steps||[]).length/getManuSteps(m.type).length)*100);return pct>=75&&['planejado','escrita'].includes(m.subStatus||'planejado');}).forEach(m=>{
+    itens.push({cls:'pv-green',ico:'send',txt:`Quase pronto para submeter: ${escHTML((m.title||'').slice(0,70))}${(m.title||'').length>70?'…':''}`,act:'Abrir',acao:`openManuDetail('${m.id}')`});});
+  el('dhPrecisa').innerHTML=`<div class="dh-card-h">${ic('bell',15)} Precisa de você<span class="dh-cnt">${itens.length?itens.length+' ite'+(itens.length>1?'ns':'m'):''}</span></div>`+
+    (itens.length?`<div class="pv-list">${itens.map(i=>`<div class="pv-item ${i.cls}" onclick="${i.acao}">${ic(i.ico,15)}<span class="pv-txt">${i.txt}</span><span class="pv-act">${i.act}</span></div>`).join('')}</div>`
+    :`<div class="pv-ok">${ic('check',15)} Nada pendente — todos em dia.</div>`);
+
+  // Próximos 7 dias
+  const ev7=coletarEventos().filter(e=>e.date>=hoje&&e.date<=ate7);
+  const prox=coletarEventos().find(e=>e.date>ate7);
+  const dSem=iso=>new Date(iso+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit'}).replace('.','');
+  el('dhSemana').innerHTML=`<div class="dh-card-h">${ic('cal',15)} Próximos 7 dias<span class="dh-cnt" style="cursor:pointer" onclick="showView('agenda')">Agenda →</span></div>`+
+    (ev7.length?ev7.slice(0,6).map(e=>`<div class="sm-row" onclick="${e.acao}"><span class="sm-d">${dSem(e.date)}</span><span class="sm-dot" style="background:${EV_COR[e.tipo]}"></span><span class="sm-t" title="${escHTML(e.sub)}">${escHTML(e.titulo)}${e.time?' · '+escHTML(e.time):''}</span></div>`).join('')+(ev7.length>6?`<div class="ag-mais">+${ev7.length-6} na agenda</div>`:'')
+    :`<div style="font-size:12.5px;color:var(--text-muted)">Nada agendado nesta semana.${prox?`<div class="sm-row" style="margin-top:6px" onclick="${prox.acao}"><span class="sm-d">${fmtDate(prox.date)}</span><span class="sm-dot" style="background:${EV_COR[prox.tipo]}"></span><span class="sm-t">Próximo: ${escHTML(prox.titulo)}</span></div>`:''}</div>`);
+
+  // Onde estão (fase pelo progresso no pipeline)
+  const fases=[['Início (0–33%)',0],['Desenvolvimento',0],['Finalização',0],['Concluído',0]];
+  ativos.forEach(s=>{const p=pipelineProgress(s);fases[p>=100?3:p>=67?2:p>=34?1:0][1]++;});
+  const mx=Math.max(1,...fases.map(f=>f[1]));
+  el('dhOnde').innerHTML=`<div class="dh-card-h">${ic('chart',15)} Onde estão<span class="dh-cnt">por progresso no pipeline</span></div>`+
+    fases.map(f=>`<div class="on-row" onclick="showView('orientandos')"><span class="on-l">${f[0]}</span><div class="on-bar"><div style="width:${Math.round(f[1]/mx*100)}%"></div></div><span class="on-n">${f[1]}</span></div>`).join('');
+
+  // Orientandos — última reunião (mais recente primeiro)
+  const COR_T={IC:['var(--blue-dim)','var(--blue)'],TCC:['var(--purple-dim)','var(--purple)'],ESP:['var(--orange-dim)','var(--orange)'],MSC:['var(--teal-dim)','var(--teal)'],PHD:['var(--pink-dim)','var(--pink)']};
+  const RISCO={verde:'var(--green-bright)',laranja:'var(--orange)',amarelo:'var(--yellow)',vermelho:'var(--red)',encerrado:'var(--text-dim)'};
+  const ord=[...ativos].sort((a,b)=>(ultimoContato(b).data||'').localeCompare(ultimoContato(a).data||''));
+  el('dhAlunos').innerHTML=ord.length?ord.map(s=>{
+    const u=ultimoContato(s), d=inactivityDays(s), r=riskLevel(s), cor=COR_T[s.type]||['var(--surface3)','var(--text)'];
+    const quando=d>=9999?'sem registro':d<=0?'hoje':d===1?'ontem':d+' dias';
+    return `<div class="al-card" onclick="openStudentDetail('${s.id}')">
+      <div class="al-top"><div class="al-av" style="background:${cor[0]};color:${cor[1]}" title="${escHTML(s.type)}">${initials(s.name)}</div><span class="al-nome">${escHTML(s.name)}</span><span class="al-dias" style="color:${RISCO[r]}">${quando}</span></div>
+      <div class="al-txt ${u.texto?'':'vazio'}">${u.texto?escHTML(u.texto):'Nenhuma reunião registrada.'}</div>
+      <div class="al-etapa">${escHTML(s.type)} · ${escHTML(s.milestone||'sem etapa')}</div>
+      <div class="al-bar"><div style="width:${Math.max(3,pipelineProgress(s))}%;background:${RISCO[r]}"></div></div>
+    </div>`;}).join('')
+    :`<div class="empty-state" style="padding:20px;grid-column:1/-1">Nenhum orientando ativo. <button class="btn btn-primary btn-sm" onclick="openAddStudentModal()">+ Adicionar</button></div>`;
+}
+
+// ─── REGISTRAR REUNIÃO (ação rápida) ──────────────────────────
+function openRegistrarReuniao(alunoId){
+  const ativos=students.filter(s=>!s.encerrado).sort((a,b)=>a.name.localeCompare(b.name));
+  if(!ativos.length){toast('Cadastre um orientando primeiro.');return;}
+  document.getElementById('rrAluno').value='';
+  document.getElementById('rrData').value=today();
+  document.getElementById('rrTexto').value='';
+  document.getElementById('rrChips').innerHTML=ativos.map(s=>`<button type="button" class="rr-chip" data-id="${s.id}" onclick="selecionarAlunoReuniao('${s.id}')">${escHTML(s.name)}</button>`).join('');
+  document.getElementById('rrEtapa').innerHTML='<option value="">Selecione o orientando</option>';
+  openModal('modalReuniao');
+  if(alunoId) selecionarAlunoReuniao(alunoId);
+}
+function selecionarAlunoReuniao(id){
+  const s=students.find(x=>x.id===id);if(!s)return;
+  document.getElementById('rrAluno').value=id;
+  document.querySelectorAll('#rrChips .rr-chip').forEach(b=>b.classList.toggle('sel',b.dataset.id===id));
+  const steps=PIPELINES[s.type]||PIPELINES.TCC, i=steps.indexOf(s.milestone);
+  document.getElementById('rrEtapa').innerHTML=`<option value="">Manter: ${escHTML(s.milestone||'sem etapa')}</option>`+
+    steps.slice(i+1).map(st=>`<option value="${escHTML(st)}">Avançar para: ${escHTML(st)}</option>`).join('');
+}
+function salvarReuniaoRapida(){
+  const id=document.getElementById('rrAluno').value, txt=document.getElementById('rrTexto').value.trim();
+  const data=document.getElementById('rrData').value||today(), etapa=document.getElementById('rrEtapa').value;
+  if(!id){toast('Selecione o orientando.');return;}
+  if(!txt){toast('Descreva o que foi discutido.');return;}
+  const s=students.find(x=>x.id===id);if(!s)return;
+  if(!s.meetings) s.meetings=[];
+  s.meetings.push({date:data,text:txt});
+  if(!s.lastMeet||data>s.lastMeet) s.lastMeet=data;
+  if(etapa) s.milestone=etapa;
+  saveData();
+  closeModal('modalReuniao');
+  renderCurrentView();
+  toast('Reunião registrada'+(etapa?' · etapa: '+etapa:''));
+}
+
+// ─── BUSCA GLOBAL (Ctrl K) ────────────────────────────────────
+let _bsResultados=[];
+function normTxt(s){return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();}
+function openBusca(){
+  openModal('modalBusca');
+  const i=document.getElementById('bsInput'); i.value=''; executarBusca(); setTimeout(()=>i.focus(),30);
+}
+function executarBusca(){
+  const q=normTxt(document.getElementById('bsInput').value.trim());
+  const out=document.getElementById('bsRes');
+  if(q.length<2){out.innerHTML='<div style="font-size:12px;color:var(--text-dim);padding:8px 4px">Digite ao menos 2 letras.</div>';_bsResultados=[];return;}
+  const r=[];
+  const add=(tipo,tit,sub,acao,campos)=>{if(campos.some(f=>normTxt(f).includes(q))) r.push({tipo,tit,sub,acao});};
+  students.forEach(s=>add('Orientando',s.name,(s.type||'')+' · '+(s.milestone||''),`openStudentDetail('${s.id}')`,[s.name,s.theme,s.notes]));
+  manuscripts.forEach(m=>add('Manuscrito',m.title,m.authors||'',`openManuDetail('${m.id}')`,[m.title,m.authors,m.journal]));
+  bancas.forEach(b=>add('Banca',b.title||'Banca',fmtDate(b.date)+' · '+(b.authors||''),`openEditBancaModal('${b.id}')`,[b.title,b.authors,b.advisor,b.members]));
+  periodicos.forEach(p=>add('Periódico',p.nome,p.qualis?'Qualis '+p.qualis:'',`openEditPeriodicoModal('${p.id}')`,[p.nome,p.editora,p.issn]));
+  producao.forEach(p=>add('Produção',p.titulo,(p.ano||'')+' · '+(p.veiculo||''),`showView('producao');openEditProducaoModal('${p.id}')`,[p.titulo,p.autores,p.veiculo]));
+  _bsResultados=r.slice(0,25);
+  out.innerHTML=_bsResultados.length?_bsResultados.map((x,i)=>`<div class="bs-item${i===0?' first':''}" onclick="abrirResultadoBusca(${i})"><span class="bs-tipo">${x.tipo}</span><span class="bs-tit">${escHTML(x.tit||'')}</span><span class="bs-sub">${escHTML(x.sub||'')}</span></div>`).join('')
+    :'<div style="font-size:12px;color:var(--text-dim);padding:8px 4px">Nenhum resultado.</div>';
+}
+function abrirResultadoBusca(i){const x=_bsResultados[i];if(!x)return;closeModal('modalBusca');new Function(x.acao)();}
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&(e.key==='k'||e.key==='K')){e.preventDefault();openBusca();return;}
+  const busca=document.getElementById('modalBusca');
+  if(busca&&busca.classList.contains('open')){
+    if(e.key==='Escape') closeModal('modalBusca');
+    if(e.key==='Enter'&&_bsResultados.length){e.preventDefault();abrirResultadoBusca(0);}
+  }
+  const mais=document.getElementById('modalMais');
+  if(e.key==='Escape'&&mais&&mais.classList.contains('open')) closeModal('modalMais');
+});
+
+// ─── AGENDA UNIFICADA ─────────────────────────────────────────
+let agendaTab='mes', agendaMes=null;
+function setAgendaTab(t){
+  agendaTab=t;
+  ['mes','bancas','nivel'].forEach(k=>{
+    const b=document.getElementById('agt-'+k), p=document.getElementById('agPane-'+k);
+    if(b) b.classList.toggle('on',k===t); if(p) p.style.display=k===t?'':'none';
+  });
+  renderAgenda();
+}
+function mudarMesAgenda(n){
+  const base=agendaMes||new Date(new Date().getFullYear(),new Date().getMonth(),1);
+  agendaMes=n===0?new Date(new Date().getFullYear(),new Date().getMonth(),1):new Date(base.getFullYear(),base.getMonth()+n,1);
+  renderAgendaMes();
+}
+function renderAgenda(){
+  ['mes','bancas','nivel'].forEach(k=>{
+    const b=document.getElementById('agt-'+k), p=document.getElementById('agPane-'+k);
+    if(b) b.classList.toggle('on',k===agendaTab); if(p) p.style.display=k===agendaTab?'':'none';
+  });
+  if(agendaTab==='bancas') renderBancas(currentBancaFilter||'todas');
+  else if(agendaTab==='nivel') renderCalendario();
+  else renderAgendaMes();
+}
+function renderAgendaMes(){
+  if(!agendaMes) agendaMes=new Date(new Date().getFullYear(),new Date().getMonth(),1);
+  const ano=agendaMes.getFullYear(), mes=agendaMes.getMonth(), hoje=today();
+  const tit=agendaMes.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+  document.getElementById('agMesTitulo').textContent=tit.charAt(0).toUpperCase()+tit.slice(1);
+  const eventos=coletarEventos(), porDia={};
+  eventos.forEach(e=>{(porDia[e.date]=porDia[e.date]||[]).push(e);});
+  const ini=new Date(ano,mes,1-new Date(ano,mes,1).getDay());
+  let html=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map(d=>`<div class="ag-dow">${d}</div>`).join('');
+  for(let i=0;i<42;i++){
+    const d=new Date(ini.getFullYear(),ini.getMonth(),ini.getDate()+i), iso=isoLocal(d);
+    if(i===35&&d.getMonth()!==mes) break;
+    const evs=porDia[iso]||[];
+    html+=`<div class="ag-cel${d.getMonth()!==mes?' fora':''}${iso===hoje?' hoje':''}"><span class="ag-num">${d.getDate()}</span>`+
+      evs.slice(0,3).map(e=>`<div class="ag-ev ${EV_TAG[e.tipo][1]}" title="${escHTML(e.titulo+(e.sub?' — '+e.sub:''))}" onclick="${e.acao}">${escHTML(e.titulo)}</div>`).join('')+
+      (evs.length>3?`<span class="ag-mais">+${evs.length-3}</span>`:'')+`</div>`;
+  }
+  document.getElementById('agGrid').innerHTML=html;
+  // Lista: próximos 90 dias, agrupada por mês
+  const ate=addDiasISO(hoje,90), lista=eventos.filter(e=>e.date>=hoje&&e.date<=ate);
+  let mesAtual='', out='';
+  lista.forEach(e=>{
+    const m=new Date(e.date+'T12:00:00').toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+    if(m!==mesAtual){out+=`<div class="ag-lista-mes">${m}</div>`;mesAtual=m;}
+    const t=EV_TAG[e.tipo];
+    out+=`<div class="ag-item" onclick="${e.acao}"><span class="ag-item-d">${fmtDate(e.date)}${e.time?'<br>'+escHTML(e.time):''}</span><div class="ag-item-t">${escHTML(e.titulo)}${e.sub?`<div class="ag-item-s">${escHTML(e.sub)}</div>`:''}</div><span class="ag-tag ${t[1]}">${t[0]}</span></div>`;
+  });
+  document.getElementById('agLista').innerHTML=out||'<div style="font-size:12.5px;color:var(--text-muted);padding:8px 0">Nenhum evento nos próximos 90 dias.</div>';
+}
+
+// ─── PERIÓDICOS (cadastro único) ──────────────────────────────
+function limparNomeJ(s){return (s||'').split(/\s+[—–]\s+|\s*\|\s*/)[0].trim();}
+function chaveJ(s){return limparNomeJ(s).replace(/\([^)]*\)/g,'').toLowerCase().replace(/\s+/g,' ').trim();}
+function findPeriodico(nome){const k=chaveJ(nome);if(!k)return null;return periodicos.find(p=>chaveJ(p.nome)===k)||null;}
+function upsertPeriodico(nome){
+  let p=findPeriodico(nome);
+  if(!p){p={id:uid(),nome:limparNomeJ(nome),editora:'',issn:'',qualis:'',jcr:'',url:''};periodicos.push(p);}
+  return p;
+}
+function periodicoDoManuscrito(m){return m.journalId?(periodicos.find(p=>p.id===m.journalId)||null):null;}
+// Copia nome/Qualis/IF do cadastro para os manuscritos vinculados (o restante do sistema lê m.journal/m.qualis/m.jcr)
+function propagarPeriodico(pid){
+  const p=periodicos.find(x=>x.id===pid);if(!p)return;
+  manuscripts.forEach(m=>{
+    if(m.journalId===pid){m.journal=p.nome;m.qualis=p.qualis||'';m.jcr=p.jcr||'';}
+    if(m.planoBId===pid){m.planoB=p.nome;}
+  });
+}
+function refreshDatalistPeriodicos(){
+  const dl=document.getElementById('dlPeriodicos');
+  if(dl) dl.innerHTML=[...periodicos].sort((a,b)=>a.nome.localeCompare(b.nome)).map(p=>`<option value="${escHTML(p.nome)}">`).join('');
+}
+function atualizarHintPeriodico(){
+  const v=document.getElementById('mJournal').value.trim();
+  const h=document.getElementById('mJournalHint');
+  if(!v){h.textContent='';return null;}
+  const p=findPeriodico(v);
+  if(p){h.textContent='✓ Periódico cadastrado'+(p.qualis?' · Qualis '+p.qualis:' · sem Qualis')+(p.jcr?' · IF '+p.jcr:'');h.style.color='var(--green-bright)';}
+  else{h.textContent='Novo periódico — será cadastrado ao salvar';h.style.color='var(--yellow)';}
+  return p;
+}
+function preencherQualisDoPeriodico(){
+  const p=atualizarHintPeriodico();
+  if(p){document.getElementById('mQualis').value=p.qualis||'';document.getElementById('mJCR').value=p.jcr||'';}
+}
+function vincularPeriodicoAoManuscrito(data){
+  let nome=data.journal;
+  let pbTxt=(document.getElementById('mPlanoB').value||'').trim();
+  if(nome && !pbTxt && /\s+ou\s+/i.test(nome)){const ps=nome.split(/\s+ou\s+/i);nome=ps[0];pbTxt=ps.slice(1).join(' ou ');}
+  if(nome){
+    const p=upsertPeriodico(nome);
+    if(data.qualis) p.qualis=data.qualis;
+    if(data.jcr) p.jcr=data.jcr;
+    data.journalId=p.id;data.journal=p.nome;data.qualis=p.qualis||'';data.jcr=p.jcr||'';
+  } else {data.journalId='';}
+  if(pbTxt){const q=upsertPeriodico(pbTxt);data.planoBId=q.id;data.planoB=q.nome;}
+  else {data.planoBId='';data.planoB='';}
+}
+
+function renderDashPeriodicos(){
+  const jEl=document.getElementById('dashJournals');
+  const rEl=document.getElementById('dashJournalsResumo');
+  const bM=document.getElementById('btnMigrarJ');
+  if(!jEl) return;
+  const pend=manuscripts.filter(m=>m.journal&&!m.journalId).length;
+  if(bM){bM.style.display=pend?'inline-flex':'none';bM.textContent='Organizar ('+pend+')';}
+  const grupos={};
+  manuscripts.forEach(m=>{
+    if(!m.journal&&!m.journalId) return;
+    const p=periodicoDoManuscrito(m);
+    const key=p?p.id:'tmp:'+chaveJ(m.journal);
+    if(!grupos[key]) grupos[key]={p,nome:p?p.nome:limparNomeJ(m.journal),qualis:p?(p.qualis||''):'',jcr:p?(p.jcr||''):'',manus:[]};
+    if(!p){if(!grupos[key].qualis&&m.qualis)grupos[key].qualis=m.qualis;if(!grupos[key].jcr&&m.jcr)grupos[key].jcr=m.jcr;}
+    grupos[key].manus.push(m);
+  });
+  const lista=Object.values(grupos);
+  if(!lista.length){
+    if(rEl) rEl.innerHTML='';
+    jEl.innerHTML='<div style="color:var(--text-dim);font-size:12px;padding:12px 0">Informe o periódico alvo nos manuscritos para visualizar aqui.</div>';
+    return;
+  }
+  // Resumo: manuscritos por estrato Qualis
+  const est={'A1':0,'A2':0,'A3/A4':0,'B/C':0,'Sem Qualis':0};
+  lista.forEach(g=>{const q=g.qualis||'',n=g.manus.length;
+    if(q==='A1')est['A1']+=n;else if(q==='A2')est['A2']+=n;else if(q==='A3'||q==='A4')est['A3/A4']+=n;else if(/^[BC]/.test(q))est['B/C']+=n;else est['Sem Qualis']+=n;});
+  const corEst={'A1':'var(--green-bright)','A2':'var(--green-bright)','A3/A4':'var(--blue)','B/C':'var(--text-muted)','Sem Qualis':'var(--yellow)'};
+  const totalM=lista.reduce((s,g)=>s+g.manus.length,0);
+  if(rEl) rEl.innerHTML=`<div class="jq-line">${Object.entries(est).filter(([k,v])=>v>0).map(([k,v])=>`<span class="jq-chip" style="color:${corEst[k]};border:1px solid ${corEst[k]}">${k} · ${v}</span>`).join('')}<span style="margin-left:auto;color:var(--text-dim);font-family:var(--mono);font-size:10px">${totalM} manuscrito${totalM!==1?'s':''} em ${lista.length} periódico${lista.length!==1?'s':''}</span></div>`;
+  const qOrder={A1:0,A2:1,A3:2,A4:3,B1:4,B2:5,B3:6,B4:7,C:8,'':9};
+  lista.sort((a,b)=>((qOrder[a.qualis]??9)-(qOrder[b.qualis]??9))||(b.manus.length-a.manus.length));
+  const COR_ST={planejado:'var(--text-dim)',escrita:'var(--blue)',submetido:'var(--yellow)',revisao:'var(--orange)',aceito:'var(--green)',publicado:'var(--teal)',rejeitado:'var(--red)'};
+  const COR_TIPO={IC:'var(--blue)',TCC:'var(--purple)',ESP:'var(--orange)',MSC:'var(--teal)',PHD:'var(--pink)'};
+  const POS=['submetido','revisao','aceito','publicado'];
+  jEl.innerHTML=lista.map(g=>{
+    const n=g.manus.length;
+    const pcts=g.manus.map(m=>Math.round(((m.steps||[]).length/getManuSteps(m.type).length)*100));
+    const media=Math.round(pcts.reduce((a,b)=>a+b,0)/n);
+    const quase=g.manus.filter((m,i)=>pcts[i]>=75&&!POS.includes(m.subStatus)).length;
+    const cont={};g.manus.forEach(m=>{const s=m.subStatus||'planejado';cont[s]=(cont[s]||0)+1;});
+    const barra=Object.entries(cont).map(([s,k])=>`<div title="${escHTML(subStatusInfo(s).lbl)}: ${k}" style="width:${(k/n*100).toFixed(1)}%;background:${COR_ST[s]||'var(--text-dim)'}"></div>`).join('');
+    const statusTxt=Object.entries(cont).sort((a,b)=>b[1]-a[1]).map(([s,k])=>`${k} ${subStatusInfo(s).lbl.toLowerCase()}`).join(' · ');
+    const chips=g.manus.map(m=>{const cor=COR_TIPO[m.type]||'var(--text-muted)';return `<span class="jc2-chip" style="color:${cor};border-color:${cor}">${escHTML((m.authors||'').trim()||'sem autor')}</span>`;}).join('');
+    const sub=g.p?([g.p.editora,g.p.issn?('ISSN '+g.p.issn):''].filter(Boolean).join(' · ')||'clique em ✎ para completar o cadastro'):'nome livre — use "Organizar"';
+    const titulos=g.manus.map(m=>{const si=subStatusInfo(m.subStatus);return `<div class="jc2-t" onclick="event.stopPropagation();openManuDetail('${m.id}')">${typeBadge(m.type)} ${escHTML(m.title||'Sem título')} <span class="sub-badge ${si.cls}" style="font-size:8px;padding:1px 5px">${si.lbl}</span>${m.planoB?`<div style="font-size:10.5px;color:var(--text-dim);margin-top:2px">plano B: ${escHTML(m.planoB)}</div>`:''}</div>`;}).join('');
+    const urlOk=g.p&&/^https?:\/\//i.test(g.p.url||'');
+    return `<div class="jc2" onclick="this.classList.toggle('open')">
+      <div class="jc2-head">
+        <div class="jc2-name">${escHTML(g.nome)}</div>
+        ${g.qualis?`<span class="qualis-badge ${qualisClass(g.qualis)}">${g.qualis}</span>`:'<span class="qualis-badge" style="color:var(--yellow);border:1px solid var(--yellow)">Qualis?</span>'}
+        ${g.jcr?`<span style="font-family:var(--mono);font-size:10px;color:var(--text-muted);padding-top:2px">IF ${escHTML(g.jcr)}</span>`:''}
+        ${urlOk?`<a class="jc2-icon" href="${escHTML(g.p.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Abrir site do periódico">↗</a>`:''}
+        ${g.p?`<button class="jc2-icon" onclick="event.stopPropagation();openEditPeriodicoModal('${g.p.id}')" title="Editar periódico">✎</button>`:''}
+      </div>
+      <div class="jc2-sub">${escHTML(sub)}</div>
+      <div class="jc2-bar">${barra}</div>
+      <div class="jc2-stats"><span>${n} ms · média ${media}%</span><span>${quase?`<span style="color:var(--green-bright)">${quase} quase pronto${quase>1?'s':''}</span> · `:''}${statusTxt}</span></div>
+      <div class="jc2-chips">${chips}</div>
+      <div class="jc2-titles">${titulos}</div>
+    </div>`;
+  }).join('');
+}
+
+function openListaPeriodicos(){renderListaPeriodicos();openModal('modalPeriodicosLista');}
+function renderListaPeriodicos(){
+  const el=document.getElementById('listaPeriodicosBody');
+  if(!periodicos.length){el.innerHTML='<div class="empty-state" style="padding:20px">Nenhum periódico cadastrado. Eles são criados ao salvar um manuscrito, pelo botão "Organizar" ou pelo botão abaixo.</div>';return;}
+  el.innerHTML=[...periodicos].sort((a,b)=>a.nome.localeCompare(b.nome)).map(p=>{
+    const n=manuscripts.filter(m=>m.journalId===p.id).length, nb=manuscripts.filter(m=>m.planoBId===p.id).length;
+    return `<div class="migr-group" style="cursor:pointer;display:flex;align-items:center;gap:8px" onclick="openEditPeriodicoModal('${p.id}')">
+      <div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:600;word-break:break-word">${escHTML(p.nome)}</div>
+      <div style="font-size:10.5px;color:var(--text-dim);font-family:var(--mono)">${n} como alvo · ${nb} como plano B${p.issn?' · ISSN '+escHTML(p.issn):''}${p.jcr?' · IF '+escHTML(p.jcr):''}</div></div>
+      ${p.qualis?`<span class="qualis-badge ${qualisClass(p.qualis)}">${p.qualis}</span>`:'<span class="qualis-badge" style="color:var(--yellow);border:1px solid var(--yellow)">?</span>'}
+    </div>`;}).join('');
+}
+function openEditPeriodicoModal(id){
+  const p=id?periodicos.find(x=>x.id===id):null;
+  document.getElementById('modalPeriodicoTitle').textContent=p?'Editar periódico':'Novo periódico';
+  document.getElementById('jId').value=p?p.id:'';
+  document.getElementById('jNome').value=p?p.nome:'';
+  document.getElementById('jEditora').value=p?(p.editora||''):'';
+  document.getElementById('jIssn').value=p?(p.issn||''):'';
+  document.getElementById('jQualis').value=p?(p.qualis||''):'';
+  document.getElementById('jJcr').value=p?(p.jcr||''):'';
+  document.getElementById('jUrl').value=p?(p.url||''):'';
+  document.getElementById('btnDeletePeriodico').style.display=p?'inline-flex':'none';
+  openModal('modalPeriodico');
+}
+function savePeriodico(){
+  const id=document.getElementById('jId').value;
+  const nome=document.getElementById('jNome').value.trim();
+  if(!nome){toast('Informe o nome do periódico.');return;}
+  const dup=periodicos.find(x=>chaveJ(x.nome)===chaveJ(nome)&&x.id!==id);
+  if(dup){toast('Já existe um periódico com esse nome: '+dup.nome);return;}
+  let p=id?periodicos.find(x=>x.id===id):null;
+  if(!p){p={id:uid()};periodicos.push(p);}
+  p.nome=nome;
+  p.editora=document.getElementById('jEditora').value.trim();
+  p.issn=document.getElementById('jIssn').value.trim();
+  p.qualis=document.getElementById('jQualis').value;
+  p.jcr=document.getElementById('jJcr').value.trim();
+  p.url=document.getElementById('jUrl').value.trim();
+  propagarPeriodico(p.id);
+  saveData();
+  closeModal('modalPeriodico');
+  if(document.getElementById('modalPeriodicosLista').classList.contains('open')) renderListaPeriodicos();
+  renderCurrentView();
+  toast('Periódico salvo.');
+}
+function deletePeriodico(){
+  const id=document.getElementById('jId').value;if(!id)return;
+  const n=manuscripts.filter(m=>m.journalId===id||m.planoBId===id).length;
+  if(n){toast(`Há ${n} manuscrito(s) usando este periódico — troque-o neles antes de excluir.`);return;}
+  if(!confirm('Excluir este periódico?'))return;
+  periodicos=periodicos.filter(p=>p.id!==id);
+  saveData();closeModal('modalPeriodico');renderListaPeriodicos();renderCurrentView();
+  toast('Periódico excluído.');
+}
+
+// ─── MIGRAÇÃO: nomes livres → cadastro único ──────────────────
+function propostaMigracaoPeriodicos(){
+  const pend=manuscripts.filter(m=>m.journal&&!m.journalId);
+  const grupos={};
+  const getG=nome=>{
+    const ex=findPeriodico(nome);
+    const k=ex?'id:'+ex.id:'k:'+chaveJ(nome);
+    if(!grupos[k]) grupos[k]={existente:ex,nome:ex?ex.nome:limparNomeJ(nome),originais:new Set(),alvo:[],planoB:[],qualis:{},jcr:{},issn:''};
+    return grupos[k];
+  };
+  pend.forEach(m=>{
+    const partes=m.journal.split(/\s+ou\s+/i);
+    const g=getG(partes[0]);
+    g.originais.add(m.journal.trim());g.alvo.push(m);
+    if(m.qualis) g.qualis[m.qualis]=(g.qualis[m.qualis]||0)+1;
+    if(m.jcr) g.jcr[m.jcr]=(g.jcr[m.jcr]||0)+1;
+    const issn=(m.journal.match(/ISSN\s*([0-9]{4}-?[0-9]{3}[0-9Xx])/i)||[])[1];
+    if(issn&&!g.issn) g.issn=issn;
+    if(partes.length>1){const gb=getG(partes.slice(1).join(' ou '));gb.planoB.push(m);}
+  });
+  const top=o=>{const e=Object.entries(o).sort((a,b)=>b[1]-a[1]);return e.length?e[0][0]:'';};
+  return Object.values(grupos).map(g=>({...g,originais:[...g.originais],
+    qualisFinal:(g.existente&&g.existente.qualis)||top(g.qualis),
+    jcrFinal:(g.existente&&g.existente.jcr)||top(g.jcr),
+    conflito:Object.keys(g.qualis).length>1||Object.keys(g.jcr).length>1}));
+}
+function openMigracaoPeriodicos(){
+  const prop=propostaMigracaoPeriodicos();
+  if(!prop.length){toast('Todos os manuscritos já usam o cadastro de periódicos.');return;}
+  document.getElementById('migracaoBody').innerHTML=`
+    <p style="font-size:12px;color:var(--text-muted);line-height:1.6;margin-bottom:12px">Proposta de organização dos nomes digitados livremente. <b>Nada é alterado até você clicar em aplicar</b>, e um backup completo é baixado antes. Nomes, Qualis e IF podem ser corrigidos depois em "Gerenciar".</p>
+    ${prop.map(g=>`<div class="migr-group">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:13px;font-weight:600;flex:1;word-break:break-word">${escHTML(g.nome)}</span>
+        ${g.existente?'<span style="font-size:10px;color:var(--text-dim)">já cadastrado</span>':'<span style="font-size:10px;color:var(--green-bright)">novo</span>'}
+        ${g.qualisFinal?`<span class="qualis-badge ${qualisClass(g.qualisFinal)}">${g.qualisFinal}</span>`:'<span class="qualis-badge" style="color:var(--yellow);border:1px solid var(--yellow)">Qualis?</span>'}
+        ${g.jcrFinal?`<span style="font-family:var(--mono);font-size:10px;color:var(--text-muted)">IF ${escHTML(g.jcrFinal)}</span>`:''}
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:4px">${g.alvo.length} como alvo${g.planoB.length?` · ${g.planoB.length} como plano B`:''}</div>
+      ${g.originais.length?`<div style="font-size:10.5px;color:var(--text-dim);margin-top:4px;line-height:1.5">Textos originais: ${g.originais.map(o=>'“'+escHTML(o)+'”').join('; ')}</div>`:''}
+      ${g.conflito?'<div style="font-size:10.5px;color:var(--yellow);margin-top:4px">⚠ Manuscritos com Qualis/IF diferentes — foi usado o valor mais frequente. Confira depois.</div>':''}
+    </div>`).join('')}`;
+  openModal('modalMigracaoJ');
+}
+function aplicarMigracaoPeriodicos(){
+  const prop=propostaMigracaoPeriodicos();
+  if(!prop.length){closeModal('modalMigracaoJ');return;}
+  exportJSON(); // backup completo ANTES de alterar qualquer dado
+  prop.forEach(g=>{
+    let p=g.existente;
+    if(!p){p={id:uid(),nome:g.nome,editora:'',issn:g.issn||'',qualis:g.qualisFinal||'',jcr:g.jcrFinal||'',url:''};periodicos.push(p);}
+    else{if(!p.qualis&&g.qualisFinal)p.qualis=g.qualisFinal;if(!p.jcr&&g.jcrFinal)p.jcr=g.jcrFinal;if(!p.issn&&g.issn)p.issn=g.issn;}
+    g.alvo.forEach(m=>{m.journalOriginal=m.journalOriginal||m.journal;m.journalId=p.id;});
+    g.planoB.forEach(m=>{m.planoBId=p.id;});
+  });
+  periodicos.forEach(p=>propagarPeriodico(p.id));
+  saveData();
+  closeModal('modalMigracaoJ');
+  renderCurrentView();
+  toast('✓ Periódicos organizados. Backup baixado antes da alteração.');
 }
 
 // ─── ÚLTIMAS REUNIÕES DASHBOARD ───────────────────────────────
@@ -2736,7 +3425,7 @@ function saveBanca(){
   else bancas.push(data);
   saveData();
   closeModal('modalBanca');
-  renderBancas(currentBancaFilter);
+  renderCurrentView();
   toast('Banca salva.');
 }
 
@@ -2746,7 +3435,7 @@ function deleteBanca(){
   bancas=bancas.filter(b=>b.id!==id);
   saveData();
   closeModal('modalBanca');
-  renderBancas(currentBancaFilter);
+  renderCurrentView();
   toast('Banca excluída.');
 }
 
@@ -2782,6 +3471,9 @@ function updateAlertBadge(n){
   const badge=document.getElementById('alert-count');
   if(n>0){badge.style.display='inline';badge.textContent=n;}
   else badge.style.display='none';
+  const bm=document.getElementById('alert-count-mais'), mt=document.getElementById('maisAlertas');
+  if(bm){bm.style.display=n>0?'inline':'none';bm.textContent=n;}
+  if(mt) mt.textContent=n>0?n:'';
 }
 
 // ─── CONFIG ───────────────────────────────────────────────────
@@ -2790,6 +3482,7 @@ function renderConfig(){
   document.getElementById('cfgToken').value=cfg.token||'';
   document.getElementById('cfgWarnDays').value=cfg.warnDays||14;
   document.getElementById('cfgAlertDays').value=cfg.alertDays||30;
+  const cn=document.getElementById('cfgNome'); if(cn) cn.value=cfg.nomeUsuario||'';
 }
 
 function saveConfig(){
@@ -2861,7 +3554,7 @@ async function testGist(){
 }
 
 function exportJSON(){
-  const data={students,manuscripts,bancas,producao};
+  const data={students,manuscripts,bancas,producao,periodicos};
   const a=document.createElement('a');
   a.href='data:application/json,'+encodeURIComponent(JSON.stringify(data,null,2));
   a.download='labresearch_backup.json';a.click();
@@ -2875,6 +3568,9 @@ function importJSON(input){
       const d=JSON.parse(e.target.result);
       if(d.students) students=d.students;
       if(d.manuscripts) manuscripts=d.manuscripts;
+      if(d.bancas) bancas=d.bancas;
+      if(d.producao) producao=d.producao;
+      if(d.periodicos) periodicos=d.periodicos;
       saveData();renderCurrentView();toast('Dados importados com sucesso.');
     }catch(e){toast('Erro ao importar JSON.');}
   };r.readAsText(f);
@@ -2882,7 +3578,8 @@ function importJSON(input){
 
 // ─── UTILS ────────────────────────────────────────────────────
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
-function today(){return new Date().toISOString().slice(0,10);}
+function today(){return isoLocal(new Date());} // data local (antes usava UTC: após 21h gravava o dia seguinte)
+function isoLocal(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function fmtDate(d){if(!d)return'—';try{const [y,m,dd]=d.split('-');return`${dd}/${m}/${y}`;}catch(e){return d;}}
 function escHTML(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 
@@ -2930,6 +3627,7 @@ async function instalarApp(){
 
 // ─── INIT ─────────────────────────────────────────────────────
 (async()=>{
+  aplicarTemaUI();
   const dispositivoConfigurado=aplicarSetupDaURL();
   if(dispositivoConfigurado) toast('✓ Dispositivo configurado — carregando dados do Gist...');
   await loadData();
