@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d1117">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>LabResearch · EECA/UFG</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -636,6 +640,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           </div>
         </div>
 
+        <!-- INSTALAR APP -->
+        <div class="card">
+          <div class="card-header"><span style="font-size:13px;font-weight:600">📲 Instalar como aplicativo</span></div>
+          <div class="card-body">
+            <p style="font-size:12px;color:var(--text-muted);line-height:1.6;margin-bottom:10px">Instala o LabResearch na tela inicial (Android) ou como app no computador — abre em tela cheia e funciona mesmo sem internet (dados locais, enviados ao Gist quando a conexão voltar).</p>
+            <button class="btn btn-primary" id="btnInstalarApp" onclick="instalarApp()" style="display:none">📲 Instalar aplicativo</button>
+            <div style="font-size:11px;color:var(--text-dim);margin-top:8px">Se o botão não aparecer: no Chrome do Android, menu ⋮ → <b>Instalar app</b> (ou "Adicionar à tela inicial").</div>
+          </div>
+        </div>
+
         <!-- ALERTAS -->
         <div class="card">
           <div class="card-header"><span style="font-size:13px;font-weight:600">Alertas de inatividade</span></div>
@@ -1232,6 +1246,11 @@ async function loadData(){
 
   // ── PASSO 2: Sincronizar com Gist em background ──
   if(cfg.gistId && cfg.token){
+    // Edições feitas offline têm prioridade: enviar ao Gist em vez de sobrescrever com versão antiga
+    if(localStorage.getItem('labpendente')==='1'){
+      saveData().then(()=>{if(typeof renderCurrentView==='function') renderCurrentView();});
+      return;
+    }
     fetchWithTimeout(`https://api.github.com/gists/${cfg.gistId}`,
       {headers:{Authorization:`token ${cfg.token}`}}, 8000)
     .then(async r=>{
@@ -1285,10 +1304,11 @@ async function saveData(){
         headers:{'Content-Type':'application/json',Authorization:`token ${cfg.token}`},
         body:JSON.stringify({files})
       }, 10000);
-      if(r.ok){setSyncOk('Gist');return;}
+      if(r.ok){localStorage.removeItem('labpendente');setSyncOk('Gist');return;}
       throw new Error('HTTP '+r.status);
     }catch(e){
       console.warn('Gist save error:',e.message);
+      localStorage.setItem('labpendente','1'); // edição local ainda não enviada ao Gist
       setSyncErr('Gist');
     }
   }
@@ -1316,7 +1336,7 @@ async function syncNow(){
         headers:{'Content-Type':'application/json',Authorization:`token ${cfg.token}`},
         body:JSON.stringify({files})
       }, 10000);
-      if(r.ok){setSyncOk('Gist');toast('✓ Sincronizado com Gist.');renderCurrentView();return;}
+      if(r.ok){localStorage.removeItem('labpendente');setSyncOk('Gist');toast('✓ Sincronizado com Gist.');renderCurrentView();return;}
     }catch(e){}
     toast('✗ Falha ao sincronizar. Verifique o token do Gist em Configurações.');
     return;
@@ -2883,6 +2903,29 @@ function toast(msg){
   const el=document.createElement('div');el.className='toast';el.textContent=msg;
   document.getElementById('toastWrap').appendChild(el);
   setTimeout(()=>el.remove(),3000);
+}
+
+// ─── PWA ──────────────────────────────────────────────────────
+let _promptInstalacao=null;
+if('serviceWorker' in navigator && window.isSecureContext){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').catch(e=>console.warn('SW não registrado:',e.message));
+  });
+}
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();_promptInstalacao=e;
+  const b=document.getElementById('btnInstalarApp');if(b) b.style.display='inline-flex';
+});
+window.addEventListener('appinstalled',()=>{
+  _promptInstalacao=null;
+  const b=document.getElementById('btnInstalarApp');if(b) b.style.display='none';
+  toast('✓ LabResearch instalado.');
+});
+async function instalarApp(){
+  if(!_promptInstalacao){toast('Use o menu ⋮ do Chrome → "Instalar app".');return;}
+  _promptInstalacao.prompt();
+  await _promptInstalacao.userChoice;
+  _promptInstalacao=null;
 }
 
 // ─── INIT ─────────────────────────────────────────────────────
