@@ -573,7 +573,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
   .nav-item:hover{background:transparent;color:var(--text-muted)}
   .nav-item.active:hover{background:var(--green-dim);color:var(--green-bright)}
   .dh-head .btn-registrar{display:none}
-  .dh-grid2{grid-template-columns:1fr}
+  .dh-grid2{grid-template-columns:minmax(0,1fr)}
+  .dh-card{min-width:0}
   .dh-alunos{grid-template-columns:1fr}
   .ag-cel{min-height:54px;padding:3px}
   .ag-ev{font-size:0;height:6px;padding:0;border-radius:3px;background:currentColor !important}
@@ -1780,6 +1781,7 @@ async function syncNow(){
 
 // ─── VIEWS ────────────────────────────────────────────────────
 function showView(v, skipHistory=false){
+  filtroFase=null;
   // Calendário e Bancas agora são abas da Agenda
   if(v==='bancas'){agendaTab='bancas';v='agenda';}
   else if(v==='calendario'){agendaTab='nivel';v='agenda';}
@@ -2076,6 +2078,10 @@ function studentCardHTML(s){
 
 // ─── ORIENTANDOS ──────────────────────────────────────────────
 let currentFilter='todos';
+const FASES_NOMES=['Início (0–33%)','Desenvolvimento (34–66%)','Finalização (67–99%)','Concluído (100%)'];
+let filtroFase=null;
+function faseIdx(s){const p=pipelineProgress(s);return p>=100?3:p>=67?2:p>=34?1:0;}
+function abrirFase(i){showView('orientandos');filtroFase=i;renderOrientandos('todos');}
 function renderOrientandos(f){
   currentFilter=f;
   ['todos','IC','TCC','ESP','MSC','PHD','encerrado'].forEach(k=>{
@@ -2086,10 +2092,15 @@ function renderOrientandos(f){
   if(f==='encerrado') list=students.filter(s=>s.encerrado);
   else if(f!=='todos') list=students.filter(s=>s.type===f&&!s.encerrado);
   else list=students.filter(s=>!s.encerrado);
-  document.getElementById('orientandosGrid').innerHTML=list.map(s=>studentCardHTML(s)).join('')||'<div class="empty-state"><div class="empty-icon">◎</div>Nenhum orientando nesta categoria.</div>';
+  let aviso='';
+  if(filtroFase!==null){
+    list=list.filter(s=>faseIdx(s)===filtroFase);
+    aviso=`<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:9px 12px;margin-bottom:10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);font-size:12.5px;color:var(--text)">Fase: <b>${FASES_NOMES[filtroFase]}</b> · ${list.length} orientando${list.length!==1?'s':''}<button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="filtroFase=null;renderOrientandos('todos')">Limpar filtro</button></div>`;
+  }
+  document.getElementById('orientandosGrid').innerHTML=aviso+list.map(s=>studentCardHTML(s)).join('')||'<div class="empty-state"><div class="empty-icon">◎</div>Nenhum orientando nesta categoria.</div>';
 }
 
-function filterStudents(f){renderOrientandos(f);}
+function filterStudents(f){filtroFase=null;renderOrientandos(f);}
 
 // ─── STUDENT DETAIL ───────────────────────────────────────────
 function openStudentDetail(id){
@@ -2863,10 +2874,10 @@ function renderDashNovo(){
 
   // Onde estão (fase pelo progresso no pipeline)
   const fases=[['Início (0–33%)',0],['Desenvolvimento',0],['Finalização',0],['Concluído',0]];
-  ativos.forEach(s=>{const p=pipelineProgress(s);fases[p>=100?3:p>=67?2:p>=34?1:0][1]++;});
+  ativos.forEach(s=>{fases[faseIdx(s)][1]++;});
   const mx=Math.max(1,...fases.map(f=>f[1]));
   el('dhOnde').innerHTML=`<div class="dh-card-h">${ic('chart',15)} Onde estão<span class="dh-cnt">por progresso no pipeline</span></div>`+
-    fases.map(f=>`<div class="on-row" onclick="showView('orientandos')"><span class="on-l">${f[0]}</span><div class="on-bar"><div style="width:${Math.round(f[1]/mx*100)}%"></div></div><span class="on-n">${f[1]}</span></div>`).join('');
+    fases.map((f,i)=>`<div class="on-row" onclick="abrirFase(${i})" title="Ver os orientandos desta fase"><span class="on-l">${f[0]}</span><div class="on-bar"><div style="width:${Math.round(f[1]/mx*100)}%"></div></div><span class="on-n">${f[1]}</span></div>`).join('');
 
   // Orientandos — última reunião (mais recente primeiro)
   const COR_T={IC:['var(--blue-dim)','var(--blue)'],TCC:['var(--purple-dim)','var(--purple)'],ESP:['var(--orange-dim)','var(--orange)'],MSC:['var(--teal-dim)','var(--teal)'],PHD:['var(--pink-dim)','var(--pink)']};
