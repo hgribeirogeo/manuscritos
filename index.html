@@ -528,6 +528,38 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .ag-cel.c-banca .ag-ev,.ag-cel.c-prazo .ag-ev,.ag-cel.c-submissao .ag-ev{background:var(--surface)}
 .ag-cel.c-banca .ag-num,.ag-cel.c-prazo .ag-num,.ag-cel.c-submissao .ag-num{font-weight:700;color:var(--text)}
 
+/* ═══ DADOS DA PESQUISA ═══ */
+.db-resumo{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:12px}
+.db-resumo-t{font-size:13.5px;font-weight:600;color:var(--text);line-height:1.4}
+.db-req{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.db-chip{font-size:11px;padding:3px 9px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)}
+.db-chip.ok{background:var(--green-dim);border-color:transparent;color:var(--green-bright)}
+.db-chip.lac{background:var(--yellow-dim);border-color:transparent;color:var(--yellow)}
+.db-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.db-card.usar{border-color:var(--green);box-shadow:inset 3px 0 0 var(--green)}
+.db-head{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+.db-nome{font-size:13px;font-weight:600;color:var(--text);flex:1;min-width:200px;line-height:1.35}
+.db-tag{font-size:10px;font-family:var(--mono);padding:2px 7px;border-radius:10px;flex-shrink:0;white-space:nowrap}
+.db-tag.pronto{background:var(--green-dim);color:var(--green-bright)}
+.db-tag.moderado{background:var(--blue-dim);color:var(--blue)}
+.db-tag.intenso{background:var(--orange-dim);color:var(--orange)}
+.db-tag.trans{background:var(--yellow-dim);color:var(--yellow)}
+.db-tag.desc{background:var(--red-dim);color:var(--red)}
+.db-tag.pend{background:var(--surface3);color:var(--text-dim)}
+.db-tag.verif{background:transparent;color:var(--text-dim);border:1px solid var(--border)}
+.db-motivo{font-size:11.5px;color:var(--text-muted);margin:5px 0}
+.db-alerta{font-size:11.5px;color:var(--orange);margin:3px 0;line-height:1.45}
+.db-fatos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:4px 14px;font-size:11.5px;color:var(--text-muted);margin:6px 0;line-height:1.5}
+.db-fatos b{color:var(--text);font-weight:600}
+.db-card details{margin-top:6px}
+.db-card summary{font-size:11.5px;color:var(--blue);cursor:pointer}
+.db-det{font-size:11.5px;color:var(--text-muted);line-height:1.6;margin-top:6px}
+.db-det ul{margin:3px 0 6px 18px}
+.db-etapa{display:flex;gap:7px;align-items:flex-start;font-size:12px;color:var(--text);padding:2px 0;cursor:pointer}
+.db-etapa input{margin-top:3px}
+.db-acoes{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.db-grupo{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin:16px 0 6px}
+
 /* ═══ PERIÓDICOS (cadastro único) ═══ */
 .jq-line{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .jq-chip{font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:10px}
@@ -637,6 +669,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     </div>
     <div class="nav-item nav-extra" onclick="showView('periodicos')" id="nav-periodicos">
       <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></span> <span>Periódicos</span>
+    </div>
+    <div class="nav-item nav-extra" onclick="showView('dados')" id="nav-dados">
+      <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg></span> <span>Dados</span>
     </div>
     <div class="nav-item nav-extra" onclick="showView('producao')" id="nav-producao">
       <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></span> <span>Produção</span>
@@ -851,6 +886,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       </div>
       <div id="catContagem" style="font-size:11px;color:var(--text-dim);margin-bottom:8px;font-family:var(--mono)"></div>
       <div id="catLista"></div>
+    </div>
+
+    <!-- DADOS DA PESQUISA -->
+    <div id="view-dados" style="display:none">
+      <div class="cat-info">Catálogo curado de bases de dados da sua área. Escolha um manuscrito para ver as bases que o esqueleto indica, os alertas de período e área e o que falta para deixar cada dado pronto. Nada é processado aqui. Fichas <b>pendentes de revisão</b> têm link oficial, mas ainda não foram conferidas; use <b>Editar</b> para corrigir e <b>Marcar como verificada hoje</b> depois de conferir.</div>
+      <div class="cat-filtros">
+        <select class="form-control" id="dbManu" onchange="renderDados()"><option value="">— Escolha um manuscrito —</option></select>
+        <input type="text" class="form-control" id="dbBusca" placeholder="ou busque por tema, variável ou base…" oninput="renderDados()">
+        <button class="btn btn-secondary btn-sm" onclick="openBaseForm('')">+ Nova base</button>
+      </div>
+      <div id="dbResumo"></div>
+      <div id="dbLista"></div>
     </div>
 
     <!-- ALERTAS -->
@@ -1392,6 +1439,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     <div class="modal-body">
       <div class="mais-item" onclick="closeModal('modalMais');showView('meus')"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg> Meus artigos</div>
       <div class="mais-item" onclick="closeModal('modalMais');showView('periodicos')"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg> Catálogo de periódicos</div>
+      <div class="mais-item" onclick="closeModal('modalMais');showView('dados')"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg> Dados da pesquisa</div>
       <div class="mais-item" onclick="closeModal('modalMais');showView('producao')"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg> Produção intelectual</div>
       <div class="mais-item" onclick="closeModal('modalMais');showView('alertas')"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg> Alertas <span id="maisAlertas" style="margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--red)"></span></div>
       <div class="mais-item" onclick="closeModal('modalMais');showView('configuracoes')"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></svg> Configurações</div>
@@ -1401,6 +1449,57 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 </div>
 
 <button class="fab" onclick="openRegistrarReuniao()" title="Registrar reunião" aria-label="Registrar reunião"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h8"/><path d="M12 8v8"/></svg></button>
+
+<!-- MODAL: Ficha de base -->
+<div class="overlay" id="modalBase">
+  <div class="modal" style="width:640px">
+    <div class="modal-header"><span class="modal-title" id="modalBaseTit">Base de dados</span><button class="modal-close" onclick="closeModal('modalBase')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="bfId">
+      <div class="form-group"><label class="form-label">Nome</label><input type="text" class="form-control" id="bfNome"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Instituição</label><input type="text" class="form-control" id="bfInst"></div>
+        <div class="form-group"><label class="form-label">Tema</label><input type="text" class="form-control" id="bfTema" list="dlTemasBase"><datalist id="dlTemasBase"></datalist></div>
+      </div>
+      <div class="form-group"><label class="form-label">Termos de busca (separados por vírgula, em português e inglês)</label><input type="text" class="form-control" id="bfTermos"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Ano inicial</label><input type="number" class="form-control" id="bfIni"></div>
+        <div class="form-group"><label class="form-label">Ano final (vazio = atual)</label><input type="number" class="form-control" id="bfFim"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Resolução espacial</label><input type="text" class="form-control" id="bfResEsp"></div>
+        <div class="form-group"><label class="form-label">Resolução temporal</label><input type="text" class="form-control" id="bfResTemp"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Situação</label><select class="form-control" id="bfSit"><option value="ativa">Ativa</option><option value="em transição">Em transição</option><option value="descontinuada">Descontinuada</option></select></div>
+        <div class="form-group"><label class="form-label">Pré-processamento</label><select class="form-control" id="bfPrep"><option value="pronto">Pronto</option><option value="moderado">Moderado</option><option value="intenso">Intenso</option></select></div>
+      </div>
+      <div class="form-group"><label class="form-label">Onde está / acesso</label><input type="text" class="form-control" id="bfAcesso"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Formato</label><input type="text" class="form-control" id="bfFormato"></div>
+        <div class="form-group"><label class="form-label">Licença</label><input type="text" class="form-control" id="bfLic"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Etapas para deixar o dado pronto (uma por linha)</label><textarea class="form-control" id="bfEtapas" rows="4"></textarea></div>
+      <div class="form-group"><label class="form-label">Limitações conhecidas (uma por linha)</label><textarea class="form-control" id="bfLim" rows="3"></textarea></div>
+      <div class="form-group"><label class="form-label">Link da documentação oficial</label><input type="url" class="form-control" id="bfDoc"></div>
+      <div class="form-group"><label class="form-label">Citação sugerida</label><input type="text" class="form-control" id="bfCita"></div>
+      <div class="form-group"><label class="form-label">Verificada em</label><div style="display:flex;gap:8px"><input type="date" class="form-control" id="bfVerif"><button class="btn btn-secondary btn-sm" onclick="document.getElementById('bfVerif').value=today()">Hoje</button></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modalBase')">Cancelar</button><button class="btn btn-primary" onclick="salvarBaseForm()">Salvar</button></div>
+  </div>
+</div>
+
+<!-- MODAL: Texto para Materiais e Métodos -->
+<div class="overlay" id="modalTextoMM">
+  <div class="modal" style="width:640px">
+    <div class="modal-header"><span class="modal-title">Texto para Materiais e Métodos</span><button class="modal-close" onclick="closeModal('modalTextoMM')">✕</button></div>
+    <div class="modal-body">
+      <div style="font-size:11.5px;color:var(--text-muted);margin-bottom:8px">Rascunho gerado a partir das fichas — revise versões, datas de acesso e citações antes de usar.</div>
+      <textarea class="form-control" id="mmTexto" rows="12" style="font-size:13px;line-height:1.6"></textarea>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modalTextoMM')">Fechar</button><button class="btn btn-primary" onclick="navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('mmTexto').value).then(()=>toast('Texto copiado.'))">Copiar</button></div>
+  </div>
+</div>
 
 <!-- MODAL: Sugestão de periódicos -->
 <div class="overlay" id="modalSugestao">
@@ -1643,6 +1742,8 @@ let bancas = [];
 let producao = [];
 let periodicos = [];
 let qualisMap = {};
+let basesUser = [];
+let dossies = {};
 let currentView = 'dashboard';
 let detailStudentId = null;
 let detailManuId = null;
@@ -1666,6 +1767,8 @@ async function loadData(){
   try{producao=JSON.parse(localStorage.getItem('labproducao')||'[]');}catch(e){producao=[];}
   try{periodicos=JSON.parse(localStorage.getItem('labperiodicos')||'[]');}catch(e){periodicos=[];}
   try{qualisMap=JSON.parse(localStorage.getItem('labqualis')||'{}');}catch(e){qualisMap={};}
+  try{basesUser=JSON.parse(localStorage.getItem('labbases')||'[]');}catch(e){basesUser=[];}
+  try{dossies=JSON.parse(localStorage.getItem('labdossies')||'{}');}catch(e){dossies={};}
 
   // ── PASSO 2: Sincronizar com Gist em background ──
   if(cfg.gistId && cfg.token){
@@ -1685,6 +1788,8 @@ async function loadData(){
       const gp=g.files['labresearch_producao.json']?JSON.parse(g.files['labresearch_producao.json'].content||'[]'):[];
       const gj=g.files['labresearch_periodicos.json']?JSON.parse(g.files['labresearch_periodicos.json'].content||'[]'):[];
       const gq=g.files['labresearch_qualis.json']?JSON.parse(g.files['labresearch_qualis.json'].content||'{}'):{};
+      const gbs=g.files['labresearch_bases.json']?JSON.parse(g.files['labresearch_bases.json'].content||'[]'):[];
+      const gds=g.files['labresearch_dossies.json']?JSON.parse(g.files['labresearch_dossies.json'].content||'{}'):{};
       // Merge: só substituir se Gist tiver mais dados que o local
       if(gs.length>0 && gs.length>=students.length) students=gs;
       if(gm.length>0 && gm.length>=manuscripts.length) manuscripts=gm;
@@ -1692,12 +1797,16 @@ async function loadData(){
       if(gp.length>0 && gp.length>=producao.length) producao=gp;
       if(gj.length>0 && gj.length>=periodicos.length) periodicos=gj;
       if(Object.keys(gq).length>0 && Object.keys(gq).length>=Object.keys(qualisMap).length) qualisMap=gq;
+      if(gbs.length>0 && gbs.length>=basesUser.length) basesUser=gbs;
+      if(Object.keys(gds).length>0 && Object.keys(gds).length>=Object.keys(dossies).length) dossies=gds;
       localStorage.setItem('labstudents',JSON.stringify(students));
       localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
       localStorage.setItem('labbancas',JSON.stringify(bancas));
       localStorage.setItem('labproducao',JSON.stringify(producao));
       localStorage.setItem('labperiodicos',JSON.stringify(periodicos));
       localStorage.setItem('labqualis',JSON.stringify(qualisMap));
+      localStorage.setItem('labbases',JSON.stringify(basesUser));
+      localStorage.setItem('labdossies',JSON.stringify(dossies));
       setSyncOk('Gist');
       if(typeof renderCurrentView==='function') renderCurrentView();
     }).catch(e=>{
@@ -1720,6 +1829,8 @@ async function saveData(){
     localStorage.setItem('labproducao',JSON.stringify(producao));
     localStorage.setItem('labperiodicos',JSON.stringify(periodicos));
     localStorage.setItem('labqualis',JSON.stringify(qualisMap));
+    localStorage.setItem('labbases',JSON.stringify(basesUser));
+    localStorage.setItem('labdossies',JSON.stringify(dossies));
   }catch(e){console.error('localStorage error:',e);}
 
   // 2. Gist como único sync remoto
@@ -1732,6 +1843,8 @@ async function saveData(){
       files['labresearch_producao.json']={content:JSON.stringify(producao,null,2)};
       files['labresearch_periodicos.json']={content:JSON.stringify(periodicos,null,2)};
       files['labresearch_qualis.json']={content:JSON.stringify(qualisMap)};
+      files['labresearch_bases.json']={content:JSON.stringify(basesUser,null,2)};
+      files['labresearch_dossies.json']={content:JSON.stringify(dossies)};
       const r=await fetchWithTimeout(`https://api.github.com/gists/${cfg.gistId}`,{
         method:'PATCH',
         headers:{'Content-Type':'application/json',Authorization:`token ${cfg.token}`},
@@ -1766,6 +1879,8 @@ async function syncNow(){
       files['labresearch_producao.json']={content:JSON.stringify(producao,null,2)};
       files['labresearch_periodicos.json']={content:JSON.stringify(periodicos,null,2)};
       files['labresearch_qualis.json']={content:JSON.stringify(qualisMap)};
+      files['labresearch_bases.json']={content:JSON.stringify(basesUser,null,2)};
+      files['labresearch_dossies.json']={content:JSON.stringify(dossies)};
       const r=await fetchWithTimeout(`https://api.github.com/gists/${cfg.gistId}`,{
         method:'PATCH',
         headers:{'Content-Type':'application/json',Authorization:`token ${cfg.token}`},
@@ -1792,15 +1907,16 @@ function showView(v, skipHistory=false){
   if(el) el.style.display='';
   const nav=document.getElementById('nav-'+v);
   if(nav) nav.classList.add('active');
-  if(window.innerWidth<=768 && ['producao','alertas','configuracoes','meus','periodicos'].includes(v)){const nm=document.getElementById('nav-mais');if(nm) nm.classList.add('active');}
+  if(window.innerWidth<=768 && ['producao','alertas','configuracoes','meus','periodicos','dados'].includes(v)){const nm=document.getElementById('nav-mais');if(nm) nm.classList.add('active');}
   currentView=v;
-  const titles={dashboard:'Início',agenda:'Agenda',meus:'Meus artigos',periodicos:'Catálogo de periódicos',orientandos:'Orientandos',manuscritos:'Manuscritos',calendario:'Calendário',bancas:'Agenda de Bancas',producao:'Produção Intelectual',alertas:'Alertas',configuracoes:'Configurações','student-detail':'Orientando','manu-detail':'Manuscrito'};
+  const titles={dashboard:'Início',agenda:'Agenda',meus:'Meus artigos',periodicos:'Catálogo de periódicos',dados:'Dados da pesquisa',orientandos:'Orientandos',manuscritos:'Manuscritos',calendario:'Calendário',bancas:'Agenda de Bancas',producao:'Produção Intelectual',alertas:'Alertas',configuracoes:'Configurações','student-detail':'Orientando','manu-detail':'Manuscrito'};
   document.getElementById('topbarTitle').textContent=titles[v]||v;
   document.getElementById('topbarAdd').textContent=v==='manuscritos'?'+ Manuscrito':(v==='bancas'||v==='agenda')?'+ Banca':v==='producao'?'+ Produção':'+ Orientando';
   document.getElementById('topbarAdd').onclick=v==='manuscritos'?()=>openAddManuModal():(v==='bancas'||v==='agenda')?()=>openAddBancaModal():v==='producao'?()=>openAddProducaoModal():()=>openAddStudentModal();
   {const tb=document.getElementById('topbarAdd');
    if(v==='meus'){tb.textContent='+ Artigo';tb.onclick=()=>openNovoMeuArtigo();}
-   if(v==='periodicos'){tb.textContent='+ Periódico';tb.onclick=()=>openEditPeriodicoModal('');}}
+   if(v==='periodicos'){tb.textContent='+ Periódico';tb.onclick=()=>openEditPeriodicoModal('');}
+   if(v==='dados'){tb.textContent='+ Base';tb.onclick=()=>openBaseForm('');}}
   renderCurrentView();
 }
 
@@ -1814,6 +1930,7 @@ function renderCurrentView(){
   else if(currentView==='agenda') renderAgenda();
   else if(currentView==='meus') renderMeus(meusFiltro);
   else if(currentView==='periodicos') renderCatalogo();
+  else if(currentView==='dados') renderDados();
   else if(currentView==='alertas') renderAlertas();
   else if(currentView==='configuracoes') renderConfig();
   updateAlertBadge();
@@ -2438,6 +2555,7 @@ function renderManuDetail(id){
         <button class="btn btn-secondary btn-sm" onclick="openEditManuModal('${id}')">✎ Editar</button>
         <button class="btn btn-secondary btn-sm" onclick="openGDocs('${id}')">↗ Google Docs</button>
         <button class="btn btn-secondary btn-sm" onclick="sugerirPeriodicos('${id}')">Sugerir periódicos</button>
+        <button class="btn btn-secondary btn-sm" onclick="abrirDadosManuscrito('${id}')">Dados da pesquisa</button>
         ${m.subStatus!=='publicado'?`<button class="btn btn-primary btn-sm" onclick="marcarPublicado('${id}')" style="background:var(--green);border-color:var(--green)">✓ Publicado</button>`:`<span class="sub-badge sub-publicado" style="padding:6px 12px">Publicado ✓</span>`}
       </div>
     </div>
@@ -2949,6 +3067,7 @@ function executarBusca(){
   manuscripts.forEach(m=>add('Manuscrito',m.title,m.authors||'',`openManuDetail('${m.id}')`,[m.title,m.authors,m.journal]));
   bancas.forEach(b=>add('Banca',b.title||'Banca',fmtDate(b.date)+' · '+(b.authors||''),`openEditBancaModal('${b.id}')`,[b.title,b.authors,b.advisor,b.members]));
   periodicos.forEach(p=>add('Periódico',p.nome,p.qualis?'Qualis '+p.qualis:'',`openEditPeriodicoModal('${p.id}')`,[p.nome,p.editora,p.issn]));
+  todasBases().forEach(b=>add('Base de dados',b.nome,b.inst,`abrirBaseNoCatalogo('${b.id}')`,[b.nome,b.inst,(b.termos||[]).join(' ')]));
   producao.forEach(p=>add('Produção',p.titulo,(p.ano||'')+' · '+(p.veiculo||''),`showView('producao');openEditProducaoModal('${p.id}')`,[p.titulo,p.autores,p.veiculo]));
   _bsResultados=r.slice(0,25);
   out.innerHTML=_bsResultados.length?_bsResultados.map((x,i)=>`<div class="bs-item${i===0?' first':''}" onclick="abrirResultadoBusca(${i})"><span class="bs-tipo">${x.tipo}</span><span class="bs-tit">${escHTML(x.tit||'')}</span><span class="bs-sub">${escHTML(x.sub||'')}</span></div>`).join('')
@@ -3077,6 +3196,7 @@ function cardMeuArtigo(m){
     <div class="ma-foot"><span>Seções escritas: ${done}/${steps.length}</span><span>·</span><span>Nesta etapa há ${d} dia${d===1?'':'s'}</span>${m.criadoEm?'<span>· desde '+fmtDate(m.criadoEm)+'</span>':''}
       <span style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap">
         <button class="btn btn-secondary btn-sm" onclick="sugerirPeriodicos('${m.id}')">Sugerir periódicos</button>
+        <button class="btn btn-secondary btn-sm" onclick="abrirDadosManuscrito('${m.id}')">Dados</button>
         <button class="btn btn-secondary btn-sm" onclick="openEditManuModal('${m.id}')">Editar</button>
       </span></div>
   </div>`;
@@ -3318,6 +3438,189 @@ async function importarQualis(input){
   periodicos.forEach(p=>{if(p.issn&&!p.qualis&&qualisMap[p.issn]){p.qualis=qualisMap[p.issn];propagarPeriodico(p.id);}});
   saveData();renderCurrentView();
   toast(`Qualis importado: ${n} periódicos do acordo encontrados pelo eISSN${conflito?` (${conflito} com estratos diferentes na planilha — ficou o último)`:''}.`);
+}
+
+// Catálogo de bases de dados (fichas curadas; verif=null → pendente de revisão)
+const BASES_CAT=[{"id":"mapbiomas-lulc","nome":"MapBiomas — Cobertura e Uso da Terra (Coleção 11)","inst":"Rede MapBiomas","tema":"Uso e cobertura da terra","termos":["mapbiomas","uso do solo","uso da terra","cobertura da terra","cobertura do solo","lulc","land use","land cover","vegetação nativa","pastagem","agricultura","fragmentação","desmatamento","supressão","antrópico","formação savânica","formação florestal"],"regioes":[],"ini":1985,"fim":2025,"resEsp":"30 m","resTemp":"anual","atualiz":"nova coleção a cada ano (agosto)","situacao":"ativa","acesso":"Earth Engine (assets públicos do projeto MapBiomas), download pela Plataforma MapBiomas e Toolkit no GEE; sem autenticação","formato":"GeoTIFF / asset GEE","licenca":"Aberta, com citação obrigatória (conferir termos na página da coleção)","prep":"pronto","etapas":["Recortar para a área de estudo","Reclassificar a legenda para as classes da pesquisa","Extrair estatísticas por ano/unidade de análise"],"lim":["Cada coleção reprocessa toda a série: não misturar anos de coleções diferentes","Acurácia varia por classe e bioma — consultar as estatísticas de acurácia da coleção","Coleção 11 tem 33 classes; algumas em versão beta"],"doc":"https://brasil.mapbiomas.org/","fontes":["https://brasil.mapbiomas.org/wp-content/uploads/sites/3/2026/08/ATBD-General-Collection-11-versao-1.pdf"],"verif":"2026-11-04","cita":"MapBiomas. Coleção 11 da Série Anual de Mapas de Cobertura e Uso da Terra do Brasil (1985–2025)."},{"id":"mapbiomas-secundaria","nome":"MapBiomas — Vegetação secundária (idade) e desmatamento","inst":"Rede MapBiomas","tema":"Uso e cobertura da terra","termos":["vegetação secundária","idade da vegetação","regeneração","floresta secundária","secondary forest","secondary vegetation","desmatamento em vegetação primária","recuperação"],"regioes":[],"ini":1986,"fim":2025,"resEsp":"30 m","resTemp":"anual","atualiz":"acompanha a coleção anual","situacao":"ativa","acesso":"Earth Engine (assets do MapBiomas) e Plataforma MapBiomas","formato":"GeoTIFF / asset GEE","licenca":"Aberta, com citação","prep":"moderado","etapas":["Confirmar a coleção usada e o primeiro ano válido do produto","Recortar para a área","Agrupar faixas de idade conforme a hipótese","Cruzar com a variável-resposta (ex.: biomassa)"],"lim":["Idade é estimada a partir da série anual de cobertura — herda erros de classificação","Primeiros anos da série têm idade truncada (não se sabe a idade antes de 1985)"],"doc":"https://brasil.mapbiomas.org/","fontes":[],"verif":null,"cita":"MapBiomas. Mapas de desmatamento e vegetação secundária (coleção vigente)."},{"id":"mapbiomas-fogo","nome":"MapBiomas Fogo — área queimada","inst":"Rede MapBiomas","tema":"Fogo","termos":["fogo","queimada","área queimada","cicatriz de fogo","burned area","fire","incêndio","regime de fogo","frequência de fogo"],"regioes":[],"ini":1985,"fim":2024,"resEsp":"30 m","resTemp":"anual e mensal","atualiz":"coleção anual","situacao":"ativa","acesso":"Earth Engine e Plataforma MapBiomas","formato":"GeoTIFF / asset GEE","licenca":"Aberta, com citação","prep":"pronto","etapas":["Conferir a coleção mais recente (em abr/2026 era a Coleção 4, 1985–2024)","Recortar para a área","Calcular frequência, recorrência ou ano do último fogo"],"lim":["Período e coleção precisam ser conferidos — este produto pode ter nova coleção"],"doc":"https://brasil.mapbiomas.org/","fontes":[],"verif":null,"cita":"MapBiomas Fogo (coleção vigente)."},{"id":"mapbiomas-agua","nome":"MapBiomas Água — superfície de água","inst":"Rede MapBiomas","tema":"Recursos hídricos","termos":["superfície de água","corpos d'água","corpo hídrico","espelho d'água","surface water","represa","reservatório","seca"],"regioes":[],"ini":1985,"fim":2024,"resEsp":"30 m","resTemp":"anual e mensal","atualiz":"coleção anual","situacao":"ativa","acesso":"Earth Engine e Plataforma MapBiomas","formato":"GeoTIFF / asset GEE","licenca":"Aberta, com citação","prep":"pronto","etapas":["Conferir a coleção mais recente","Recortar para a área","Agregar por mês/ano conforme a pergunta"],"lim":["Conferir período da coleção vigente"],"doc":"https://brasil.mapbiomas.org/","fontes":[],"verif":null,"cita":"MapBiomas Água (coleção vigente)."},{"id":"terraclass","nome":"TerraClass — uso da terra em áreas desmatadas","inst":"INPE / Embrapa","tema":"Uso e cobertura da terra","termos":["terraclass","uso pós-desmatamento","áreas desmatadas","pastagem degradada","vegetação secundária"],"regioes":["amazonia","cerrado"],"ini":2008,"fim":null,"resEsp":"30 m","resTemp":"anos selecionados","atualiz":"irregular","situacao":"ativa","acesso":"Portal TerraClass (download de shapefile/raster)","formato":"Shapefile / GeoTIFF","licenca":"Dados públicos","prep":"moderado","etapas":["Conferir quais anos existem para o bioma da pesquisa","Compatibilizar legenda com outras fontes","Recortar para a área"],"lim":["Só Amazônia e Cerrado, em anos específicos — não é série anual contínua"],"doc":"https://www.terraclass.gov.br/","fontes":[],"verif":null,"cita":"INPE; Embrapa. TerraClass."},{"id":"prodes","nome":"PRODES — desmatamento anual","inst":"INPE","tema":"Desmatamento","termos":["prodes","desmatamento","supressão de vegetação","corte raso","deforestation","incremento de desmatamento","taxa de desmatamento"],"regioes":[],"ini":1988,"fim":null,"resEsp":"mapeamento a ~30 m (área mínima de 6,25 ha na Amazônia)","resTemp":"anual (ano PRODES: ago–jul)","atualiz":"anual","situacao":"ativa","acesso":"TerraBrasilis (download de shapefile e serviços WMS/WFS); sem autenticação","formato":"Shapefile / GeoPackage","licenca":"Dados públicos (INPE)","prep":"moderado","etapas":["Escolher o bioma (séries têm inícios diferentes)","Converter ano PRODES (ago–jul) se a pesquisa usa ano civil","Recortar e rasterizar se for cruzar com imagens","Somar incrementos por unidade de análise"],"lim":["Início da série varia por bioma (Amazônia desde 1988; demais biomas com séries mais curtas — conferir no TerraBrasilis)","Área mínima mapeável exclui desmatamentos pequenos"],"doc":"https://terrabrasilis.dpi.inpe.br/","fontes":[],"verif":null,"cita":"INPE. Projeto PRODES. TerraBrasilis."},{"id":"deter","nome":"DETER — alertas de desmatamento","inst":"INPE","tema":"Desmatamento","termos":["deter","alerta de desmatamento","degradação","corte seletivo","monitoramento em tempo quase real","deforestation alert"],"regioes":["amazonia","cerrado"],"ini":2004,"fim":null,"resEsp":"sensores de média resolução (área mínima ~3 ha)","resTemp":"diário","atualiz":"contínua","situacao":"ativa","acesso":"TerraBrasilis (download e WFS)","formato":"Shapefile","licenca":"Dados públicos (INPE)","prep":"moderado","etapas":["Filtrar classes de alerta relevantes","Tratar sobreposição entre alertas sucessivos","Agregar por período"],"lim":["Alertas servem à fiscalização, não substituem o PRODES para área desmatada","Cerrado com série mais curta que a Amazônia"],"doc":"https://terrabrasilis.dpi.inpe.br/","fontes":[],"verif":null,"cita":"INPE. Sistema DETER. TerraBrasilis."},{"id":"hansen-gfc","nome":"Global Forest Change (Hansen/UMD)","inst":"University of Maryland / GLAD","tema":"Desmatamento","termos":["global forest change","hansen","tree cover loss","perda de cobertura arbórea","gfc"],"regioes":[],"ini":2000,"fim":null,"resEsp":"30 m","resTemp":"anual","atualiz":"anual (nova versão)","situacao":"ativa","acesso":"Earth Engine (UMD/hansen/global_forest_change_*) e download","formato":"GeoTIFF","licenca":"CC BY 4.0","prep":"pronto","etapas":["Conferir a versão mais recente e o último ano","Definir limiar de cobertura arbórea (ex.: 30%)","Recortar para a área"],"lim":["\"Cobertura arbórea\" inclui silvicultura — não equivale a floresta nativa","Mudanças metodológicas entre versões afetam tendências"],"doc":"https://glad.earthengine.app/view/global-forest-change","fontes":[],"verif":null,"cita":"Hansen et al. (2013). Global Forest Change."},{"id":"sentinel2","nome":"Sentinel-2 MSI — Nível-2A (reflectância de superfície)","inst":"ESA / Copernicus","tema":"Imagens ópticas","termos":["sentinel-2","sentinel 2","s2","msi","ndvi","evi","ndwi","índice de vegetação","índices espectrais","reflectância","imagem multiespectral","classificação de imagens"],"regioes":[],"ini":2017,"fim":null,"resEsp":"10, 20 e 60 m","resTemp":"revisita de ~5 dias","atualiz":"contínua","situacao":"ativa","acesso":"Earth Engine (COPERNICUS/S2_SR_HARMONIZED); Copernicus Data Space Ecosystem (cadastro gratuito)","formato":"JP2 / asset GEE","licenca":"Livre e aberta (Copernicus)","prep":"moderado","etapas":["Máscara de nuvens e sombras (SCL ou Cloud Score+)","Composição temporal (mediana por período)","Cálculo de índices","Recorte e reamostragem para resolução comum"],"lim":["Cobertura de nuvens na estação chuvosa do Cerrado reduz imagens úteis","Nível-2A global consistente a partir de 2017; antes disso, só Nível-1C"],"doc":"https://sentiwiki.copernicus.eu/web/s2-mission","fontes":[],"verif":null,"cita":"ESA. Copernicus Sentinel-2 MSI Level-2A."},{"id":"landsat-c2","nome":"Landsat Collection 2 — Nível 2 (5, 7, 8, 9)","inst":"USGS / NASA","tema":"Imagens ópticas","termos":["landsat","landsat 8","landsat 9","landsat 5","tm","oli","série temporal longa","temperatura de superfície","lst","reflectância"],"regioes":[],"ini":1984,"fim":null,"resEsp":"30 m (termal reamostrado a 30 m)","resTemp":"16 dias por satélite","atualiz":"contínua","situacao":"ativa","acesso":"Earth Engine (LANDSAT/LC08/C02/T1_L2 e equivalentes); USGS EarthExplorer (login gratuito)","formato":"GeoTIFF / asset GEE","licenca":"Domínio público (USGS)","prep":"moderado","etapas":["Aplicar fatores de escala da Collection 2","Máscara de nuvens (QA_PIXEL)","Harmonizar sensores (TM/ETM+ x OLI)","Composição temporal"],"lim":["Landsat 7 com falhas em faixas (SLC-off) desde 2003","Harmonização entre sensores é necessária em séries longas"],"doc":"https://www.usgs.gov/landsat-missions/landsat-collection-2","fontes":[],"verif":null,"cita":"USGS. Landsat Collection 2 Level-2 Science Products."},{"id":"cbers4a","nome":"CBERS-4A (WPM, MUX, WFI)","inst":"INPE / CAST","tema":"Imagens ópticas","termos":["cbers","cbers-4a","cbers 4a","wpm","pancromática","alta resolução","superresolução","super-resolução"],"regioes":[],"ini":2020,"fim":null,"resEsp":"WPM: 2 m (pan) e 8 m (multi); MUX: 16 m; WFI: 55 m","resTemp":"depende da câmera","atualiz":"contínua","situacao":"ativa","acesso":"Catálogo de imagens do INPE (cadastro gratuito)","formato":"GeoTIFF","licenca":"Gratuita (INPE)","prep":"intenso","etapas":["Conferir o nível de processamento disponível (geométrico/radiométrico)","Ortorretificação e registro com referência","Fusão pan-multi (pansharpening) se necessário","Correção atmosférica para comparar datas"],"lim":["Correção atmosférica não vem pronta em todos os níveis","Cobertura temporal irregular por cena"],"doc":"https://www.dgi.inpe.br/catalogo/explore","fontes":[],"verif":null,"cita":"INPE. Imagens CBERS-4A."},{"id":"modis-veg","nome":"MODIS — índices de vegetação (MOD13Q1/MYD13Q1)","inst":"NASA","tema":"Imagens ópticas","termos":["modis","mod13q1","ndvi","evi","índice de vegetação","fenologia","vigor da vegetação"],"regioes":[],"ini":2000,"fim":2027,"resEsp":"250 m","resTemp":"16 dias","atualiz":"em encerramento","situacao":"em transição","acesso":"Earth Engine (MODIS/061/MOD13Q1); NASA Earthdata (login gratuito)","formato":"HDF / asset GEE","licenca":"Aberta (NASA)","prep":"moderado","etapas":["Filtrar pixels pela camada de qualidade","Aplicar fator de escala","Suavizar série temporal se for estudar fenologia"],"lim":["NASA planeja encerrar a coleta do Terra em jan/2027 e do Aqua por volta de set/2027","Deriva orbital desde 2022 altera o horário de passagem","Continuidade indicada: VIIRS"],"doc":"https://www.earthdata.nasa.gov/data/alerts-outages/transition-from-modis-viirs","fontes":["https://www.earthdata.nasa.gov/data/alerts-outages/transition-from-modis-viirs","https://atmosphere.copernicus.eu/drifting-away-modis-cams-global-fire-assimilation-system"],"verif":"2026-11-04","cita":"Didan, K. MOD13Q1 MODIS/Terra Vegetation Indices 16-Day L3 Global 250m. NASA LP DAAC."},{"id":"modis-lst","nome":"MODIS — temperatura da superfície (MOD11A1/MOD11A2)","inst":"NASA","tema":"Clima e temperatura","termos":["modis","lst","temperatura de superfície","temperatura da superfície","land surface temperature","ilha de calor","onda de calor","calor extremo"],"regioes":[],"ini":2000,"fim":2027,"resEsp":"1 km","resTemp":"diário / 8 dias","atualiz":"em encerramento","situacao":"em transição","acesso":"Earth Engine (MODIS/061/MOD11A2); NASA Earthdata","formato":"HDF / asset GEE","licenca":"Aberta (NASA)","prep":"moderado","etapas":["Filtrar pela camada de qualidade","Converter para °C (fator de escala e −273,15)","Tratar lacunas por nuvem","Separar passagem diurna e noturna"],"lim":["Fim da coleta previsto para 2027","Deriva orbital desde 2022 muda o horário de passagem — afeta tendências de LST","LST não é temperatura do ar"],"doc":"https://www.earthdata.nasa.gov/data/alerts-outages/transition-from-modis-viirs","fontes":["https://www.earthdata.nasa.gov/data/alerts-outages/transition-from-modis-viirs","https://events.ecmwf.int/event/541/contributions/6192/attachments/3726/6366/Levy_ICAP_June2026A.pdf"],"verif":"2026-11-04","cita":"Wan, Z. et al. MOD11A2 MODIS/Terra Land Surface Temperature/Emissivity 8-Day L3 Global 1km. NASA LP DAAC."},{"id":"viirs","nome":"VIIRS — índices de vegetação e temperatura (continuidade do MODIS)","inst":"NASA / NOAA","tema":"Imagens ópticas","termos":["viirs","vnp13","vnp21","continuidade modis","ndvi","lst","temperatura de superfície"],"regioes":[],"ini":2012,"fim":null,"resEsp":"500 m – 1 km (produtos de terra)","resTemp":"diário / 8 / 16 dias","atualiz":"contínua","situacao":"ativa","acesso":"NASA Earthdata; Earth Engine (coleções NASA/VIIRS)","formato":"HDF5 / asset GEE","licenca":"Aberta (NASA)","prep":"moderado","etapas":["Escolher o satélite (S-NPP, NOAA-20, NOAA-21)","Filtrar qualidade","Avaliar compatibilidade com a série MODIS se for estender série antiga"],"lim":["Suomi NPP deixa de fornecer observações em nov/2026 — conferir produtos de NOAA-20/21","Resolução mais grossa que MOD13Q1 (250 m)"],"doc":"https://www.earthdata.nasa.gov/data/alerts-outages/transition-from-modis-viirs","fontes":["https://nsidc.org/data/viirs"],"verif":"2026-11-04","cita":"NASA. VIIRS Land Products."},{"id":"sentinel1","nome":"Sentinel-1 SAR (banda C) — GRD","inst":"ESA / Copernicus","tema":"Radar (SAR)","termos":["sentinel-1","sentinel 1","s1","sar","radar","banda c","retroespalhamento","backscatter","vv","vh","interferometria","insar"],"regioes":[],"ini":2014,"fim":null,"resEsp":"~10 m (GRD IW)","resTemp":"6–12 dias conforme a constelação","atualiz":"contínua","situacao":"ativa","acesso":"Earth Engine (COPERNICUS/S1_GRD, já calibrado e ortorretificado); Copernicus Data Space; ASF","formato":"SAFE / asset GEE","licenca":"Livre e aberta (Copernicus)","prep":"moderado","etapas":["Filtrar órbita (ascendente/descendente) e polarização","Filtro de speckle","Normalização por ângulo de incidência","Composição temporal"],"lim":["Sentinel-1B parou em dez/2021: de 2022 a 2025 só o 1A operou (revisita menor)","1C operacional desde 2025; 1D desde mai/2026 — séries densas só a partir daí","InSAR exige produtos SLC e processamento intenso"],"doc":"https://sentiwiki.copernicus.eu/web/s1-mission","fontes":["https://www.esa.int/Applications/Observing_the_Earth/Copernicus/Sentinel-1/Sentinel-1D_goes_live_a_milestone_for_Europe_s_radar_mission","https://hyp3-docs.asf.alaska.edu/sentinel1/"],"verif":"2026-11-04","cita":"ESA. Copernicus Sentinel-1 GRD."},{"id":"alos-palsar","nome":"ALOS/ALOS-2 PALSAR — mosaicos anuais (banda L)","inst":"JAXA","tema":"Radar (SAR)","termos":["alos","palsar","banda l","l-band","radar","sar","biomassa","floresta/não floresta"],"regioes":[],"ini":2007,"fim":null,"resEsp":"25 m","resTemp":"anual (com lacuna 2011–2014)","atualiz":"anual","situacao":"ativa","acesso":"Earth Engine (JAXA/ALOS/PALSAR/YEARLY/SAR e SAR_EPOCH); portal JAXA","formato":"GeoTIFF / asset GEE","licenca":"Aberta (JAXA), com citação","prep":"moderado","etapas":["Converter DN para gama-zero (dB)","Filtro de speckle","Recortar e compor anos"],"lim":["Lacuna entre ALOS-1 e ALOS-2 (2011–2014)","Satura em biomassa alta"],"doc":"https://www.eorc.jaxa.jp/ALOS/en/dataset/fnf_e.htm","fontes":[],"verif":null,"cita":"JAXA. Global PALSAR-2/PALSAR yearly mosaic."},{"id":"gedi","nome":"GEDI — lidar espacial (L2A altura, L2B dossel, L4A/L4B biomassa)","inst":"NASA / University of Maryland","tema":"Biomassa e estrutura florestal","termos":["gedi","lidar","altura do dossel","canopy height","biomassa","aboveground biomass","agbd","estrutura florestal","rh98","l4a","l2a"],"regioes":[],"ini":2019,"fim":null,"resEsp":"footprints de ~25 m (amostral); L4B em grade de 1 km","resTemp":"amostral, sem revisita fixa","atualiz":"contínua","situacao":"ativa","acesso":"NASA Earthdata (LP DAAC: L1/L2; ORNL DAAC: L3/L4) com login gratuito; Earth Engine (coleções LARSE/GEDI)","formato":"HDF5 / asset GEE","licenca":"Aberta (NASA)","prep":"intenso","etapas":["Escolher produto e versão (V3 lançada em jul/2026)","Filtrar qualidade (flags de qualidade, degradação, sensibilidade, feixe)","Filtrar por data, evitando a lacuna 2023–2024","Associar footprints a preditores de imagens para modelagem"],"lim":["Lacuna oficial: sem dados de 17/03/2023 a 25/04/2024 (instrumento armazenado)","Dados amostrais — não é mapa contínuo","Cobertura entre 51,6°N e 51,6°S"],"doc":"https://gedi.umd.edu/","fontes":["https://www.earthdata.nasa.gov/data/alerts-outages/gedi-version-3-data-products-released","https://gedi.umd.edu/cool_timeline"],"verif":"2026-11-04","cita":"Dubayah, R. et al. GEDI L4A Footprint Level Aboveground Biomass Density. ORNL DAAC."},{"id":"esa-cci-biomass","nome":"ESA CCI Biomass — biomassa acima do solo (v6.0)","inst":"ESA Climate Change Initiative","tema":"Biomassa e estrutura florestal","termos":["esa cci","cci biomass","biomassa","aboveground biomass","agb","estoque de carbono","carbono florestal"],"regioes":[],"ini":2007,"fim":2022,"resEsp":"100 m (agregados de 1 a 50 km)","resTemp":"2007, 2010 e anual de 2015 a 2022","atualiz":"por versão","situacao":"ativa","acesso":"Earth Engine (ESA/CCI/Above_Ground_Biomass/V6_0); download no CEDA","formato":"GeoTIFF / NetCDF","licenca":"Aberta, com citação obrigatória (termos CCI Biomass)","prep":"moderado","etapas":["Selecionar os anos disponíveis que cobrem o período da pesquisa","Usar o desvio-padrão por pixel na análise de incerteza","Harmonizar resolução com as demais camadas"],"lim":["Não há mapas para 2008–2009 e 2011–2014","Biomassa lenhosa de árvores — subestima formações abertas do Cerrado"],"doc":"https://climate.esa.int/en/projects/biomass/","fontes":["https://developers.google.com/earth-engine/datasets/catalog/ESA_CCI_Above_Ground_Biomass_V6_0","https://climate.esa.int/de/projekte/biomasse/data/"],"verif":"2026-11-04","cita":"Santoro, M.; Cartus, O. (2025). ESA Biomass CCI: Global datasets of forest above-ground biomass, v6.0. CEDA. doi:10.5285/95913ffb6467447ca72c4e9d8cf30501."},{"id":"ifn","nome":"Inventário Florestal Nacional (IFN)","inst":"Serviço Florestal Brasileiro","tema":"Biomassa e estrutura florestal","termos":["inventário florestal","ifn","parcelas de campo","dados de campo","biomassa de campo","volume de madeira","dap"],"regioes":[],"ini":2011,"fim":null,"resEsp":"parcelas pontuais","resTemp":"por ciclo, por estado","atualiz":"por ciclo","situacao":"ativa","acesso":"Portal do SFB/SNIF (relatórios e dados agregados); dados de parcelas podem exigir solicitação","formato":"Planilhas / relatórios","licenca":"Conferir termos de uso","prep":"intenso","etapas":["Verificar se há dados para o estado/bioma da pesquisa","Solicitar dados de parcelas se necessário","Calcular biomassa por equação alométrica adequada","Compatibilizar data das parcelas com as imagens"],"lim":["Localização exata das parcelas pode ser restrita","Cobertura e datas diferem por estado"],"doc":"https://snif.florestal.gov.br/","fontes":[],"verif":null,"cita":"Serviço Florestal Brasileiro. Inventário Florestal Nacional."},{"id":"copernicus-dem","nome":"Copernicus DEM GLO-30","inst":"ESA / Airbus","tema":"Relevo","termos":["dem","mde","mdt","modelo digital de elevação","altitude","declividade","relevo","elevation","topografia","hand"],"regioes":[],"ini":2011,"fim":2015,"resEsp":"30 m","resTemp":"estático (aquisição 2011–2015)","atualiz":"estático","situacao":"ativa","acesso":"Earth Engine (COPERNICUS/DEM/GLO30); Copernicus Data Space","formato":"GeoTIFF / asset GEE","licenca":"Livre (licença Copernicus DEM)","prep":"pronto","etapas":["Recortar","Derivar declividade, aspecto ou HAND","Reprojetar para o sistema da pesquisa"],"lim":["É modelo de superfície (inclui dossel e edificações), não de terreno"],"doc":"https://dataspace.copernicus.eu/explore-data/data-collections/copernicus-contributing-missions/collections-description/COP-DEM","fontes":[],"verif":null,"cita":"ESA. Copernicus DEM GLO-30."},{"id":"srtm","nome":"SRTM 1 arco-segundo","inst":"NASA / USGS","tema":"Relevo","termos":["srtm","dem","mde","altitude","declividade","relevo","elevation"],"regioes":[],"ini":2000,"fim":2000,"resEsp":"30 m","resTemp":"estático (fev/2000)","atualiz":"estático","situacao":"ativa","acesso":"Earth Engine (USGS/SRTMGL1_003); EarthExplorer","formato":"GeoTIFF / asset GEE","licenca":"Domínio público","prep":"pronto","etapas":["Recortar","Preencher vazios se houver","Derivar declividade"],"lim":["Modelo de superfície de 2000","Vazios em áreas de relevo acidentado"],"doc":"https://www.earthdata.nasa.gov/data/instruments/srtm","fontes":[],"verif":null,"cita":"NASA JPL. SRTM 1 Arc-Second Global."},{"id":"era5-land","nome":"ERA5-Land / ERA5 — reanálise climática","inst":"ECMWF / Copernicus C3S","tema":"Clima e temperatura","termos":["era5","era5-land","reanálise","temperatura do ar","umidade","vento","evapotranspiração","onda de calor","calor extremo","balanço hídrico"],"regioes":[],"ini":1950,"fim":null,"resEsp":"ERA5-Land ~9 km; ERA5 ~31 km","resTemp":"horário","atualiz":"contínua (atraso de poucos dias)","situacao":"ativa","acesso":"Climate Data Store (cadastro e chave de API gratuitos); Earth Engine (ECMWF/ERA5_LAND/HOURLY)","formato":"NetCDF / GRIB / asset GEE","licenca":"Licença Copernicus (aberta)","prep":"moderado","etapas":["Escolher variáveis e agregação (diária, mensal)","Converter unidades (K para °C, m para mm)","Validar com estações locais (INMET)","Calcular índices (ondas de calor, percentis)"],"lim":["Resolução não captura microclima urbano","Reanálise é modelo assimilado, não observação direta"],"doc":"https://cds.climate.copernicus.eu/","fontes":[],"verif":null,"cita":"Muñoz-Sabater, J. et al. ERA5-Land. Copernicus C3S CDS."},{"id":"chirps","nome":"CHIRPS — precipitação","inst":"UCSB Climate Hazards Center","tema":"Clima e precipitação","termos":["chirps","precipitação","chuva","spi","seca","estiagem","rainfall","anomalia de chuva"],"regioes":[],"ini":1981,"fim":null,"resEsp":"0,05° (~5,5 km)","resTemp":"diário / pentadal / mensal","atualiz":"contínua","situacao":"ativa","acesso":"Earth Engine (UCSB-CHG/CHIRPS/DAILY); download no CHC","formato":"GeoTIFF / NetCDF","licenca":"Aberta (domínio público)","prep":"pronto","etapas":["Conferir versão (v2.0; verificar se há versão mais nova)","Agregar ao período de interesse","Calcular SPI ou anomalias"],"lim":["Cobertura 50°S–50°N","Qualidade depende da densidade de estações usadas na calibração"],"doc":"https://www.chc.ucsb.edu/data/chirps","fontes":[],"verif":null,"cita":"Funk, C. et al. (2015). CHIRPS. Scientific Data."},{"id":"imerg","nome":"GPM IMERG — precipitação por satélite","inst":"NASA / JAXA","tema":"Clima e precipitação","termos":["imerg","gpm","precipitação","chuva","extremos de chuva","rainfall"],"regioes":[],"ini":2000,"fim":null,"resEsp":"0,1° (~11 km)","resTemp":"30 min / diário / mensal","atualiz":"contínua","situacao":"ativa","acesso":"Earth Engine (NASA/GPM_L3/IMERG_V07); NASA GES DISC (login gratuito)","formato":"HDF5 / NetCDF / asset GEE","licenca":"Aberta (NASA)","prep":"pronto","etapas":["Escolher produto (Early, Late ou Final)","Agregar no tempo","Comparar com pluviômetros"],"lim":["Resolução grossa para escala urbana"],"doc":"https://gpm.nasa.gov/data/imerg","fontes":[],"verif":null,"cita":"Huffman, G. et al. GPM IMERG Final Precipitation V07. NASA GES DISC."},{"id":"inmet","nome":"INMET — estações meteorológicas (BDMEP)","inst":"INMET","tema":"Clima e temperatura","termos":["inmet","estação meteorológica","estações automáticas","temperatura do ar","precipitação","dados de estação","bdmep","umidade relativa"],"regioes":[],"ini":1961,"fim":null,"resEsp":"pontual (estações)","resTemp":"horário / diário","atualiz":"contínua","situacao":"ativa","acesso":"Portal INMET (dados históricos por ano e BDMEP); download sem autenticação","formato":"CSV","licenca":"Dados públicos","prep":"moderado","etapas":["Selecionar estações com série longa na área","Tratar lacunas e valores inconsistentes","Verificar mudança de estação convencional para automática","Homogeneizar a série se for analisar tendência"],"lim":["Lacunas frequentes","Rede esparsa no interior"],"doc":"https://portal.inmet.gov.br/","fontes":[],"verif":null,"cita":"INMET. Banco de Dados Meteorológicos (BDMEP)."},{"id":"nex-gddp-cmip6","nome":"NEX-GDDP-CMIP6 — projeções climáticas","inst":"NASA","tema":"Clima e temperatura","termos":["cmip6","projeção climática","cenário climático","ssp","ssp2-4.5","ssp5-8.5","2050","2100","mudança climática futura"],"regioes":[],"ini":1950,"fim":2100,"resEsp":"0,25°","resTemp":"diário","atualiz":"estático","situacao":"ativa","acesso":"Earth Engine (NASA/GDDP-CMIP6); NASA NCCS / AWS","formato":"NetCDF / asset GEE","licenca":"Aberta","prep":"moderado","etapas":["Escolher modelos e cenários SSP","Usar o histórico (1950–2014) como referência","Calcular índices por modelo e depois o ensemble","Comparar o histórico com observações locais"],"lim":["Resolução não representa microclima urbano","Resultados variam entre modelos — usar ensemble"],"doc":"https://www.nccs.nasa.gov/services/data-collections/land-based-products/nex-gddp-cmip6","fontes":[],"verif":null,"cita":"Thrasher, B. et al. NEX-GDDP-CMIP6. NASA."},{"id":"queimadas-inpe","nome":"Programa Queimadas — focos de calor (BDQueimadas)","inst":"INPE","tema":"Fogo","termos":["focos de calor","queimadas","bdqueimadas","fogo","incêndio","hotspot"],"regioes":[],"ini":1998,"fim":null,"resEsp":"pontual (centro do pixel do sensor)","resTemp":"diário","atualiz":"contínua","situacao":"ativa","acesso":"BDQueimadas (download CSV/shapefile)","formato":"CSV / Shapefile","licenca":"Dados públicos (INPE)","prep":"moderado","etapas":["Usar o satélite de referência para séries comparáveis","Remover duplicidades","Agregar por área e período"],"lim":["Foco de calor não é área queimada","Mudanças de satélite de referência afetam séries longas"],"doc":"https://terrabrasilis.dpi.inpe.br/queimadas/","fontes":[],"verif":null,"cita":"INPE. Programa Queimadas."},{"id":"firms","nome":"NASA FIRMS — focos ativos (MODIS/VIIRS)","inst":"NASA","tema":"Fogo","termos":["firms","focos ativos","active fire","hotspot","fogo","incêndio"],"regioes":[],"ini":2000,"fim":null,"resEsp":"375 m (VIIRS) / 1 km (MODIS)","resTemp":"diário","atualiz":"quase tempo real","situacao":"ativa","acesso":"FIRMS (download e API com chave gratuita MAP_KEY)","formato":"CSV / Shapefile","licenca":"Aberta (NASA)","prep":"moderado","etapas":["Escolher sensor (VIIRS preferível)","Filtrar confiança","Agregar por área e período"],"lim":["Focos MODIS terminam com o fim do Terra/Aqua"],"doc":"https://firms.modaps.eosdis.nasa.gov/","fontes":[],"verif":null,"cita":"NASA FIRMS."},{"id":"ana-hidroweb","nome":"ANA — HidroWeb (vazão, nível e chuva)","inst":"ANA","tema":"Recursos hídricos","termos":["hidroweb","vazão","nível de rio","estação fluviométrica","estação pluviométrica","ana","bacia hidrográfica","série hidrológica"],"regioes":[],"ini":1900,"fim":null,"resEsp":"pontual (estações)","resTemp":"diário","atualiz":"contínua","situacao":"ativa","acesso":"Portal HidroWeb (download) e serviços web da ANA","formato":"CSV / MDB","licenca":"Dados públicos","prep":"moderado","etapas":["Selecionar estações na bacia","Tratar falhas e consistência","Conferir se os dados são brutos ou consistidos"],"lim":["Séries com falhas","Início varia por estação"],"doc":"https://www.snirh.gov.br/hidroweb/","fontes":[],"verif":null,"cita":"ANA. HidroWeb."},{"id":"ana-qualidade","nome":"ANA — monitoramento da qualidade da água","inst":"ANA","tema":"Recursos hídricos","termos":["qualidade da água","iqa","turbidez","oxigênio dissolvido","coliformes","monitoramento de qualidade","rnqa","qualiágua"],"regioes":[],"ini":null,"fim":null,"resEsp":"pontual (pontos de monitoramento)","resTemp":"variável (campanhas)","atualiz":"periódica","situacao":"ativa","acesso":"Portal de dados da ANA / SNIRH","formato":"CSV","licenca":"Dados públicos","prep":"moderado","etapas":["Localizar pontos na bacia de interesse","Padronizar parâmetros e unidades","Tratar frequência irregular das campanhas"],"lim":["Frequência e parâmetros variam entre estados","Período precisa ser conferido por ponto"],"doc":"https://www.snirh.gov.br/","fontes":[],"verif":null,"cita":"ANA. Monitoramento da qualidade da água."},{"id":"sinisa-snis","nome":"SINISA (e SNIS histórico) — saneamento básico","inst":"Ministério das Cidades","tema":"Saneamento","termos":["sinisa","snis","saneamento","abastecimento de água","esgotamento sanitário","esgoto","resíduos sólidos","perdas de água","companhia de saneamento","prestadores de serviço"],"regioes":[],"ini":1995,"fim":2024,"resEsp":"municipal / por prestador","resTemp":"anual","atualiz":"anual","situacao":"ativa","acesso":"Portal do SINISA (relatórios e bases); série histórica do SNIS","formato":"Planilhas / painéis","licenca":"Dados públicos, com citação","prep":"moderado","etapas":["Separar o período SNIS (até ano-base 2022) e SINISA (ano-base 2023 em diante)","Mapear indicadores equivalentes entre os dois sistemas","Tratar municípios que não enviaram dados"],"lim":["SNIS encerrado após a coleta de 2023; SINISA desde 2024, com mudanças metodológicas — comparar com cautela","Dados autodeclarados pelos prestadores"],"doc":"https://www.gov.br/cidades/pt-br/acesso-a-informacao/acoes-e-programas/saneamento/sinisa","fontes":["https://www.gov.br/cidades/pt-br/acesso-a-informacao/acoes-e-programas/saneamento/sinisa/resultados-sinisa/RELATORIO_SINISA_GESTAO_MUNICIPAL_2025.pdf"],"verif":"2026-11-04","cita":"Brasil. Ministério das Cidades. SINISA — Sistema Nacional de Informações em Saneamento Básico."},{"id":"ibge-malhas","nome":"IBGE — malhas territoriais e biomas","inst":"IBGE","tema":"Limites territoriais","termos":["ibge","malha municipal","limites municipais","município","unidade da federação","biomas","limites territoriais","shapefile municipal"],"regioes":[],"ini":null,"fim":null,"resEsp":"vetorial (escala 1:250.000 nas malhas)","resTemp":"versão anual","atualiz":"anual","situacao":"ativa","acesso":"Portal de downloads do IBGE (sem autenticação)","formato":"Shapefile / GeoPackage","licenca":"Dados públicos","prep":"pronto","etapas":["Usar a versão da malha compatível com o ano dos dados","Reprojetar para o sistema da pesquisa"],"lim":["Limites mudam entre versões"],"doc":"https://www.ibge.gov.br/geociencias/organizacao-do-territorio/malhas-territoriais.html","fontes":[],"verif":null,"cita":"IBGE. Malha Municipal."},{"id":"ibge-censo2022","nome":"IBGE — Censo Demográfico 2022 (agregados por setor)","inst":"IBGE","tema":"Socioeconômico","termos":["censo","censo 2022","setor censitário","população","renda","domicílios","cor ou raça","socioeconômico","densidade populacional","sidra"],"regioes":[],"ini":2022,"fim":2022,"resEsp":"setor censitário","resTemp":"decenal","atualiz":"por divulgação","situacao":"ativa","acesso":"Downloads do IBGE e API SIDRA (sem autenticação)","formato":"CSV / Shapefile","licenca":"Dados públicos","prep":"moderado","etapas":["Baixar a malha de setores 2022 junto com os agregados","Unir tabelas pelo código do setor","Compatibilizar com 2010 se houver comparação","Agregar à unidade de análise"],"lim":["Divulgação dos temas é escalonada — conferir se a variável já foi publicada","Setores 2010 e 2022 não coincidem"],"doc":"https://www.ibge.gov.br/estatisticas/sociais/trabalho/22827-censo-demografico-2022.html","fontes":[],"verif":null,"cita":"IBGE. Censo Demográfico 2022."},{"id":"car-sicar","nome":"CAR/SICAR — Cadastro Ambiental Rural","inst":"Serviço Florestal Brasileiro","tema":"Fundiário e áreas protegidas","termos":["car","sicar","cadastro ambiental rural","imóvel rural","reserva legal","app","área de preservação permanente","passivo ambiental"],"regioes":[],"ini":2014,"fim":null,"resEsp":"vetorial (por imóvel)","resTemp":"atualização contínua","atualiz":"contínua","situacao":"ativa","acesso":"Consulta pública do SICAR (download por município/estado)","formato":"Shapefile","licenca":"Dados públicos","prep":"moderado","etapas":["Baixar imóveis, APP e Reserva Legal do município","Tratar sobreposições entre imóveis","Filtrar pela situação do cadastro","Registrar a data do download (base muda continuamente)"],"lim":["Dados autodeclarados e em grande parte não analisados","Sobreposições frequentes"],"doc":"https://consultapublica.car.gov.br/publico/imoveis/index","fontes":[],"verif":null,"cita":"Brasil. SFB. Sistema Nacional de Cadastro Ambiental Rural (SICAR)."},{"id":"incra-acervo","nome":"INCRA — Acervo Fundiário (assentamentos e SIGEF)","inst":"INCRA","tema":"Fundiário e áreas protegidas","termos":["incra","assentamento","assentamentos rurais","reforma agrária","sigef","acervo fundiário","imóveis certificados"],"regioes":[],"ini":null,"fim":null,"resEsp":"vetorial","resTemp":"atualização contínua","atualiz":"contínua","situacao":"ativa","acesso":"Acervo Fundiário do INCRA (download de shapefile por estado)","formato":"Shapefile","licenca":"Dados públicos","prep":"moderado","etapas":["Baixar a camada de assentamentos do estado","Conferir data de criação e situação do assentamento","Cruzar com CAR e uso da terra"],"lim":["Perímetros podem divergir de outras bases"],"doc":"https://acervofundiario.incra.gov.br/","fontes":[],"verif":null,"cita":"INCRA. Acervo Fundiário."},{"id":"areas-protegidas","nome":"Áreas protegidas — Terras Indígenas (FUNAI) e Unidades de Conservação (CNUC/MMA)","inst":"FUNAI / MMA","tema":"Fundiário e áreas protegidas","termos":["terra indígena","terras indígenas","funai","unidade de conservação","unidades de conservação","cnuc","área protegida","áreas protegidas"],"regioes":[],"ini":null,"fim":null,"resEsp":"vetorial","resTemp":"atualização contínua","atualiz":"contínua","situacao":"ativa","acesso":"Geoserviços da FUNAI; CNUC/MMA (download)","formato":"Shapefile","licenca":"Dados públicos","prep":"pronto","etapas":["Conferir fase do processo (TI) e categoria (UC)","Recortar para a área"],"lim":["Situação jurídica muda — registrar a data"],"doc":"https://cnuc.mma.gov.br/","fontes":[],"verif":null,"cita":"FUNAI; MMA/CNUC."},{"id":"osm","nome":"OpenStreetMap","inst":"Fundação OpenStreetMap (colaborativo)","tema":"Urbano e infraestrutura","termos":["openstreetmap","osm","vias","ruas","edificações","infraestrutura urbana","pontos de interesse","rede viária"],"regioes":[],"ini":null,"fim":null,"resEsp":"vetorial","resTemp":"contínua","atualiz":"contínua","situacao":"ativa","acesso":"Geofabrik (extratos), Overpass API, OSMnx","formato":"PBF / GeoJSON / Shapefile","licenca":"ODbL (citar \"© OpenStreetMap contributors\")","prep":"moderado","etapas":["Baixar extrato da região","Filtrar tags relevantes","Avaliar completude na área","Registrar a data do extrato"],"lim":["Completude desigual entre bairros e cidades"],"doc":"https://www.openstreetmap.org/","fontes":[],"verif":null,"cita":"OpenStreetMap contributors."},{"id":"ipea-ivs","nome":"IPEA — Atlas da Vulnerabilidade Social (IVS)","inst":"IPEA","tema":"Socioeconômico","termos":["vulnerabilidade social","ivs","ipea","desigualdade","indicadores sociais","justiça ambiental","racismo ambiental"],"regioes":[],"ini":2000,"fim":null,"resEsp":"municipal e regiões intramunicipais (UDH) em metrópoles","resTemp":"por edição","atualiz":"por edição","situacao":"ativa","acesso":"Plataforma do Atlas (download)","formato":"Planilhas","licenca":"Dados públicos","prep":"moderado","etapas":["Conferir anos disponíveis (base censitária)","Escolher escala (município ou UDH)","Unir à malha correspondente"],"lim":["Depende dos censos — atualização lenta"],"doc":"https://ivs.ipea.gov.br/","fontes":[],"verif":null,"cita":"IPEA. Atlas da Vulnerabilidade Social."},{"id":"datasus","nome":"DATASUS — mortalidade, internações e agravos (SIM, SIH, SINAN)","inst":"Ministério da Saúde","tema":"Saúde","termos":["datasus","sim","sih","sinan","mortalidade","internações","agravos","saúde","doenças relacionadas ao calor","óbitos"],"regioes":[],"ini":1996,"fim":null,"resEsp":"municipal (residência ou ocorrência)","resTemp":"mensal / anual","atualiz":"contínua (dados preliminares nos anos recentes)","situacao":"ativa","acesso":"TabNet e transferência de arquivos (DBC); pacote microdatasus no R","formato":"DBC / CSV","licenca":"Dados públicos anonimizados","prep":"moderado","etapas":["Escolher sistema e códigos CID","Distinguir município de residência e de ocorrência","Tratar dados preliminares dos últimos anos","Calcular taxas com população do IBGE"],"lim":["Sub-registro em alguns municípios","Anos recentes preliminares"],"doc":"https://datasus.saude.gov.br/","fontes":[],"verif":null,"cita":"Brasil. Ministério da Saúde. DATASUS."},{"id":"cemaden","nome":"CEMADEN — pluviômetros e áreas de risco","inst":"CEMADEN / MCTI","tema":"Riscos e desastres","termos":["cemaden","área de risco","risco de desastre","deslizamento","inundação","alagamento","pluviômetro automático"],"regioes":[],"ini":2013,"fim":null,"resEsp":"pontual (pluviômetros) e polígonos de risco","resTemp":"10 min a diário","atualiz":"contínua","situacao":"ativa","acesso":"Mapa interativo e download de dados de pluviômetros","formato":"CSV","licenca":"Dados públicos","prep":"moderado","etapas":["Verificar se o município é monitorado","Tratar falhas dos pluviômetros","Agregar intensidades"],"lim":["Só municípios monitorados"],"doc":"https://www.gov.br/cemaden/","fontes":[],"verif":null,"cita":"CEMADEN."},{"id":"sp156","nome":"SP156 — solicitações de serviço da Prefeitura de São Paulo","inst":"Prefeitura de São Paulo","tema":"Urbano e infraestrutura","termos":["sp156","156","queda de árvore","queda de árvores","solicitações de serviço","zeladoria","manejo arbóreo","tree failure"],"regioes":["sao paulo"],"ini":null,"fim":null,"resEsp":"endereço / distrito","resTemp":"por registro (data da solicitação)","atualiz":"periódica","situacao":"ativa","acesso":"Portal de Dados Abertos da Prefeitura de São Paulo","formato":"CSV","licenca":"Dados abertos municipais","prep":"intenso","etapas":["Filtrar o tipo de solicitação de interesse","Geocodificar endereços","Remover duplicidades (mesmo evento registrado várias vezes)","Tratar viés de notificação entre bairros"],"lim":["Dado de notificação cidadã — reflete quem reclama, não só o evento","Só município de São Paulo"],"doc":"http://dados.prefeitura.sp.gov.br/","fontes":[],"verif":null,"cita":"Prefeitura de São Paulo. Dados SP156."}];
+
+// ─── DADOS DA PESQUISA ────────────────────────────────────────
+const DB_REGIOES={cerrado:['cerrado','goias','goiano','goiana','goiania','distrito federal','brasilia','matopiba','tocantins','mato grosso do sul'],amazonia:['amazonia','amazonica','amazonico','estado do para','paraense','acre','rondonia','amazonas','roraima','amapa','amazonia legal'],'sao paulo':['sao paulo','paulistano','paulista','sp156'],'mata atlantica':['mata atlantica'],caatinga:['caatinga','semiarido'],pantanal:['pantanal'],pampa:['pampa']};
+const DB_REG_NOME={cerrado:'Cerrado/GO',amazonia:'Amazônia','sao paulo':'São Paulo','mata atlantica':'Mata Atlântica',caatinga:'Caatinga',pantanal:'Pantanal',pampa:'Pampa'};
+function todasBases(){
+  const m={};BASES_CAT.forEach(b=>{m[b.id]=b;});
+  (basesUser||[]).forEach(b=>{if(b&&b.id) m[b.id]=Object.assign({},m[b.id]||{},b,{editada:true});});
+  return Object.values(m);
+}
+function dbTemPalavra(txt,t){const k=normTxt(t).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');return k.length>1&&new RegExp('(^|[^a-z0-9])'+k+'([^a-z0-9]|$)').test(txt);}
+function dbTextoManu(m){const sk=m.skeleton||{};return normTxt([m.title,...Object.values(sk)].filter(Boolean).join(' \n '));}
+function dbTextoPeriodo(m){
+  const sk=m.skeleton||{};
+  let t=[m.title,sk.question,sk.hypothesis,sk.objGeneral,sk.objSpecific,sk.mm].filter(Boolean).join(' \n ');
+  t=t.replace(/\([^()]*\b(19|20)\d\d[a-z]?\b[^()]*\)/g,' ').replace(/et al\.?,?\s*\(?(19|20)\d\d\)?/gi,' ');
+  return normTxt(t);
+}
+function dbRequisitos(txt,txtPer){
+  const ano=new Date().getFullYear(), anos=[...new Set(((txtPer||txt).match(/\b(19[5-9]\d|20\d\d|2100)\b/g)||[]).map(Number))];
+  const passados=anos.filter(a=>a<=ano), futuros=anos.filter(a=>a>ano);
+  const regs=Object.keys(DB_REGIOES).filter(r=>DB_REGIOES[r].some(t=>dbTemPalavra(txt,t)));
+  return {ini:passados.length?Math.min(...passados):null,fim:passados.length?Math.max(...passados):null,futuro:futuros.length?Math.max(...futuros):null,regs};
+}
+function dbAvaliar(b,txt){
+  const termos=b.termos||[], nomeN=normTxt(b.nome);
+  const achados=termos.filter(t=>dbTemPalavra(txt,t));
+  const forte=achados.some(t=>normTxt(t).length>=3&&nomeN.includes(normTxt(t)));
+  return {score:achados.length+(forte?3:0),achados,forte};
+}
+function dbAlertas(b,req){
+  const al=[], ano=new Date().getFullYear(), estatica=/estatico/.test(normTxt(b.resTemp||''));
+  if(req&&!estatica&&req.ini!==null&&b.ini&&req.ini<b.ini) al.push(`A pesquisa cita ${req.ini}, mas a base começa em ${b.ini}.`);
+  if(req&&!estatica&&req.fim!==null&&b.fim&&req.fim>b.fim) al.push(`A pesquisa cita ${req.fim}, mas a base vai só até ${b.fim}.`);
+  if(req&&req.futuro&&!(b.fim&&b.fim>ano)&&/cmip|projec/.test(normTxt(b.nome+' '+(b.termos||[]).join(' ')))===false&&(b.termos||[]).some(t=>/2050|2100|projec/.test(normTxt(t)))) al.push('A pesquisa trata de projeções futuras.');
+  if(req&&b.regioes&&b.regioes.length&&req.regs.length&&!b.regioes.some(r=>req.regs.includes(r))) al.push(`Cobertura restrita a: ${b.regioes.map(r=>DB_REG_NOME[r]||r).join(', ')} — não coincide com a área da pesquisa.`);
+  if(b.situacao==='em transição') al.push('Base em transição/encerramento — veja as limitações.');
+  if(b.situacao==='descontinuada') al.push('Base descontinuada.');
+  return al;
+}
+function dbVerifTag(b){
+  if(!b.verif) return '<span class="db-tag pend" title="Link oficial incluído, mas a ficha ainda não foi conferida">pendente de revisão</span>';
+  const d=diasDesde(b.verif);
+  return d>180?`<span class="db-tag trans" title="Verificada há mais de 6 meses">revisar · ${fmtDate(b.verif)}</span>`:`<span class="db-tag verif">verificada ${fmtDate(b.verif)}</span>`;
+}
+function dbPeriodo(b){if(!b.ini&&!b.fim) return 'conferir na documentação';if(b.ini&&b.fim&&b.ini===b.fim) return String(b.ini);return `${b.ini||'?'}–${b.fim||'atual'}`;}
+function dbCard(b,ctx){
+  const prepNome={pronto:'Pronto',moderado:'Moderado',intenso:'Intenso'}[b.prep]||b.prep;
+  const dos=ctx&&ctx.mid?(dossies[ctx.mid]||{usar:{}}):null, uso=dos&&dos.usar[b.id];
+  const etapas=(b.etapas||[]).map((e,i)=>uso?`<label class="db-etapa"><input type="checkbox" ${uso.feito&&uso.feito[i]?'checked':''} onchange="dbMarcarEtapa('${ctx.mid}','${b.id}',${i},this.checked)"> ${escHTML(e)}</label>`:`<li>${escHTML(e)}</li>`).join('');
+  const feitas=uso&&uso.feito?Object.values(uso.feito).filter(Boolean).length:0;
+  return `<div class="db-card${uso?' usar':''}" id="dbc-${b.id}">
+    <div class="db-head"><div class="db-nome">${escHTML(b.nome)}</div><span class="db-tag ${b.prep}" title="Nível de pré-processamento">${prepNome}</span>${b.situacao!=='ativa'?`<span class="db-tag ${b.situacao==='descontinuada'?'desc':'trans'}">${escHTML(b.situacao)}</span>`:''}${dbVerifTag(b)}</div>
+    ${ctx&&ctx.av?`<div class="db-motivo">Selecionada por: ${ctx.av.achados.slice(0,5).map(t=>'“'+escHTML(t)+'”').join(', ')}</div>`:''}
+    ${(ctx&&ctx.alertas||[]).map(a=>`<div class="db-alerta">⚠ ${escHTML(a)}</div>`).join('')}
+    <div class="db-fatos"><span><b>Onde:</b> ${escHTML(b.acesso||'—')}</span><span><b>Período:</b> ${dbPeriodo(b)} · <b>Atualização:</b> ${escHTML(b.atualiz||'—')}</span><span><b>Resolução:</b> ${escHTML(b.resEsp||'—')} · ${escHTML(b.resTemp||'')}</span><span><b>Formato:</b> ${escHTML(b.formato||'—')} · <b>Licença:</b> ${escHTML(b.licenca||'—')}</span></div>
+    ${uso?`<div class="db-det"><b style="color:var(--text)">Para deixar pronto (${feitas}/${(b.etapas||[]).length}):</b>${etapas}</div>`:''}
+    <details><summary>Limitações, etapas e citação</summary><div class="db-det">
+      ${(b.lim||[]).length?`<b style="color:var(--text)">Limitações conhecidas</b><ul>${b.lim.map(l=>`<li>${escHTML(l)}</li>`).join('')}</ul>`:''}
+      ${!uso&&etapas?`<b style="color:var(--text)">Etapas para deixar pronto</b><ul>${etapas}</ul>`:''}
+      ${b.cita?`<b style="color:var(--text)">Citação sugerida:</b> ${escHTML(b.cita)}<br>`:''}
+      ${(b.fontes||[]).length?`<b style="color:var(--text)">Fontes da verificação:</b> ${b.fontes.map((f,i)=>`<a href="${escHTML(f)}" target="_blank" rel="noopener" style="color:var(--blue)">[${i+1}]</a>`).join(' ')}<br>`:''}
+      Tema: ${escHTML(b.tema||'—')} · Instituição: ${escHTML(b.inst||'—')}${b.editada?' · <i>ficha editada por você</i>':''}
+    </div></details>
+    <div class="db-acoes">
+      ${ctx&&ctx.mid?`<button class="btn btn-${uso?'primary':'secondary'} btn-sm" onclick="dbAlternarUso('${ctx.mid}','${b.id}')">${uso?'✓ Usando nesta pesquisa':'Usar nesta pesquisa'}</button>`:''}
+      ${b.doc&&/^https?:\/\//.test(b.doc)?`<a class="btn btn-secondary btn-sm" href="${escHTML(b.doc)}" target="_blank" rel="noopener" style="text-decoration:none">Documentação ↗</a>`:''}
+      <button class="btn btn-secondary btn-sm" onclick="openBaseForm('${b.id}')">Editar</button>
+      <button class="btn btn-secondary btn-sm" onclick="dbVerificarHoje('${b.id}')">Marcar como verificada hoje</button>
+    </div>
+  </div>`;
+}
+function renderDados(){
+  const sel=document.getElementById('dbManu'); if(!sel) return;
+  const atual=sel.value;
+  sel.innerHTML='<option value="">— Escolha um manuscrito —</option>'+manuscripts.slice().sort((a,b)=>(a.title||'').localeCompare(b.title||'')).map(m=>`<option value="${m.id}">${escHTML((m.title||'Sem título').slice(0,90))}</option>`).join('');
+  sel.value=manuscripts.some(m=>m.id===atual)?atual:'';
+  const mid=sel.value, q=document.getElementById('dbBusca').value.trim();
+  const bases=todasBases(), res=document.getElementById('dbResumo'), lista=document.getElementById('dbLista');
+  if(mid){
+    const m=manuscripts.find(x=>x.id===mid), txt=dbTextoManu(m), req=dbRequisitos(txt,dbTextoPeriodo(m)), dos=dossies[mid]||{usar:{}};
+    const temEsq=Object.values(m.skeleton||{}).some(v=>String(v||'').trim().length>20);
+    let recs=bases.map(b=>({b,av:dbAvaliar(b,txt)})).filter(x=>x.av.forte||x.av.score>=2).sort((a,b)=>b.av.score-a.av.score);
+    if(q){const nq=normTxt(q);recs=recs.filter(x=>normTxt(x.b.nome+' '+x.b.tema+' '+(x.b.termos||[]).join(' ')).includes(nq));}
+    const idsRec=new Set(recs.map(x=>x.b.id));
+    const extras=Object.keys(dos.usar).filter(id=>!idsRec.has(id)).map(id=>bases.find(b=>b.id===id)).filter(Boolean);
+    const nUso=Object.keys(dos.usar).length;
+    res.innerHTML=`<div class="db-resumo"><div class="db-resumo-t">${escHTML(m.title||'Sem título')}</div>
+      <div class="db-req">
+        ${temEsq?'<span class="db-chip ok">Esqueleto lido</span>':'<span class="db-chip lac">Esqueleto vazio ou curto — só o título foi usado</span>'}
+        ${req.ini!==null?`<span class="db-chip ok">Período citado: ${req.ini===req.fim?req.ini:req.ini+'–'+req.fim}</span>`:'<span class="db-chip lac">Período não identificado no esqueleto</span>'}
+        ${req.futuro?`<span class="db-chip ok">Horizonte futuro: ${req.futuro}</span>`:''}
+        ${req.regs.length?`<span class="db-chip ok">Área: ${req.regs.map(r=>DB_REG_NOME[r]).join(', ')}</span>`:'<span class="db-chip lac">Área de estudo não identificada</span>'}
+        <span class="db-chip">${recs.length} base${recs.length!==1?'s':''} indicada${recs.length!==1?'s':''} · ${nUso} em uso</span>
+      </div>
+      <div class="db-acoes">
+        <button class="btn btn-secondary btn-sm" onclick="dbTextoMM('${mid}')" ${nUso?'':'disabled title="Marque as bases em uso primeiro"'}>Texto para Materiais e Métodos</button>
+        <button class="btn btn-secondary btn-sm" onclick="dbExportar('${mid}')">Exportar dossiê</button>
+        <select class="form-control" style="width:auto;flex:1;min-width:200px" onchange="if(this.value){dbAlternarUso('${mid}',this.value);this.value='';}"><option value="">+ Adicionar outra base do catálogo…</option>${bases.filter(b=>!idsRec.has(b.id)&&!dos.usar[b.id]).sort((a,b)=>a.nome.localeCompare(b.nome)).map(b=>`<option value="${b.id}">${escHTML(b.nome)}</option>`).join('')}</select>
+      </div></div>`;
+    lista.innerHTML=(recs.length?recs.map(x=>dbCard(x.b,{mid,av:x.av,alertas:dbAlertas(x.b,req)})).join(''):'<div class="empty-state" style="padding:20px">Nenhuma base do catálogo corresponde ao esqueleto. Adicione uma base manualmente acima ou cadastre uma nova.</div>')+
+      (extras.length?`<div class="db-grupo">Adicionadas manualmente</div>`+extras.map(b=>dbCard(b,{mid,alertas:dbAlertas(b,req)})).join(''):'');
+    return;
+  }
+  res.innerHTML='';
+  let l=bases;
+  if(q){const nq=normTxt(q);l=bases.map(b=>({b,s:dbAvaliar(b,nq).score+(normTxt(b.nome+' '+b.tema+' '+b.inst).includes(nq)?3:0)})).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).map(x=>x.b);}
+  if(!l.length){lista.innerHTML='<div class="empty-state" style="padding:20px">Nenhuma base encontrada. Use “+ Nova base” para cadastrar.</div>';return;}
+  if(q){lista.innerHTML=l.map(b=>dbCard(b,null)).join('');return;}
+  const temas={};l.forEach(b=>{(temas[b.tema]=temas[b.tema]||[]).push(b);});
+  const pend=l.filter(b=>!b.verif).length;
+  lista.innerHTML=`<div style="font-size:11px;color:var(--text-dim);font-family:var(--mono);margin-bottom:4px">${l.length} bases · ${l.length-pend} verificadas · ${pend} pendentes de revisão</div>`+
+    Object.keys(temas).sort().map(t=>`<div class="db-grupo">${escHTML(t)} (${temas[t].length})</div>`+temas[t].sort((a,b)=>a.nome.localeCompare(b.nome)).map(b=>dbCard(b,null)).join('')).join('');
+}
+function abrirDadosManuscrito(id){
+  ['modalManuDetail'].forEach(x=>{const e=document.getElementById(x);if(e&&e.classList.contains('open')) closeModal(x);});
+  showView('dados');const s=document.getElementById('dbManu');renderDados();s.value=id;document.getElementById('dbBusca').value='';renderDados();
+}
+function abrirBaseNoCatalogo(id){
+  showView('dados');document.getElementById('dbManu').value='';const b=todasBases().find(x=>x.id===id);
+  document.getElementById('dbBusca').value=b?b.nome:'';renderDados();
+}
+function dbAlternarUso(mid,bid){
+  const d=dossies[mid]=dossies[mid]||{usar:{}};
+  if(d.usar[bid]) delete d.usar[bid]; else d.usar[bid]={feito:{},desde:today()};
+  d.atualizado=today();saveData();renderDados();
+}
+function dbMarcarEtapa(mid,bid,i,v){
+  const u=dossies[mid]&&dossies[mid].usar[bid];if(!u)return;
+  u.feito=u.feito||{};u.feito[i]=v;dossies[mid].atualizado=today();saveData();
+  const card=document.getElementById('dbc-'+bid);
+  if(card){const b=card.querySelector('.db-det b');const n=Object.values(u.feito).filter(Boolean).length,tot=(todasBases().find(x=>x.id===bid).etapas||[]).length;if(b) b.textContent=`Para deixar pronto (${n}/${tot}):`;}
+}
+function dbVerificarHoje(id){
+  const b=todasBases().find(x=>x.id===id);if(!b)return;
+  if(!confirm('Confirmar que você conferiu esta ficha na documentação oficial hoje?'))return;
+  const ix=basesUser.findIndex(x=>x.id===id), base=Object.assign({},b);delete base.editada;base.verif=today();
+  if(ix>=0) basesUser[ix]=base; else basesUser.push(base);
+  saveData();renderDados();toast('Ficha marcada como verificada hoje.');
+}
+function openBaseForm(id){
+  const b=id?todasBases().find(x=>x.id===id):null;
+  document.getElementById('modalBaseTit').textContent=b?'Editar ficha':'Nova base de dados';
+  const set=(k,v)=>{document.getElementById(k).value=v==null?'':v;};
+  set('bfId',b?b.id:'');set('bfNome',b&&b.nome);set('bfInst',b&&b.inst);set('bfTema',b&&b.tema);set('bfTermos',b?(b.termos||[]).join(', '):'');
+  set('bfIni',b&&b.ini);set('bfFim',b&&b.fim);set('bfResEsp',b&&b.resEsp);set('bfResTemp',b&&b.resTemp);set('bfSit',b?b.situacao:'ativa');set('bfPrep',b?b.prep:'moderado');
+  set('bfAcesso',b&&b.acesso);set('bfFormato',b&&b.formato);set('bfLic',b&&b.licenca);set('bfEtapas',b?(b.etapas||[]).join('\n'):'');set('bfLim',b?(b.lim||[]).join('\n'):'');
+  set('bfDoc',b&&b.doc);set('bfCita',b&&b.cita);set('bfVerif',b&&b.verif);
+  document.getElementById('dlTemasBase').innerHTML=[...new Set(todasBases().map(x=>x.tema))].sort().map(t=>`<option value="${escHTML(t)}">`).join('');
+  openModal('modalBase');
+}
+function salvarBaseForm(){
+  const g=k=>document.getElementById(k).value.trim(), nome=g('bfNome');
+  if(!nome){toast('Informe o nome da base.');return;}
+  const id=g('bfId')||('u-'+uid()), ant=todasBases().find(x=>x.id===id)||{};
+  const n=v=>v===''?null:Number(v), linhas=v=>v.split('\n').map(s=>s.trim()).filter(Boolean);
+  const base={id,nome,inst:g('bfInst'),tema:g('bfTema')||'Outros',termos:g('bfTermos').split(',').map(s=>s.trim()).filter(Boolean),regioes:ant.regioes||[],
+    ini:n(g('bfIni')),fim:n(g('bfFim')),resEsp:g('bfResEsp'),resTemp:g('bfResTemp'),atualiz:ant.atualiz||'',situacao:g('bfSit'),acesso:g('bfAcesso'),formato:g('bfFormato'),licenca:g('bfLic'),
+    prep:g('bfPrep'),etapas:linhas(g('bfEtapas')),lim:linhas(g('bfLim')),doc:g('bfDoc'),fontes:ant.fontes||[],verif:g('bfVerif')||null,cita:g('bfCita')};
+  const ix=basesUser.findIndex(x=>x.id===id); if(ix>=0) basesUser[ix]=base; else basesUser.push(base);
+  saveData();closeModal('modalBase');renderDados();toast('Ficha salva.');
+}
+function dbTextoMM(mid){
+  const d=dossies[mid];if(!d)return;const bases=todasBases();
+  const usadas=Object.keys(d.usar).map(id=>bases.find(b=>b.id===id)).filter(Boolean);
+  const partes=usadas.map(b=>{const per=dbPeriodo(b);return `${b.nome}, produzido por ${b.inst}${b.resEsp?', com resolução espacial de '+b.resEsp:''}${b.resTemp?' e resolução temporal '+b.resTemp:''}${per&&per!=='conferir na documentação'?', disponível para '+per:''}${b.acesso?' (acesso: '+b.acesso.split(';')[0]+')':''}`;});
+  const txt=`Os dados utilizados nesta pesquisa foram obtidos das seguintes fontes: ${partes.map((p,i)=>`(${i+1}) ${p}`).join('; ')}.\n\nReferências dos dados:\n${usadas.map(b=>'- '+(b.cita||b.nome)).join('\n')}\n\nData de acesso: ${fmtDate(today())}.`;
+  document.getElementById('mmTexto').value=txt;openModal('modalTextoMM');
+}
+function dbExportar(mid){
+  const m=manuscripts.find(x=>x.id===mid);if(!m)return;const d=dossies[mid]||{usar:{}};const bases=todasBases();
+  const txt=dbTextoManu(m), req=dbRequisitos(txt,dbTextoPeriodo(m));
+  let md=`# Dossiê de dados\n\n**Manuscrito:** ${m.title||''}\n\n**Gerado em:** ${fmtDate(today())}\n\n**Período citado:** ${req.ini!==null?req.ini+'–'+req.fim:'não identificado'} · **Área:** ${req.regs.map(r=>DB_REG_NOME[r]).join(', ')||'não identificada'}\n\n`;
+  const ids=Object.keys(d.usar);
+  md+=ids.length?'## Bases em uso\n\n':'_Nenhuma base marcada como em uso._\n';
+  ids.forEach(id=>{const b=bases.find(x=>x.id===id);if(!b)return;const u=d.usar[id]||{};
+    md+=`### ${b.nome}\n\n- Instituição: ${b.inst}\n- Onde: ${b.acesso}\n- Período: ${dbPeriodo(b)} · Resolução: ${b.resEsp} · ${b.resTemp}\n- Pré-processamento: ${b.prep}\n- Ficha: ${b.verif?'verificada em '+fmtDate(b.verif):'pendente de revisão'}\n- Documentação: ${b.doc||'—'}\n\n**Etapas**\n\n${(b.etapas||[]).map((e,i)=>`- [${u.feito&&u.feito[i]?'x':' '}] ${e}`).join('\n')}\n\n${dbAlertas(b,req).length?'**Alertas**\n\n'+dbAlertas(b,req).map(a=>'- '+a).join('\n')+'\n\n':''}${(b.lim||[]).length?'**Limitações**\n\n'+b.lim.map(l=>'- '+l).join('\n')+'\n\n':''}`;});
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([md],{type:'text/markdown'}));
+  a.download='dossie_dados_'+(m.title||'manuscrito').slice(0,40).replace(/[^\w]+/g,'_')+'.md';a.click();
+  toast('Dossiê exportado.');
 }
 
 // ─── PERIÓDICOS (cadastro único) ──────────────────────────────
@@ -4039,7 +4342,7 @@ async function testGist(){
 }
 
 function exportJSON(){
-  const data={students,manuscripts,bancas,producao,periodicos,qualisMap};
+  const data={students,manuscripts,bancas,producao,periodicos,qualisMap,basesUser,dossies};
   const a=document.createElement('a');
   a.href='data:application/json,'+encodeURIComponent(JSON.stringify(data,null,2));
   a.download='labresearch_backup.json';a.click();
@@ -4057,6 +4360,8 @@ function importJSON(input){
       if(d.producao) producao=d.producao;
       if(d.periodicos) periodicos=d.periodicos;
       if(d.qualisMap) qualisMap=d.qualisMap;
+      if(d.basesUser) basesUser=d.basesUser;
+      if(d.dossies) dossies=d.dossies;
       saveData();renderCurrentView();toast('Dados importados com sucesso.');
     }catch(e){toast('Erro ao importar JSON.');}
   };r.readAsText(f);
