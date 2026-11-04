@@ -3538,7 +3538,7 @@ function renderDados(){
       </div>
       <div class="db-acoes">
         <button class="btn btn-secondary btn-sm" onclick="dbTextoMM('${mid}')" ${nUso?'':'disabled title="Marque as bases em uso primeiro"'}>Texto para Materiais e Métodos</button>
-        <button class="btn btn-secondary btn-sm" onclick="dbExportar('${mid}')">Exportar dossiê</button>
+        <button class="btn btn-secondary btn-sm" onclick="dbExportar('${mid}')">Exportar dossiê (Word)</button>
         <select class="form-control" style="width:auto;flex:1;min-width:200px" onchange="if(this.value){dbAlternarUso('${mid}',this.value);this.value='';}"><option value="">+ Adicionar outra base do catálogo…</option>${bases.filter(b=>!idsRec.has(b.id)&&!dos.usar[b.id]).sort((a,b)=>a.nome.localeCompare(b.nome)).map(b=>`<option value="${b.id}">${escHTML(b.nome)}</option>`).join('')}</select>
       </div></div>`;
     lista.innerHTML=(recs.length?recs.map(x=>dbCard(x.b,{mid,av:x.av,alertas:dbAlertas(x.b,req)})).join(''):'<div class="empty-state" style="padding:20px">Nenhuma base do catálogo corresponde ao esqueleto. Adicione uma base manualmente acima ou cadastre uma nova.</div>')+
@@ -3613,14 +3613,79 @@ function dbTextoMM(mid){
 function dbExportar(mid){
   const m=manuscripts.find(x=>x.id===mid);if(!m)return;const d=dossies[mid]||{usar:{}};const bases=todasBases();
   const txt=dbTextoManu(m), req=dbRequisitos(txt,dbTextoPeriodo(m));
-  let md=`# Dossiê de dados\n\n**Manuscrito:** ${m.title||''}\n\n**Gerado em:** ${fmtDate(today())}\n\n**Período citado:** ${req.ini!==null?req.ini+'–'+req.fim:'não identificado'} · **Área:** ${req.regs.map(r=>DB_REG_NOME[r]).join(', ')||'não identificada'}\n\n`;
+  const P=[];
+  P.push(wP('Dossiê de dados',{style:'Title'}));
+  P.push(wCampo('Manuscrito',m.title||''));
+  P.push(wCampo('Gerado em',fmtDate(today())));
+  P.push(wCampo('Período citado',req.ini!==null?(req.ini===req.fim?String(req.ini):req.ini+'–'+req.fim):'não identificado'));
+  P.push(wCampo('Área',req.regs.map(r=>DB_REG_NOME[r]).join(', ')||'não identificada'));
   const ids=Object.keys(d.usar);
-  md+=ids.length?'## Bases em uso\n\n':'_Nenhuma base marcada como em uso._\n';
+  if(!ids.length) P.push(wP([wRun('Nenhuma base marcada como em uso.',{i:true})]));
+  else P.push(wP('Bases em uso',{style:'Heading1'}));
   ids.forEach(id=>{const b=bases.find(x=>x.id===id);if(!b)return;const u=d.usar[id]||{};
-    md+=`### ${b.nome}\n\n- Instituição: ${b.inst}\n- Onde: ${b.acesso}\n- Período: ${dbPeriodo(b)} · Resolução: ${b.resEsp} · ${b.resTemp}\n- Pré-processamento: ${b.prep}\n- Ficha: ${b.verif?'verificada em '+fmtDate(b.verif):'pendente de revisão'}\n- Documentação: ${b.doc||'—'}\n\n**Etapas**\n\n${(b.etapas||[]).map((e,i)=>`- [${u.feito&&u.feito[i]?'x':' '}] ${e}`).join('\n')}\n\n${dbAlertas(b,req).length?'**Alertas**\n\n'+dbAlertas(b,req).map(a=>'- '+a).join('\n')+'\n\n':''}${(b.lim||[]).length?'**Limitações**\n\n'+b.lim.map(l=>'- '+l).join('\n')+'\n\n':''}`;});
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([md],{type:'text/markdown'}));
-  a.download='dossie_dados_'+(m.title||'manuscrito').slice(0,40).replace(/[^\w]+/g,'_')+'.md';a.click();
-  toast('Dossiê exportado.');
+    P.push(wP(b.nome,{style:'Heading2'}));
+    P.push(wCampo('Instituição',b.inst||'—'));
+    P.push(wCampo('Onde',b.acesso||'—'));
+    P.push(wCampo('Período',dbPeriodo(b)+' · Resolução: '+(b.resEsp||'—')+(b.resTemp?' · '+b.resTemp:'')));
+    P.push(wCampo('Pré-processamento',b.prep||'—'));
+    P.push(wCampo('Ficha',b.verif?'verificada em '+fmtDate(b.verif):'pendente de revisão'));
+    P.push(wCampo('Documentação',b.doc||'—'));
+    if((b.etapas||[]).length){
+      P.push(wP([wRun('Etapas para deixar o dado pronto',{b:true})],{keepNext:true}));
+      b.etapas.forEach((e,i)=>P.push(wP([wRun(u.feito&&u.feito[i]?'☒ ':'☐ ',{font:'Segoe UI Symbol'}),wRun(e)],{ind:360})));
+    }
+    const al=dbAlertas(b,req);
+    if(al.length){P.push(wP([wRun('Alertas',{b:true})],{keepNext:true}));al.forEach(x=>P.push(wP(x,{bullet:true})));}
+    if((b.lim||[]).length){P.push(wP([wRun('Limitações',{b:true})],{keepNext:true}));b.lim.forEach(x=>P.push(wP(x,{bullet:true})));}
+  });
+  const blob=docxDocumento(P.join(''));
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='dossie_dados_'+(m.title||'manuscrito').slice(0,40).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\w]+/g,'_')+'.docx';a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+  toast('Dossiê exportado em Word.');
+}
+
+// ─── WORD (.docx) gerado no navegador, sem bibliotecas externas (funciona offline) ───
+const _crcT=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0;}return t;})();
+function crc32(u8){let c=0xFFFFFFFF;for(let i=0;i<u8.length;i++)c=_crcT[(c^u8[i])&0xFF]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
+function zipStore(files,mime){
+  const enc=new TextEncoder(), partes=[], central=[]; let off=0;
+  const dt=new Date(), dosT=(dt.getHours()<<11)|(dt.getMinutes()<<5)|(dt.getSeconds()>>1), dosD=((dt.getFullYear()-1980)<<9)|((dt.getMonth()+1)<<5)|dt.getDate();
+  files.forEach(f=>{
+    const nm=enc.encode(f.name), dd=enc.encode(f.data), crc=crc32(dd);
+    const lh=new DataView(new ArrayBuffer(30));
+    lh.setUint32(0,0x04034b50,true);lh.setUint16(4,20,true);lh.setUint16(6,0x0800,true);lh.setUint16(8,0,true);lh.setUint16(10,dosT,true);lh.setUint16(12,dosD,true);
+    lh.setUint32(14,crc,true);lh.setUint32(18,dd.length,true);lh.setUint32(22,dd.length,true);lh.setUint16(26,nm.length,true);lh.setUint16(28,0,true);
+    partes.push(new Uint8Array(lh.buffer),nm,dd);
+    const ch=new DataView(new ArrayBuffer(46));
+    ch.setUint32(0,0x02014b50,true);ch.setUint16(4,20,true);ch.setUint16(6,20,true);ch.setUint16(8,0x0800,true);ch.setUint16(10,0,true);ch.setUint16(12,dosT,true);ch.setUint16(14,dosD,true);
+    ch.setUint32(16,crc,true);ch.setUint32(20,dd.length,true);ch.setUint32(24,dd.length,true);ch.setUint16(28,nm.length,true);
+    ch.setUint16(30,0,true);ch.setUint16(32,0,true);ch.setUint16(34,0,true);ch.setUint16(36,0,true);ch.setUint32(38,0,true);ch.setUint32(42,off,true);
+    central.push(new Uint8Array(ch.buffer),nm);
+    off+=30+nm.length+dd.length;
+  });
+  const tam=central.reduce((s,x)=>s+x.length,0), e=new DataView(new ArrayBuffer(22));
+  e.setUint32(0,0x06054b50,true);e.setUint16(4,0,true);e.setUint16(6,0,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,tam,true);e.setUint32(16,off,true);e.setUint16(20,0,true);
+  return new Blob([...partes,...central,new Uint8Array(e.buffer)],{type:mime});
+}
+function xEsc(s){return String(s==null?'':s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function wRun(t,o){o=o||{};const pr=(o.font?`<w:rFonts w:ascii="${o.font}" w:hAnsi="${o.font}" w:cs="${o.font}"/>`:'')+(o.b?'<w:b/>':'')+(o.i?'<w:i/>':'');return `<w:r>${pr?`<w:rPr>${pr}</w:rPr>`:''}<w:t xml:space="preserve">${xEsc(t)}</w:t></w:r>`;}
+function wP(conteudo,o){o=o||{};
+  const pPr=(o.style?`<w:pStyle w:val="${o.style}"/>`:'')+(o.keepNext?'<w:keepNext/>':'')+(o.bullet?'<w:numPr><w:ilvl w:val="0"/><w:numId w:val="1"/></w:numPr>':'')+(o.ind?`<w:ind w:left="${o.ind}"/>`:'');
+  return `<w:p>${pPr?`<w:pPr>${pPr}</w:pPr>`:''}${Array.isArray(conteudo)?conteudo.join(''):wRun(conteudo)}</w:p>`;}
+function wCampo(rotulo,valor){return wP([wRun(rotulo+': ',{b:true}),wRun(valor)]);}
+function docxDocumento(corpo){
+  const W='xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"', H='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  const fonte='<w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="Calibri" w:cs="Calibri"/>';
+  const estilo=(id,nome,sz,antes,lvl)=>`<w:style w:type="paragraph" w:styleId="${id}"><w:name w:val="${nome}"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:qFormat/><w:pPr><w:keepNext/><w:spacing w:before="${antes}" w:after="120"/>${lvl!=null?`<w:outlineLvl w:val="${lvl}"/>`:''}</w:pPr><w:rPr>${fonte}<w:b/><w:sz w:val="${sz}"/><w:szCs w:val="${sz}"/></w:rPr></w:style>`;
+  return zipStore([
+    {name:'[Content_Types].xml',data:H+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/numbering.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"/></Types>'},
+    {name:'_rels/.rels',data:H+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>'},
+    {name:'word/_rels/document.xml.rels',data:H+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering" Target="numbering.xml"/></Relationships>'},
+    {name:'word/styles.xml',data:H+`<w:styles ${W}><w:docDefaults><w:rPrDefault><w:rPr>${fonte}<w:sz w:val="22"/><w:szCs w:val="22"/><w:lang w:val="pt-BR"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="100" w:line="276" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style>${estilo('Title','Title',36,0,null)}${estilo('Heading1','heading 1',28,360,0)}${estilo('Heading2','heading 2',24,280,1)}</w:styles>`},
+    {name:'word/numbering.xml',data:H+`<w:numbering ${W}><w:abstractNum w:abstractNumId="0"><w:multiLevelType w:val="hybridMultilevel"/><w:lvl w:ilvl="0"><w:start w:val="1"/><w:numFmt w:val="bullet"/><w:lvlText w:val="•"/><w:lvlJc w:val="left"/><w:pPr><w:ind w:left="720" w:hanging="360"/></w:pPr></w:lvl></w:abstractNum><w:num w:numId="1"><w:abstractNumId w:val="0"/></w:num></w:numbering>`},
+    {name:'word/document.xml',data:H+`<w:document ${W}><w:body>${corpo}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1418" w:right="1418" w:bottom="1418" w:left="1418" w:header="709" w:footer="709" w:gutter="0"/></w:sectPr></w:body></w:document>`}
+  ],'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
 }
 
 // ─── PERIÓDICOS (cadastro único) ──────────────────────────────
