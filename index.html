@@ -348,6 +348,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .banca-card.banca-hoje::before{background:var(--green);box-shadow:0 0 8px var(--green)}
 .banca-card.banca-passada::before{background:var(--text-dim)}
 .banca-card:hover{border-color:var(--border2);background:var(--surface2)}
+.banca-card.banca-aval{background:var(--purple-dim);border-color:var(--purple)}
+.papel-tag{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:10px;white-space:nowrap;flex-shrink:0}
+.papel-tag.orient{background:var(--green-dim);color:var(--green-bright);border:1px solid var(--green)}
+.papel-tag.aval{background:var(--purple);color:#fff}
+.papel-tag.indef{background:transparent;color:var(--text-dim);border:1px dashed var(--border2)}
+.papel-opcoes{display:flex;gap:8px;flex-wrap:wrap}
+.papel-op{flex:1;min-width:180px;padding:10px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text-muted);font-size:12.5px;cursor:pointer;text-align:left;font-family:var(--sans);line-height:1.35}
+.papel-op b{display:block;font-size:13px;color:var(--text)}
+.papel-op.sel.orient{border-color:var(--green);background:var(--green-dim)}
+.papel-op.sel.aval{border-color:var(--purple);background:var(--purple-dim)}
+.pv-purple{background:var(--purple-dim);color:var(--purple)}
 .banca-type-badge{font-family:var(--mono);font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase}
 .banca-tcc1{background:#1a2040;color:#7090ff;border:1px solid #7090ff33}
 .banca-tcc2{background:#1a3040;color:#40b0ff;border:1px solid #40b0ff33}
@@ -833,6 +844,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           <button class="btn btn-secondary btn-sm" onclick="filterBancas('todas')" id="fb-todas">Todas</button>
           <button class="btn btn-secondary btn-sm" onclick="filterBancas('futuras')" id="fb-futuras">Futuras</button>
           <button class="btn btn-secondary btn-sm" onclick="filterBancas('passadas')" id="fb-passadas">Realizadas</button>
+          <button class="btn btn-secondary btn-sm" onclick="filterBancas('orientador')" id="fb-orientador">Sou orientador(a)</button>
+          <button class="btn btn-secondary btn-sm" onclick="filterBancas('avaliador')" id="fb-avaliador">Sou avaliador(a)</button>
           <button class="btn btn-primary btn-sm" onclick="openAddBancaModal()" style="margin-left:auto">+ Nova Banca</button>
         </div>
         <div id="bancasList"></div>
@@ -1250,6 +1263,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="form-group">
         <label class="form-label">Autor(es)</label>
         <input type="text" class="form-control" id="bAuthors" placeholder="Nome do(s) discente(s)">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Meu papel nesta banca</label>
+        <input type="hidden" id="bPapel">
+        <div class="papel-opcoes">
+          <button type="button" class="papel-op orient" id="bPapel-orientador" onclick="selPapelBanca('orientador')"><b>Sou o(a) orientador(a)</b>O aluno é meu orientando</button>
+          <button type="button" class="papel-op aval" id="bPapel-avaliador" onclick="selPapelBanca('avaliador')"><b>Sou avaliador(a)</b>Membro da banca — preciso ler e corrigir o trabalho</button>
+        </div>
       </div>
       <div class="form-group">
         <label class="form-label">Orientador</label>
@@ -2929,7 +2950,7 @@ function alternarTema(){
 function addDiasISO(iso,n){const d=new Date(iso+'T12:00:00');d.setDate(d.getDate()+n);return isoLocal(d);}
 function coletarEventos(){
   const ev=[];
-  bancas.forEach(b=>{if(b.date) ev.push({date:b.date,time:b.time||'',tipo:'banca',titulo:(BANCA_LABELS[b.type]||'Banca')+' · '+(b.authors||'—'),sub:b.title||'',acao:`openEditBancaModal('${b.id}')`});});
+  bancas.forEach(b=>{if(b.date) ev.push({date:b.date,time:b.time||'',tipo:'banca',papel:papelBanca(b).papel,titulo:(papelBanca(b).papel==='avaliador'?'Avaliar · ':'')+(BANCA_LABELS[b.type]||'Banca')+' · '+(b.authors||'—'),sub:b.title||'',acao:`openEditBancaModal('${b.id}')`});});
   students.filter(s=>!s.encerrado&&s.end).forEach(s=>ev.push({date:s.end,time:'',tipo:'prazo',titulo:'Prazo · '+s.name,sub:s.milestone?('Etapa atual: '+s.milestone):'',acao:`openStudentDetail('${s.id}')`}));
   manuscripts.filter(m=>m.subDate&&!['aceito','publicado'].includes(m.subStatus)).forEach(m=>ev.push({date:m.subDate,time:'',tipo:'submissao',titulo:'Submissão · '+((m.authors||'').trim()||'manuscrito'),sub:m.title||'',acao:`openManuDetail('${m.id}')`}));
   return ev.sort((a,b)=>(a.date+(a.time||'99')).localeCompare(b.date+(b.time||'99')));
@@ -2951,7 +2972,9 @@ function renderDashNovo(){
   el('dhSaudacao').textContent=sauda+(cfg.nomeUsuario?', '+cfg.nomeUsuario:'');
   const dt=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
   const cnt=t=>ativos.filter(s=>t.includes(s.type)).length;
-  el('dhSub').textContent=dt.charAt(0).toUpperCase()+dt.slice(1)+` · ${ativos.length} orientandos ativos · ${cnt(['IC'])} IC · ${cnt(['TCC','ESP'])} TCC · ${cnt(['MSC','PHD'])} pós`;
+  const nEsp=cnt(['ESP']), nMsc=cnt(['MSC']), nPhd=cnt(['PHD']), nPos=nEsp+nMsc+nPhd;
+  const posTxt=`${nPos} pós-graduação`+(nPos?' ('+[nEsp&&nEsp+' especialização',nMsc&&nMsc+' mestrado',nPhd&&nPhd+' doutorado'].filter(Boolean).join(', ')+')':'');
+  el('dhSub').textContent=dt.charAt(0).toUpperCase()+dt.slice(1)+` · ${ativos.length} orientandos ativos · ${cnt(['IC'])} IC · ${cnt(['TCC'])} TCC · ${posTxt}`;
 
   // Precisa de você
   const itens=[];
@@ -2965,7 +2988,8 @@ function renderDashNovo(){
   bancas.filter(b=>b.date&&b.date>=hoje&&b.date<=ate7).sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||''))).forEach(b=>{
     const d=Math.round((new Date(b.date+'T12:00:00')-new Date(hoje+'T12:00:00'))/86400000);
     const quando=d===0?'hoje':d===1?'amanhã':`em ${d} dias`;
-    itens.push({cls:'pv-yellow',ico:'cap',txt:`Banca ${quando}: ${escHTML(BANCA_LABELS[b.type]||'')} de ${escHTML(b.authors||b.title||'')}${b.time?' · '+escHTML(b.time):''}`,act:'Abrir',acao:`openEditBancaModal('${b.id}')`});});
+    const pb=papelBanca(b).papel;
+    itens.push({cls:pb==='avaliador'?'pv-purple':'pv-yellow',ico:'cap',txt:pb==='avaliador'?`Banca ${quando} — você é AVALIADOR(A), leia o trabalho: ${escHTML(BANCA_LABELS[b.type]||'')} de ${escHTML(b.authors||b.title||'')}${b.time?' · '+escHTML(b.time):''}`:`Banca ${quando}${pb==='orientador'?' (seu orientando)':' (defina seu papel)'}: ${escHTML(BANCA_LABELS[b.type]||'')} de ${escHTML(b.authors||b.title||'')}${b.time?' · '+escHTML(b.time):''}`,act:'Abrir',acao:`openEditBancaModal('${b.id}')`});});
   const ate30=addDiasISO(hoje,30);
   ativos.filter(s=>s.end&&s.end>=hoje&&s.end<=ate30).forEach(s=>{
     itens.push({cls:'pv-blue',ico:'clock',txt:`Prazo de conclusão em ${fmtDate(s.end)}: ${escHTML(s.name)} (${escHTML(s.milestone||'sem etapa')})`,act:'Abrir',acao:`openStudentDetail('${s.id}')`});});
@@ -3135,7 +3159,7 @@ function renderAgendaMes(){
     const m=new Date(e.date+'T12:00:00').toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
     if(m!==mesAtual){out+=`<div class="ag-lista-mes">${m}</div>`;mesAtual=m;}
     const t=EV_TAG[e.tipo];
-    out+=`<div class="ag-item" onclick="${e.acao}"><span class="ag-item-d">${fmtDate(e.date)}${e.time?'<br>'+escHTML(e.time):''}</span><div class="ag-item-t">${escHTML(e.titulo)}${e.sub?`<div class="ag-item-s">${escHTML(e.sub)}</div>`:''}</div><span class="ag-tag ${t[1]}">${t[0]}</span></div>`;
+    out+=`<div class="ag-item" onclick="${e.acao}"${e.papel==='avaliador'?' style="border-color:var(--purple);background:var(--purple-dim)"':''}><span class="ag-item-d">${fmtDate(e.date)}${e.time?'<br>'+escHTML(e.time):''}</span><div class="ag-item-t">${escHTML(e.titulo)}${e.sub?`<div class="ag-item-s">${escHTML(e.sub)}</div>`:''}</div>${e.tipo==='banca'?papelTagHTML(bancas.find(x=>e.acao.includes(x.id))||{}):''}<span class="ag-tag ${t[1]}">${t[0]}</span></div>`;
   });
   document.getElementById('agLista').innerHTML=out||'<div style="font-size:12.5px;color:var(--text-muted);padding:8px 0">Nenhum evento nos próximos 90 dias.</div>';
 }
@@ -4169,7 +4193,7 @@ let currentBancaFilter='todas';
 
 function renderBancas(filter){
   currentBancaFilter=filter||'todas';
-  ['todas','futuras','passadas'].forEach(k=>{
+  ['todas','futuras','passadas','orientador','avaliador'].forEach(k=>{
     const b=document.getElementById('fb-'+k);
     if(b) b.className='btn btn-'+(k===currentBancaFilter?'primary':'secondary')+' btn-sm';
   });
@@ -4177,6 +4201,7 @@ function renderBancas(filter){
   let list=[...bancas].sort((a,b)=>new Date(a.date+' '+(a.time||'00:00'))-new Date(b.date+' '+(b.time||'00:00')));
   if(filter==='futuras') list=list.filter(b=>new Date(b.date+'T'+(b.time||'23:59')).getTime()>=now);
   if(filter==='passadas') list=list.filter(b=>new Date(b.date+'T'+(b.time||'23:59')).getTime()<now);
+  if(filter==='orientador'||filter==='avaliador') list=list.filter(b=>papelBanca(b).papel===filter);
 
   const el=document.getElementById('bancasList');
   if(!list.length){
@@ -4198,7 +4223,8 @@ function renderBancas(filter){
       if(d<=14) return `<span class="inactivity-badge inactivity-warn">${d}d</span>`;
       return `<span class="inactivity-badge inactivity-ok">${d}d</span>`;
     };
-    return `<div class="banca-card ${cls} ${isToday?'banca-hoje-glow':''}" onclick="openEditBancaModal('${b.id}')">
+    const pp=papelBanca(b);
+    return `<div class="banca-card ${cls} ${isToday?'banca-hoje-glow':''}${pp.papel==='avaliador'?' banca-aval':''}" onclick="openEditBancaModal('${b.id}')">
       <div style="display:flex;align-items:flex-start;gap:12px">
         <div style="flex-shrink:0;text-align:center;min-width:52px">
           <div style="font-family:var(--mono);font-size:18px;font-weight:700;color:var(--text);line-height:1">${String(dt.getDate()).padStart(2,'0')}</div>
@@ -4209,6 +4235,7 @@ function renderBancas(filter){
         <div style="flex:1;min-width:0">
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
             <span class="banca-type-badge ${tcls}">${tlabel}</span>
+            ${papelTagHTML(b)}
             ${diasStr()}
           </div>
           <div style="font-size:13.5px;font-weight:600;color:var(--text);line-height:1.4;word-break:break-word">${escHTML(b.title||'Sem título')}</div>
@@ -4224,6 +4251,25 @@ function renderBancas(filter){
 }
 
 function filterBancas(f){renderBancas(f);}
+function selPapelBanca(v){
+  document.getElementById('bPapel').value=v||'';
+  ['orientador','avaliador'].forEach(k=>document.getElementById('bPapel-'+k).classList.toggle('sel',k===v));
+}
+// Papel gravado; sem gravação, só sugere "orientador" se o aluno estiver no cadastro de orientandos
+function papelBanca(b){
+  if(!b) return {papel:'',inferido:false};
+  if(b.papel) return {papel:b.papel,inferido:false};
+  const prim=s=>normTxt(s||'').split(/[\s,;]+/).filter(Boolean)[0]||'';
+  const a=prim(b.authors);
+  const achou=a.length>2&&students.some(s=>prim(s.name)===a);
+  return {papel:achou?'orientador':'',inferido:achou};
+}
+function papelTagHTML(b){
+  const p=papelBanca(b);
+  if(p.papel==='avaliador') return '<span class="papel-tag aval" title="Você é membro da banca — leia e corrija o trabalho">Avaliador(a)</span>';
+  if(p.papel==='orientador') return `<span class="papel-tag orient" title="${p.inferido?'Identificado pelo cadastro de orientandos — confirme editando a banca':'Você é o orientador'}">Orientador(a)${p.inferido?' · identificado pelo cadastro':''}</span>`;
+  return '<span class="papel-tag indef" title="Edite a banca para indicar seu papel">papel não definido</span>';
+}
 
 function openAddBancaModal(){
   document.getElementById('modalBancaTitle').textContent='Nova Banca';
@@ -4237,6 +4283,7 @@ function openAddBancaModal(){
   document.getElementById('bTime').value='';
   document.getElementById('bMembers').value='';
   document.getElementById('bNotes').value='';
+  selPapelBanca('');
   document.getElementById('btnDeleteBanca').style.display='none';
   openModal('modalBanca');
 }
@@ -4254,6 +4301,7 @@ function openEditBancaModal(id){
   document.getElementById('bTime').value=b.time||'';
   document.getElementById('bMembers').value=b.members||'';
   document.getElementById('bNotes').value=b.notes||'';
+  selPapelBanca(b.papel||'');
   document.getElementById('btnDeleteBanca').style.display='inline-flex';
   openModal('modalBanca');
 }
@@ -4269,9 +4317,11 @@ function saveBanca(){
     date:document.getElementById('bDate').value,
     time:document.getElementById('bTime').value,
     members:document.getElementById('bMembers').value.trim(),
-    notes:document.getElementById('bNotes').value.trim()
+    notes:document.getElementById('bNotes').value.trim(),
+    papel:document.getElementById('bPapel').value
   };
   if(!data.date){toast('Informe a data da banca.');return;}
+  if(!data.papel){toast('Indique seu papel: orientador(a) ou avaliador(a).');return;}
   const ei=bancas.findIndex(b=>b.id===id);
   if(ei>=0) Object.assign(bancas[ei],data);
   else bancas.push(data);
