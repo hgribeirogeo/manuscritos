@@ -993,7 +993,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             </div>
             <div class="form-group">
               <label class="form-label">GitHub Token (PAT)</label>
-              <input type="password" class="form-control" id="cfgToken" placeholder="ghp_...">
+              <input type="text" class="form-control" id="cfgToken" placeholder="ghp_..." autocomplete="off" spellcheck="false" data-lpignore="true" style="-webkit-text-security:disc">
               <div style="font-size:11px;color:var(--text-dim);margin-top:5px">Obtenha em <a href="https://github.com/settings/tokens" target="_blank" style="color:var(--blue)">github.com/settings/tokens</a> → "Generate new token (classic)" → marque <b>gist</b> → sem data de expiração.</div>
             </div>
             <div style="display:flex;gap:8px">
@@ -1020,7 +1020,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           <div class="card-header"><span style="font-size:13px;font-weight:600">OpenAlex — métricas e sugestão de periódicos</span></div>
           <div class="card-body">
             <p style="font-size:12px;color:var(--text-muted);line-height:1.6;margin-bottom:10px">Sem chave, o OpenAlex permite poucas consultas por dia (suficiente para testar). Com a chave gratuita o limite é bem maior. Crie em <a href="https://openalex.org/settings/api" target="_blank" rel="noopener" style="color:var(--blue)">openalex.org/settings/api</a>.</p>
-            <div class="form-group"><label class="form-label">Chave da API (opcional)</label><input type="password" class="form-control" id="cfgOpenalex" placeholder="cole aqui a chave"></div>
+            <div class="form-group"><label class="form-label">Chave da API (opcional)</label><input type="text" class="form-control" id="cfgOpenalex" placeholder="cole aqui a chave" autocomplete="off" spellcheck="false" data-lpignore="true" style="-webkit-text-security:disc"></div>
             <button class="btn btn-primary" onclick="cfg.openalexKey=document.getElementById('cfgOpenalex').value.trim();saveCfg();toast('Chave do OpenAlex salva.')">Salvar chave</button>
           </div>
         </div>
