@@ -795,7 +795,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     <div class="topbar-actions">
       <button class="btn btn-secondary btn-sm btn-ico" onclick="openBusca()" title="Buscar (Ctrl K)"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></button>
       <button class="btn btn-secondary btn-sm btn-ico" id="btnTema" onclick="alternarTema()" title="Alternar tema (escuro · claro · robótico)"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></button>
-      <button class="btn btn-secondary btn-sm btn-ico" onclick="syncNow()" title="Sincronizar com o Gist"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg><span class="tb-lbl">Sincronizar</span></button>
+      <button class="btn btn-secondary btn-sm btn-ico" onclick="syncNow()" title="Sincronizar: baixa o que mudou em outro aparelho e envia o que mudou aqui"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg><span class="tb-lbl">Sincronizar</span></button>
       <button class="btn btn-primary btn-sm" id="topbarAdd" onclick="openAddStudentModal()">+ Orientando</button>
     </div>
   </div>
@@ -1044,6 +1044,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             </div>
             <div style="margin-top:12px">
               <button class="btn btn-secondary" onclick="gerarLinkSetup()">📱 Configurar outro dispositivo</button>
+              <button class="btn btn-secondary" onclick="baixarDescartado()" title="Versão não escolhida no último conflito de sincronização">Baixar versão descartada</button>
             </div>
             <div id="setupLinkBox">
               <div style="font-size:12px;color:var(--text-muted);line-height:1.6">Escaneie o QR code com a câmera do celular (ou abra o link nele) <b>uma única vez</b>. O dispositivo fica configurado e carrega os dados do Gist.</div>
@@ -1571,6 +1572,20 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 
 <button class="fab" onclick="openRegistrarReuniao()" title="Registrar reunião" aria-label="Registrar reunião"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h8"/><path d="M12 8v8"/></svg></button>
 
+<!-- MODAL: Conflito de sincronização -->
+<div class="overlay" id="modalConflito">
+  <div class="modal" style="width:640px">
+    <div class="modal-header"><span class="modal-title">Versões diferentes encontradas</span></div>
+    <div class="modal-body"><div id="cfCorpo"></div></div>
+    <div class="modal-footer" style="flex-wrap:wrap">
+      <button class="btn btn-secondary btn-sm" onclick="baixarVersoesConflito()" style="margin-right:auto">Baixar as duas versões</button>
+      <button class="btn btn-secondary" onclick="closeModal('modalConflito')">Decidir depois</button>
+      <button class="btn btn-secondary" onclick="resolverConflito('local')">Manter a deste aparelho</button>
+      <button class="btn btn-primary" onclick="resolverConflito('gist')">Usar a do Gist</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: Tema da carteira -->
 <div class="overlay" id="modalTema">
   <div class="modal" style="width:720px">
@@ -1934,52 +1949,9 @@ async function loadData(){
   try{temas=JSON.parse(localStorage.getItem('labtemas')||'[]');}catch(e){temas=[];}
   if(!temas.length&&!localStorage.getItem('labtemasSeed')){temas=JSON.parse(JSON.stringify(TEMAS_SEED));localStorage.setItem('labtemasSeed','1');localStorage.setItem('labtemas',JSON.stringify(temas));}
 
-  // ── PASSO 2: Sincronizar com Gist em background ──
+  // ── PASSO 2: Sincronizar com Gist em background (controle de versão) ──
   if(cfg.gistId && cfg.token){
-    // Edições feitas offline têm prioridade: enviar ao Gist em vez de sobrescrever com versão antiga
-    if(localStorage.getItem('labpendente')==='1'){
-      saveData().then(()=>{if(typeof renderCurrentView==='function') renderCurrentView();});
-      return;
-    }
-    fetchWithTimeout(`https://api.github.com/gists/${cfg.gistId}`,
-      {headers:{Authorization:`token ${cfg.token}`}}, 8000)
-    .then(async r=>{
-      if(!r.ok) throw new Error('Gist '+r.status);
-      const g=await r.json();
-      const gs=g.files[GIST_FILENAME_S]?JSON.parse(g.files[GIST_FILENAME_S].content||'[]'):[];
-      const gm=g.files[GIST_FILENAME_M]?JSON.parse(g.files[GIST_FILENAME_M].content||'[]'):[];
-      const gb=g.files['labresearch_bancas.json']?JSON.parse(g.files['labresearch_bancas.json'].content||'[]'):[];
-      const gp=g.files['labresearch_producao.json']?JSON.parse(g.files['labresearch_producao.json'].content||'[]'):[];
-      const gj=g.files['labresearch_periodicos.json']?JSON.parse(g.files['labresearch_periodicos.json'].content||'[]'):[];
-      const gq=g.files['labresearch_qualis.json']?JSON.parse(g.files['labresearch_qualis.json'].content||'{}'):{};
-      const gbs=g.files['labresearch_bases.json']?JSON.parse(g.files['labresearch_bases.json'].content||'[]'):[];
-      const gds=g.files['labresearch_dossies.json']?JSON.parse(g.files['labresearch_dossies.json'].content||'{}'):{};
-      const gtm=g.files['labresearch_temas.json']?JSON.parse(g.files['labresearch_temas.json'].content||'[]'):[];
-      // Merge: só substituir se Gist tiver mais dados que o local
-      if(gs.length>0 && gs.length>=students.length) students=gs;
-      if(gm.length>0 && gm.length>=manuscripts.length) manuscripts=gm;
-      if(gb.length>0 && gb.length>=bancas.length) bancas=gb;
-      if(gp.length>0 && gp.length>=producao.length) producao=gp;
-      if(gj.length>0 && gj.length>=periodicos.length) periodicos=gj;
-      if(Object.keys(gq).length>0 && Object.keys(gq).length>=Object.keys(qualisMap).length) qualisMap=gq;
-      if(gbs.length>0 && gbs.length>=basesUser.length) basesUser=gbs;
-      if(Object.keys(gds).length>0 && Object.keys(gds).length>=Object.keys(dossies).length) dossies=gds;
-      if(gtm.length>0 && gtm.length>=temas.length) temas=gtm;
-      localStorage.setItem('labstudents',JSON.stringify(students));
-      localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
-      localStorage.setItem('labbancas',JSON.stringify(bancas));
-      localStorage.setItem('labproducao',JSON.stringify(producao));
-      localStorage.setItem('labperiodicos',JSON.stringify(periodicos));
-      localStorage.setItem('labqualis',JSON.stringify(qualisMap));
-      localStorage.setItem('labbases',JSON.stringify(basesUser));
-      localStorage.setItem('labdossies',JSON.stringify(dossies));
-      localStorage.setItem('labtemas',JSON.stringify(temas));
-      setSyncOk('Gist');
-      if(typeof renderCurrentView==='function') renderCurrentView();
-    }).catch(e=>{
-      console.warn('Gist load error:',e.message);
-      setSyncWarn();
-    });
+    sincronizar(false);
     return;
   }
 
@@ -1999,33 +1971,13 @@ async function saveData(){
     localStorage.setItem('labbases',JSON.stringify(basesUser));
     localStorage.setItem('labdossies',JSON.stringify(dossies));
     localStorage.setItem('labtemas',JSON.stringify(temas));
+    localStorage.setItem('labmodificado',new Date().toISOString());
   }catch(e){console.error('localStorage error:',e);}
 
-  // 2. Gist como único sync remoto
+  // 2. Gist: envia só se nenhum outro aparelho alterou o Gist desde a última sincronização
   if(cfg.gistId && cfg.token){
-    try{
-      const files={};
-      files[GIST_FILENAME_S]={content:JSON.stringify(students,null,2)};
-      files[GIST_FILENAME_M]={content:JSON.stringify(manuscripts,null,2)};
-      files['labresearch_bancas.json']={content:JSON.stringify(bancas,null,2)};
-      files['labresearch_producao.json']={content:JSON.stringify(producao,null,2)};
-      files['labresearch_periodicos.json']={content:JSON.stringify(periodicos,null,2)};
-      files['labresearch_qualis.json']={content:JSON.stringify(qualisMap)};
-      files['labresearch_bases.json']={content:JSON.stringify(basesUser,null,2)};
-      files['labresearch_dossies.json']={content:JSON.stringify(dossies)};
-      files['labresearch_temas.json']={content:JSON.stringify(temas,null,2)};
-      const r=await fetchWithTimeout(`https://api.github.com/gists/${cfg.gistId}`,{
-        method:'PATCH',
-        headers:{'Content-Type':'application/json',Authorization:`token ${cfg.token}`},
-        body:JSON.stringify({files})
-      }, 10000);
-      if(r.ok){localStorage.removeItem('labpendente');setSyncOk('Gist');return;}
-      throw new Error('HTTP '+r.status);
-    }catch(e){
-      console.warn('Gist save error:',e.message);
-      localStorage.setItem('labpendente','1'); // edição local ainda não enviada ao Gist
-      setSyncErr('Gist');
-    }
+    try{localStorage.setItem('labpendente','1');}catch(e){} // até o envio ser confirmado
+    return agendarEnvio();
   }
 }
 
@@ -2036,32 +1988,189 @@ function setSyncOk(src){
 function setSyncWarn(){document.getElementById('syncDot').className='sync-dot';document.getElementById('syncText').textContent='Local (sem sync remoto)';}
 function setSyncErr(src){document.getElementById('syncDot').className='sync-dot err';document.getElementById('syncText').textContent=`⚠ Falha — ${src||'sync'}`;}
 
-async function syncNow(){
-  toast('Sincronizando com Gist...');
-  // Forçar upload de tudo para o Gist
-  if(cfg.gistId && cfg.token){
-    try{
-      const files={};
-      files[GIST_FILENAME_S]={content:JSON.stringify(students,null,2)};
-      files[GIST_FILENAME_M]={content:JSON.stringify(manuscripts,null,2)};
-      files['labresearch_bancas.json']={content:JSON.stringify(bancas,null,2)};
-      files['labresearch_producao.json']={content:JSON.stringify(producao,null,2)};
-      files['labresearch_periodicos.json']={content:JSON.stringify(periodicos,null,2)};
-      files['labresearch_qualis.json']={content:JSON.stringify(qualisMap)};
-      files['labresearch_bases.json']={content:JSON.stringify(basesUser,null,2)};
-      files['labresearch_dossies.json']={content:JSON.stringify(dossies)};
-      files['labresearch_temas.json']={content:JSON.stringify(temas,null,2)};
-      const r=await fetchWithTimeout(`https://api.github.com/gists/${cfg.gistId}`,{
-        method:'PATCH',
-        headers:{'Content-Type':'application/json',Authorization:`token ${cfg.token}`},
-        body:JSON.stringify({files})
-      }, 10000);
-      if(r.ok){localStorage.removeItem('labpendente');setSyncOk('Gist');toast('✓ Sincronizado com Gist.');renderCurrentView();return;}
-    }catch(e){}
-    toast('✗ Falha ao sincronizar. Verifique o token do Gist em Configurações.');
-    return;
+// ─── SINCRONIZAÇÃO COM CONTROLE DE VERSÃO ─────────────────────
+// Cada gravação no Gist cria uma versão (history[0].version). O aparelho guarda a versão que viu por último
+// (labsincVersao). Se o Gist tiver outra versão E houver alteração local não enviada, nada é sobrescrito:
+// o usuário escolhe qual versão manter, e a descartada fica guardada como backup.
+const SYNC_ARQ=[['students',GIST_FILENAME_S,'Orientandos'],['manuscripts',GIST_FILENAME_M,'Manuscritos'],['bancas','labresearch_bancas.json','Bancas'],
+  ['producao','labresearch_producao.json','Produção'],['periodicos','labresearch_periodicos.json','Periódicos'],['qualisMap','labresearch_qualis.json','Qualis'],
+  ['basesUser','labresearch_bases.json','Bases de dados (suas)'],['dossies','labresearch_dossies.json','Dossiês de dados'],['temas','labresearch_temas.json','Carteira de temas']];
+function snapshotDados(){return {students,manuscripts,bancas,producao,periodicos,qualisMap,basesUser,dossies,temas};}
+function aplicarDados(d){
+  if(d.students!==undefined) students=d.students;
+  if(d.manuscripts!==undefined) manuscripts=d.manuscripts;
+  if(d.bancas!==undefined) bancas=d.bancas;
+  if(d.producao!==undefined) producao=d.producao;
+  if(d.periodicos!==undefined) periodicos=d.periodicos;
+  if(d.qualisMap!==undefined) qualisMap=d.qualisMap;
+  if(d.basesUser!==undefined) basesUser=d.basesUser;
+  if(d.dossies!==undefined) dossies=d.dossies;
+  if(d.temas!==undefined) temas=d.temas;
+  try{
+    localStorage.setItem('labstudents',JSON.stringify(students));localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
+    localStorage.setItem('labbancas',JSON.stringify(bancas));localStorage.setItem('labproducao',JSON.stringify(producao));
+    localStorage.setItem('labperiodicos',JSON.stringify(periodicos));localStorage.setItem('labqualis',JSON.stringify(qualisMap));
+    localStorage.setItem('labbases',JSON.stringify(basesUser));localStorage.setItem('labdossies',JSON.stringify(dossies));
+    localStorage.setItem('labtemas',JSON.stringify(temas));
+  }catch(e){console.error('localStorage error:',e);}
+}
+// Arquivo ausente no Gist → undefined (mantém o local daquela coleção)
+function dadosDoGist(g){
+  const d={};
+  SYNC_ARQ.forEach(([k,n])=>{const f=g.files&&g.files[n];if(!f)return;try{d[k]=JSON.parse(f.content||(k==='qualisMap'||k==='dossies'?'{}':'[]'));}catch(e){}});
+  return d;
+}
+function arquivosGist(d){
+  const files={};
+  SYNC_ARQ.forEach(([k,n])=>{files[n]={content:(k==='qualisMap'||k==='dossies')?JSON.stringify(d[k]):JSON.stringify(d[k],null,2)};});
+  return files;
+}
+function versaoGist(g){return (g&&g.__v)||(g&&g.history&&g.history[0]&&g.history[0].version)||'';}
+function hdrGist(){return {Authorization:`token ${cfg.token}`};}
+async function versaoRemota(){
+  const r=await fetchWithTimeout(`https://api.github.com/gists/${cfg.gistId}/commits?per_page=1`,{headers:hdrGist(),cache:'no-store'},8000);
+  if(!r.ok) throw new Error('Gist '+r.status);
+  const a=await r.json(); return (a&&a[0]&&a[0].version)||'';
+}
+async function buscarGist(){
+  const r=await fetchWithTimeout(`https://api.github.com/gists/${cfg.gistId}`,{headers:hdrGist(),cache:'no-store'},12000);
+  if(!r.ok) throw new Error('Gist '+r.status);
+  const g=await r.json();
+  // Arquivos acima de 1 MB vêm truncados na API: buscar o conteúdo completo
+  for(const f of Object.values(g.files||{})){
+    if(f&&f.truncated&&f.raw_url){const rr=await fetchWithTimeout(f.raw_url,{cache:'no-store'},15000);if(rr.ok) f.content=await rr.text(); else throw new Error('Arquivo truncado no Gist');}
   }
-  toast('Configure o Gist em Configurações para sincronizar.');
+  if(!versaoGist(g)) g.__v=await versaoRemota();
+  return g;
+}
+function marcarSincronizado(v){
+  try{const ant=localStorage.getItem('labsincVersao');if(ant&&ant!==v) localStorage.setItem('labsincAnterior',ant);
+      localStorage.setItem('labsincVersao',v);localStorage.removeItem('labpendente');}catch(e){}
+  setSyncOk('Gist');
+}
+async function enviarGist(){
+  const r=await fetchWithTimeout(`https://api.github.com/gists/${cfg.gistId}`,{method:'PATCH',
+    headers:{'Content-Type':'application/json',...hdrGist()},body:JSON.stringify({files:arquivosGist(snapshotDados())})},15000);
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  let v='';try{v=versaoGist(await r.json());}catch(e){}
+  if(!v) v=await versaoRemota();
+  marcarSincronizado(v);
+  return v;
+}
+// Envio com verificação: só grava se o Gist ainda estiver na versão que este aparelho viu
+async function enviarComVerificacao(){
+  const vL=localStorage.getItem('labsincVersao')||'', vAnt=localStorage.getItem('labsincAnterior')||'';
+  const vR=await versaoRemota();
+  // vAnt: a API pode demorar alguns segundos para refletir o nosso próprio envio anterior
+  if(!vL||(vR!==vL&&vR!==vAnt)){setSyncConflito();await sincronizar(false);return false;}
+  await enviarGist();
+  return true;
+}
+let _envio=null,_envioDeNovo=false;
+function agendarEnvio(){
+  if(_envio){_envioDeNovo=true;return _envio;}
+  _envio=(async()=>{
+    try{do{_envioDeNovo=false;if(!(await enviarComVerificacao())) break;}while(_envioDeNovo);}
+    catch(e){console.warn('Gist save error:',e.message);setSyncErr('Gist');}
+  })().finally(()=>{_envio=null;});
+  return _envio;
+}
+function setSyncConflito(){const d=document.getElementById('syncDot'),t=document.getElementById('syncText');if(d)d.className='sync-dot err';if(t)t.textContent='⚠ Versões diferentes — decidir';}
+function localVazio(){return !students.length&&!manuscripts.length&&!bancas.length;}
+function dadosIguais(loc,rem){return SYNC_ARQ.every(([k])=>rem[k]===undefined||JSON.stringify(loc[k])===JSON.stringify(rem[k]));}
+let _sincronizando=null;
+async function sincronizar(manual){
+  if(_sincronizando) return _sincronizando;
+  _sincronizando=(async()=>{
+    try{
+      const g=await buscarGist(), vR=versaoGist(g), rem=dadosDoGist(g);
+      const vL=localStorage.getItem('labsincVersao')||'', vAnt=localStorage.getItem('labsincAnterior')||'', pend=localStorage.getItem('labpendente')==='1';
+      if(vL&&(vR===vL||vR===vAnt)){                       // ninguém mais alterou o Gist
+        if(pend){await enviarGist();if(manual) toast('✓ Alterações deste aparelho enviadas ao Gist.');}
+        else{setSyncOk('Gist');if(manual) toast('✓ Já está atualizado.');}
+      }else if(vL&&!pend){                                // outro aparelho alterou; nada pendente aqui
+        aplicarDados(rem);marcarSincronizado(vR);if(typeof renderCurrentView==='function') renderCurrentView();
+        if(manual) toast('✓ Atualizado com as alterações feitas em outro aparelho.');
+      }else if(localVazio()||dadosIguais(snapshotDados(),rem)){ // aparelho novo, ou mesmas informações
+        aplicarDados(rem);marcarSincronizado(vR);if(typeof renderCurrentView==='function') renderCurrentView();
+        if(manual) toast('✓ Sincronizado.');
+      }else{                                              // as duas versões mudaram: o usuário decide
+        abrirConflito(g,rem);
+      }
+    }catch(e){
+      console.warn('Gist sync error:',e.message);setSyncErr('Gist');
+      if(manual) toast('✗ Não foi possível acessar o Gist ('+(e.name==='AbortError'?'tempo esgotado':e.message)+').');
+    }
+  })().finally(()=>{_sincronizando=null;});
+  return _sincronizando;
+}
+// ── Conflito: mostrar diferenças e deixar o usuário escolher ──
+let _conflito=null;
+function difColecao(a,b,rot){
+  if(Array.isArray(a)&&Array.isArray(b)){
+    const ma=new Map(a.map(x=>[x&&x.id,JSON.stringify(x)])), mb=new Map(b.map(x=>[x&&x.id,JSON.stringify(x)]));
+    let soA=[],soB=[],alt=[];
+    ma.forEach((v,k)=>{if(!mb.has(k))soA.push(k);else if(mb.get(k)!==v)alt.push(k);});
+    mb.forEach((v,k)=>{if(!ma.has(k))soB.push(k);});
+    const nome=id=>{const x=a.find(y=>y&&y.id===id)||b.find(y=>y&&y.id===id)||{};return x[rot]||x.name||x.title||x.cod||x.authors||id;};
+    return {nA:a.length,nB:b.length,soA:soA.length,soB:soB.length,alt:alt.length,ex:[...alt,...soA,...soB].slice(0,3).map(nome)};
+  }
+  const ka=Object.keys(a||{}),kb=Object.keys(b||{});
+  const alt=ka.filter(k=>k in (b||{})&&JSON.stringify(a[k])!==JSON.stringify(b[k])).length;
+  return {nA:ka.length,nB:kb.length,soA:ka.filter(k=>!(k in (b||{}))).length,soB:kb.filter(k=>!(k in (a||{}))).length,alt,ex:[]};
+}
+function abrirConflito(g,rem){
+  _conflito={g,rem,local:JSON.parse(JSON.stringify(snapshotDados()))};
+  setSyncConflito();
+  const loc=_conflito.local, rotulo={students:'name',manuscripts:'title',bancas:'authors',temas:'cod'};
+  const linhas=SYNC_ARQ.filter(([k])=>rem[k]!==undefined).map(([k,,nome])=>{
+    const d=difColecao(loc[k],rem[k],rotulo[k]); if(!d.soA&&!d.soB&&!d.alt) return '';
+    const partes=[d.soA?`${d.soA} só aqui`:'',d.soB?`${d.soB} só no Gist`:'',d.alt?`${d.alt} diferente${d.alt>1?'s':''}`:''].filter(Boolean).join(' · ');
+    return `<tr><td style="padding:6px 8px">${nome}</td><td style="padding:6px 8px;text-align:center;font-family:var(--mono)">${d.nA}</td><td style="padding:6px 8px;text-align:center;font-family:var(--mono)">${d.nB}</td><td style="padding:6px 8px;color:var(--text-muted)">${partes}${d.ex.length?`<div style="font-size:10.5px;color:var(--text-dim)">ex.: ${d.ex.map(x=>escHTML(String(x)).slice(0,40)).join('; ')}</div>`:''}</td></tr>`;}).join('');
+  const lm=localStorage.getItem('labmodificado'), dtL=lm?new Date(lm):null, dtR=g.updated_at?new Date(g.updated_at):null;
+  const f=d=>d?d.toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'não registrada';
+  const maisNovo=dtL&&dtR?(dtL>dtR?'local':'gist'):'';
+  document.getElementById('cfCorpo').innerHTML=`
+    <p style="font-size:12.5px;color:var(--text-muted);line-height:1.6;margin-bottom:10px">Este aparelho e o Gist têm versões diferentes dos dados, e as duas foram alteradas desde a última sincronização. Para não perder trabalho, nada foi sobrescrito. Escolha qual versão manter — a outra fica guardada neste aparelho e pode ser baixada depois em Configurações.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;font-size:12px">
+      <div class="gate"><b>Deste aparelho</b>${maisNovo==='local'?' <span class="ct-st-tag st-aprovado">mais recente</span>':''}<br><span style="color:var(--text-muted)">Última alteração: ${f(dtL)}</span></div>
+      <div class="gate"><b>No Gist</b>${maisNovo==='gist'?' <span class="ct-st-tag st-aprovado">mais recente</span>':''}<br><span style="color:var(--text-muted)">Última gravação: ${f(dtR)}</span></div>
+    </div>
+    ${linhas?`<table style="width:100%;border-collapse:collapse;font-size:12px"><tr style="color:var(--text-dim);text-align:left"><th style="padding:6px 8px">O que difere</th><th style="padding:6px 8px">Aqui</th><th style="padding:6px 8px">Gist</th><th style="padding:6px 8px">Diferenças</th></tr>${linhas}</table>`:'<p style="font-size:12px;color:var(--text-muted)">As diferenças são apenas de ordem ou formatação.</p>'}`;
+  openModal('modalConflito');
+}
+function guardarDescartado(origem,dados){
+  try{localStorage.setItem('labdescartado',JSON.stringify({quando:new Date().toISOString(),origem,dados}));}catch(e){console.warn('Sem espaço para guardar a versão descartada:',e);}
+}
+async function resolverConflito(escolha){
+  if(!_conflito) return;
+  const {g,rem,local}=_conflito;
+  try{
+    if(escolha==='gist'){
+      guardarDescartado('este aparelho',local);
+      aplicarDados(rem);marcarSincronizado(versaoGist(g));
+      toast('✓ Versão do Gist adotada. A versão deste aparelho foi guardada como backup.');
+    }else{
+      guardarDescartado('Gist',rem);
+      await enviarGist();
+      toast('✓ Versão deste aparelho enviada ao Gist. A versão anterior do Gist foi guardada como backup.');
+    }
+    _conflito=null;closeModal('modalConflito');
+    if(typeof renderCurrentView==='function') renderCurrentView();
+  }catch(e){toast('✗ Não foi possível concluir: '+e.message);}
+}
+function baixarJSON(obj,nome){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}));a.download=nome;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000);}
+function baixarVersoesConflito(){if(_conflito) baixarJSON({gerado:new Date().toISOString(),deste_aparelho:_conflito.local,gist:_conflito.rem},'labresearch_conflito_'+today()+'.json');}
+function baixarDescartado(){
+  let d=null;try{d=JSON.parse(localStorage.getItem('labdescartado')||'null');}catch(e){}
+  if(!d){toast('Nenhuma versão descartada guardada neste aparelho.');return;}
+  baixarJSON(d,'labresearch_descartado_'+d.quando.slice(0,10)+'.json');
+}
+
+async function syncNow(){
+  if(!(cfg.gistId && cfg.token)){toast('Configure o Gist em Configurações para sincronizar.');return;}
+  toast('Verificando o Gist...');
+  await sincronizar(true);
 }
 
 // ─── VIEWS ────────────────────────────────────────────────────
@@ -4772,7 +4881,8 @@ function importJSON(input){
   const r=new FileReader();
   r.onload=e=>{
     try{
-      const d=JSON.parse(e.target.result);
+      let d=JSON.parse(e.target.result);
+      if(d&&d.dados&&!d.students) d=d.dados; // arquivo de "versão descartada"
       if(d.students) students=d.students;
       if(d.manuscripts) manuscripts=d.manuscripts;
       if(d.bancas) bancas=d.bancas;
