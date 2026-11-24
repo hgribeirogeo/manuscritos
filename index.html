@@ -652,6 +652,50 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 :root[data-theme="robo"] .dh-grid2::before{top:-12px;height:12px}
 :root[data-theme="robo"] .dh-grid2::after{bottom:-20px;height:20px}
 
+/* ═══ CARTEIRA DE IDEIAS (grupos, ideia-semente) ═══ */
+.ct-top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.ct-gtit{font-size:15px;font-weight:600;color:var(--text);margin-left:4px}
+.ct-gsub{display:block;font-size:12px;color:var(--text-muted);margin-top:3px;line-height:1.45}
+.cg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.cg-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;display:flex;flex-direction:column;gap:9px;min-height:150px;transition:border-color .15s,transform .15s}
+.cg-card:hover{border-color:var(--blue);transform:translateY(-1px)}
+.cg-ico{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--blue-dim);color:var(--blue);flex-shrink:0}
+.cg-ico svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.cg-nuc{font-size:10px;font-family:var(--mono);color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em}
+.cg-n{font-size:15px;font-weight:600;color:var(--text);line-height:1.25}
+.cg-d{font-size:12px;color:var(--text-muted);line-height:1.45;flex:1}
+.cg-c{display:flex;gap:6px;flex-wrap:wrap}
+.ct-thumb{background:var(--surface2);border-radius:8px;padding:6px;color:var(--text-muted)}
+.ct-thumb svg{width:100%;height:78px;display:block;font-size:13px;font-family:var(--sans)}
+.ct-thumb svg text:not([fill]),.id-fig svg text:not([fill]){fill:currentColor}
+.id-h{font-size:18px;font-weight:600;color:var(--text);line-height:1.3}
+.id-fig{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;margin:10px 0 12px;color:var(--text)}
+.id-fig svg{width:100%;height:auto;max-height:280px;display:block;font-size:13px;font-family:var(--sans)}
+.id-fig img{max-width:100%;display:block;margin:0 auto;border-radius:6px}
+.id-cap{font-size:11px;color:var(--text-dim);margin-top:8px;line-height:1.4}
+.id-txt p{font-size:13.5px;line-height:1.65;color:var(--text);margin:0 0 9px}
+.id-eq{font-family:'Cambria Math','STIX Two Math','Times New Roman',serif;font-size:23px;text-align:center;padding:14px 10px;background:var(--surface2);border-radius:8px;margin:10px 0;color:var(--text);overflow-x:auto}
+.id-tab{width:100%;border-collapse:collapse;font-size:12.5px;margin:4px 0 12px}
+.id-tab th{text-align:left;background:var(--surface3);color:var(--text);padding:7px 10px;font-weight:600}
+.id-tab td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text)}
+.id-flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0 12px}
+.id-flow span{font-size:11.5px;padding:6px 10px;border-radius:8px;background:var(--surface2);border:1px solid var(--border2);color:var(--text)}
+.id-flow i{color:var(--text-dim);font-style:normal}
+.id-campo{font-size:13.5px;line-height:1.6;color:var(--text);margin:5px 0}
+.id-caut{border-left:3px solid var(--yellow);background:var(--yellow-dim);padding:8px 12px;font-size:12.5px;color:var(--text-muted);margin:12px 0;border-radius:0 6px 6px 0;line-height:1.5}
+.id-refs{font-size:12px;color:var(--text-muted);margin-top:10px}
+.id-refs span{color:var(--text-dim)}
+.id-refs ul{margin:4px 0 0 18px;padding:0}.id-refs li{margin:3px 0;line-height:1.45}
+.id-refs a{color:var(--blue)}
+.id-fonte{font-size:11px;color:var(--text-dim);margin-top:8px}
+.id-enc{border-top:1px solid var(--border);margin-top:14px;padding-top:12px}
+.id-enc-t{font-size:12.5px;color:var(--text);margin-bottom:8px;line-height:1.5}
+.id-enc-d{font-size:11px;color:var(--text-dim);margin-top:8px;line-height:1.45}
+.st-disponivel{background:var(--surface3);color:var(--text-muted)}
+.st-enviada{background:var(--blue-dim);color:var(--blue)}
+.st-manuscrito{background:var(--green);color:#fff}
+.st-arquivada{background:var(--red-dim);color:var(--red)}
+
 /* ═══ TEMA HOLOGRÁFICO (vidro, neon ciano/rosa/laranja, holograma no Início) ═══ */
 .holo-hero{display:none}
 :root[data-theme="holo"]{
@@ -692,15 +736,15 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 :root[data-theme="holo"] .btn-sync:hover{background:linear-gradient(90deg,#ffa050,#ffe08a);color:#2a1300}
 :root[data-theme="holo"] .dh-search{border-radius:20px;background:#081426cc;border-color:#4fdcff59;box-shadow:inset 0 0 12px #4fdcff1f}
 /* painéis com cantos cortados e moldura brilhante */
-:root[data-theme="holo"] :is(.dh-card,.card,.al-card,.stat-card,.ct-card,.db-card,.student-card,.banca-card,.journal-card,.jc2,.prod-card,.ma-card,.hh-stage){
+:root[data-theme="holo"] :is(.dh-card,.card,.al-card,.stat-card,.ct-card,.cg-card,.db-card,.student-card,.banca-card,.journal-card,.jc2,.prod-card,.ma-card,.hh-stage){
   --cut:11px;position:relative;border-color:transparent;border-radius:0;
   background:linear-gradient(135deg,transparent var(--cut),var(--hpanel) 0) top/100% 50.5% no-repeat,linear-gradient(315deg,transparent var(--cut),var(--hpanel) 0) bottom/100% 50% no-repeat}
-:root[data-theme="holo"] :is(.dh-card,.card,.al-card,.stat-card,.ct-card,.db-card,.student-card,.banca-card,.journal-card,.jc2,.prod-card,.ma-card,.hh-stage)::after{
+:root[data-theme="holo"] :is(.dh-card,.card,.al-card,.stat-card,.ct-card,.cg-card,.db-card,.student-card,.banca-card,.journal-card,.jc2,.prod-card,.ma-card,.hh-stage)::after{
   content:"";position:absolute;inset:0;pointer-events:none;z-index:1;--c2:calc(var(--cut)*1.4142);
   background:var(--hring,linear-gradient(150deg,#a6f4ff,#4fdcff66 28%,#4fdcff24 60%,#4fdcff));
   clip-path:polygon(evenodd,var(--c2) 0,100% 0,100% calc(100% - var(--c2)),calc(100% - var(--c2)) 100%,0 100%,0 var(--c2),var(--c2) 0,calc(var(--c2) + .42px) 1px,1px calc(var(--c2) + .42px),1px calc(100% - 1px),calc(100% - var(--c2) - .42px) calc(100% - 1px),calc(100% - 1px) calc(100% - var(--c2) - .42px),calc(100% - 1px) 1px,calc(var(--c2) + .42px) 1px)}
-:root[data-theme="holo"] :is(.al-card,.ct-card,.student-card,.banca-card,.journal-card,.jc2,.prod-card):hover{--hpanel:#0e2140}
-:root[data-theme="holo"] :is(.al-card,.ct-card,.student-card,.banca-card,.journal-card,.jc2,.prod-card):hover::after{--hring:linear-gradient(150deg,#fff,var(--hcy) 40%,#a6f4ff)}
+:root[data-theme="holo"] :is(.al-card,.ct-card,.cg-card,.student-card,.banca-card,.journal-card,.jc2,.prod-card):hover{--hpanel:#0e2140}
+:root[data-theme="holo"] :is(.al-card,.ct-card,.cg-card,.student-card,.banca-card,.journal-card,.jc2,.prod-card):hover::after{--hring:linear-gradient(150deg,#fff,var(--hcy) 40%,#a6f4ff)}
 :root[data-theme="holo"] .banca-card.banca-aval{--hpanel:#1a1438;--hring:linear-gradient(150deg,#d9ccff,#a98bff80 40%,var(--purple))}
 :root[data-theme="holo"] .db-card.usar{box-shadow:none;--hring:linear-gradient(150deg,#b8ffe4,#2fe0a080 40%,var(--green))}
 :root[data-theme="holo"] :is(.student-card,.banca-card,.reuniao-card,.sema-card)::before{top:18px;bottom:18px;left:1px;box-shadow:0 0 8px currentColor}
@@ -1062,12 +1106,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 
     <!-- MANUSCRITOS -->
     <div id="view-manuscritos" style="display:none">
-      <div style="margin-bottom:14px;display:flex;gap:8px">
+      <div style="margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-secondary btn-sm" onclick="filterManu('todos')" id="fm-todos">Todos</button>
         <button class="btn btn-secondary btn-sm" onclick="filterManu('IC')" id="fm-IC">IC</button>
         <button class="btn btn-secondary btn-sm" onclick="filterManu('TCC')" id="fm-TCC">TCC Grad</button>
         <button class="btn btn-secondary btn-sm" onclick="filterManu('ESP')" id="fm-ESP">TCC Esp</button>
-        <button class="btn btn-primary btn-sm" onclick="openAddManuModal()" style="margin-left:auto">+ Manuscrito</button>
+        <label class="btn btn-secondary btn-sm" style="margin-left:auto" title="Preenche um manuscrito com o esqueleto do PAP (.txt no formato LABRESEARCH-ESQUELETO)">Importar esqueleto (.txt)<input type="file" accept=".txt,text/plain" hidden onchange="importarEsqueleto(this)"></label>
+        <button class="btn btn-primary btn-sm" onclick="openAddManuModal()">+ Manuscrito</button>
       </div>
       <div class="manu-list" id="manuList"></div>
     </div>
@@ -1174,15 +1219,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 
     <!-- CARTEIRA DE TEMAS -->
     <div id="view-carteira" style="display:none">
-      <div class="cat-info">Temas de pesquisa organizados em programas. Cada tema passa por quatro portões antes de ser oferecido: <b>1</b> lacuna verificada na literatura, <b>2</b> dados auditados, <b>3</b> piloto concluído e <b>4</b> decisão (aprovar, reformular ou suspender). Os artigos de maior impacto são dos programas; cada aluno desenvolve um módulo. Periódicos-alvo são indicativos — confirme o quartil na época da submissão.</div>
-      <div class="cat-filtros">
-        <select class="form-control" id="ctProg" onchange="renderCarteira()"><option value="">Todos os programas</option><option value="A">A — Permanência da vegetação para MRV</option><option value="B">B — Temperatura do ar (ERA5-Land)</option></select>
-        <select class="form-control" id="ctNivel" onchange="renderCarteira()"><option value="">Todos os níveis</option><option value="IC">IC</option><option value="TCC">TCC</option><option value="Especialização">Especialização</option><option value="Mestrado">Mestrado</option></select>
-        <input type="text" class="form-control" id="ctBusca" placeholder="Buscar tema…" oninput="renderCarteira()">
-        <button class="btn btn-primary btn-sm" onclick="openTema('')">+ Novo tema</button>
+      <div class="ct-top">
+        <div id="ctMigalha" style="flex:1;min-width:220px"></div>
+        <input type="text" class="form-control" id="ctBusca" placeholder="Buscar ideia…" oninput="renderCarteira()" style="max-width:240px">
+        <button class="btn btn-primary btn-sm" onclick="openTema('')">+ Nova ideia</button>
       </div>
-      <div class="ct-status" id="ctStatus"></div>
-      <div id="ctLista"></div>
+      <div id="ctConteudo"></div>
     </div>
 
     <!-- ALERTAS -->
@@ -1416,6 +1458,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <option value="IC">IC</option>
             <option value="TCC">TCC Graduação</option>
             <option value="ESP">TCC Especialização</option>
+            <option value="MSC">Mestrado</option>
+            <option value="PHD">Doutorado</option>
             <option value="proprio">Meu artigo (próprio)</option>
           </select>
         </div>
@@ -1759,6 +1803,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
   </div>
 </div>
 
+<!-- MODAL: Ideia da carteira (leitura) -->
+<div class="overlay" id="modalIdeia">
+  <div class="modal" style="width:760px">
+    <div class="modal-header"><span class="modal-title" id="idTitulo">Ideia</span><button class="modal-close" onclick="closeModal('modalIdeia')">✕</button></div>
+    <div class="modal-body"><div id="idCorpo"></div><div class="id-enc" id="idEnc"></div></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary btn-sm" id="idEditar" style="margin-right:auto">Editar</button>
+      <button class="btn btn-primary" id="idPdf">Compartilhar (PDF)</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: Tema da carteira -->
 <div class="overlay" id="modalTema">
   <div class="modal" style="width:720px">
@@ -1767,33 +1823,31 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <input type="hidden" id="tmId">
       <div class="form-row">
         <div class="form-group"><label class="form-label">Código</label><input type="text" class="form-control" id="tmCod"></div>
-        <div class="form-group"><label class="form-label">Programa</label><select class="form-control" id="tmProg" onchange="tmArtigosOpcoes()"><option value="A">A — Permanência da vegetação para MRV</option><option value="B">B — Temperatura do ar (ERA5-Land)</option></select></div>
+        <div class="form-group"><label class="form-label">Grupo</label><select class="form-control" id="tmGrupo" onchange="tmArtigosOpcoes('')"></select></div>
       </div>
-      <div class="form-group"><label class="form-label">Artigo de programa</label><select class="form-control" id="tmArtigo"></select></div>
-      <div class="form-group"><label class="form-label">Título do tema</label><input type="text" class="form-control" id="tmTit"></div>
-      <div class="form-group"><label class="form-label">Hipótese (falseável)</label><textarea class="form-control" id="tmHip" rows="3"></textarea></div>
-      <div class="form-group"><label class="form-label">O que o resultado destrava</label><input type="text" class="form-control" id="tmDest"></div>
-      <div class="form-group"><label class="form-label">Desenho experimental e validação</label><textarea class="form-control" id="tmMet" rows="3"></textarea></div>
+      <div class="form-group" id="tmArtigoWrap"><label class="form-label">Artigo de programa</label><select class="form-control" id="tmArtigo"></select></div>
+      <div class="form-group"><label class="form-label">Título</label><input type="text" class="form-control" id="tmTit"></div>
+      <div class="form-group"><label class="form-label">Contexto (explicação curta para o aluno)</label><textarea class="form-control" id="tmCtx" rows="5"></textarea></div>
+      <div class="form-group"><label class="form-label">Figura</label><div id="tmFigPrev"></div>
+        <div class="db-acoes"><label class="btn btn-secondary btn-sm">Enviar imagem<input type="file" accept="image/*" hidden onchange="tmFigura(this)"></label><button type="button" class="btn btn-secondary btn-sm" onclick="tmRemFigura()">Remover figura</button></div>
+        <input type="text" class="form-control" id="tmLeg" placeholder="Legenda da figura" style="margin-top:6px"></div>
+      <div class="form-group"><label class="form-label">Equação (opcional; use _ para subscrito, ex.: Q_H)</label><input type="text" class="form-control" id="tmEq"></div>
+      <div class="form-group"><label class="form-label">Pergunta</label><textarea class="form-control" id="tmPerg" rows="2"></textarea></div>
+      <div class="form-group"><label class="form-label">Hipótese</label><textarea class="form-control" id="tmHip" rows="2"></textarea></div>
+      <div class="form-group"><label class="form-label">Experimento</label><textarea class="form-control" id="tmMet" rows="3"></textarea></div>
+      <div class="form-group"><label class="form-label">Dados</label><input type="text" class="form-control" id="tmDadosTxt" placeholder="Ex.: Sentinel-2, MapBiomas, INMET"></div>
+      <div class="form-group"><label class="form-label">Bases do catálogo (opcional)</label><div id="tmBases"></div><select class="form-control" id="tmBaseAdd" onchange="tmAddBase(this.value);this.value=''"></select></div>
+      <div class="form-group"><label class="form-label">Benefício</label><textarea class="form-control" id="tmDest" rows="2"></textarea></div>
+      <div class="form-group"><label class="form-label">Cuidados e limitações</label><textarea class="form-control" id="tmCuid" rows="2"></textarea></div>
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Nível indicado</label><input type="text" class="form-control" id="tmNivel" placeholder="Especialização / TCC"></div>
+        <div class="form-group"><label class="form-label">Nível indicado</label><input type="text" class="form-control" id="tmNivel" placeholder="TCC / Mestrado"></div>
         <div class="form-group"><label class="form-label">Viabilidade</label><select class="form-control" id="tmViab"><option value="A">A — forte base documental</option><option value="B">B — depende de auditoria adicional</option><option value="C">C — maior risco</option></select></div>
       </div>
-      <div class="form-group"><label class="form-label">Bases de dados (catálogo)</label><div id="tmBases"></div><select class="form-control" id="tmBaseAdd" onchange="tmAddBase(this.value);this.value=''"></select></div>
-      <div class="form-group"><label class="form-label">Cuidados e limitações</label><textarea class="form-control" id="tmCuid" rows="2"></textarea></div>
-      <div class="dash-section-header" style="margin-top:6px"><span class="dash-section-title">Portões de aprovação</span></div>
-      <div id="tmGates"></div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Portão 4 — decisão</label><select class="form-control" id="tmDecisao"><option value="">— pendente —</option><option value="aprovar">Aprovar</option><option value="reformular">Reformular</option><option value="suspender">Suspender</option></select></div>
-        <div class="form-group"><label class="form-label">Oferta</label><label class="db-etapa" style="padding-top:8px"><input type="checkbox" id="tmOfertado"> Tema ofertado aos alunos</label></div>
-      </div>
-      <div class="form-group"><label class="form-label">Justificativa da decisão</label><textarea class="form-control" id="tmJust" rows="2"></textarea></div>
-      <div class="dash-section-header" style="margin-top:6px"><span class="dash-section-title">Atribuição</span></div>
-      <div id="tmAtrib"></div>
-      <div class="form-group"><label class="form-label">Notas</label><textarea class="form-control" id="tmNotas" rows="2"></textarea></div>
+      <div class="form-group"><label class="form-label">Referências (uma por linha: texto | link)</label><textarea class="form-control" id="tmRefs" rows="3"></textarea></div>
+      <div class="form-group"><label class="form-label">Notas internas (não vão para o aluno)</label><textarea class="form-control" id="tmNotas" rows="2"></textarea></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-danger btn-sm" id="tmExcluir" onclick="excluirTema()" style="margin-right:auto">Excluir</button>
-      <button class="btn btn-secondary" id="tmWord" onclick="temaWord(document.getElementById('tmId').value)">Ficha em Word</button>
       <button class="btn btn-primary" onclick="salvarTema()">Salvar</button>
     </div>
   </div>
@@ -2121,6 +2175,7 @@ async function loadData(){
   try{dossies=JSON.parse(localStorage.getItem('labdossies')||'{}');}catch(e){dossies={};}
   try{temas=JSON.parse(localStorage.getItem('labtemas')||'[]');}catch(e){temas=[];}
   if(!temas.length&&!localStorage.getItem('labtemasSeed')){temas=JSON.parse(JSON.stringify(TEMAS_SEED));localStorage.setItem('labtemasSeed','1');localStorage.setItem('labtemas',JSON.stringify(temas));}
+  garantirIdeiasCaderno();
 
   // ── PASSO 2: Sincronizar com Gist em background (controle de versão) ──
   if(cfg.gistId && cfg.token){
@@ -2178,7 +2233,7 @@ function aplicarDados(d){
   if(d.qualisMap!==undefined) qualisMap=d.qualisMap;
   if(d.basesUser!==undefined) basesUser=d.basesUser;
   if(d.dossies!==undefined) dossies=d.dossies;
-  if(d.temas!==undefined) temas=d.temas;
+  if(d.temas!==undefined){temas=d.temas;garantirIdeiasCaderno();}
   try{
     localStorage.setItem('labstudents',JSON.stringify(students));localStorage.setItem('labmanuscripts',JSON.stringify(manuscripts));
     localStorage.setItem('labbancas',JSON.stringify(bancas));localStorage.setItem('labproducao',JSON.stringify(producao));
@@ -2369,7 +2424,7 @@ function showView(v, skipHistory=false){
    if(v==='meus'){tb.textContent='+ Artigo';tb.onclick=()=>openNovoMeuArtigo();}
    if(v==='periodicos'){tb.textContent='+ Periódico';tb.onclick=()=>openEditPeriodicoModal('');}
    if(v==='dados'){tb.textContent='+ Base';tb.onclick=()=>openBaseForm('');}
-   if(v==='carteira'){tb.textContent='+ Tema';tb.onclick=()=>openTema('');}}
+   if(v==='carteira'){tb.textContent='+ Ideia';tb.onclick=()=>openTema('');}}
   renderCurrentView();
 }
 
@@ -3584,8 +3639,8 @@ function renderDashNovo(){
     itens.push({cls:'pv-red',ico:'file',txt:`Prazo de submissão vencido (${fmtDate(m.subDate)}): ${escHTML((m.title||'').slice(0,70))}${(m.title||'').length>70?'…':''}`,act:'Abrir',acao:`openManuDetail('${m.id}')`});});
   manuscripts.filter(m=>{const pct=Math.round(((m.steps||[]).length/getManuSteps(m.type).length)*100);return pct>=75&&['planejado','escrita'].includes(m.subStatus||'planejado');}).forEach(m=>{
     itens.push({cls:'pv-green',ico:'send',txt:`Quase pronto para submeter: ${escHTML((m.title||'').slice(0,70))}${(m.title||'').length>70?'…':''}`,act:'Abrir',acao:`openManuDetail('${m.id}')`});});
-  {const parados=temas.filter(t=>['proposto','lacuna','dados','piloto','reformular'].includes(statusTema(t))&&diasDesde(ultimaAtividadeTema(t))>30);
-   if(parados.length) itens.push({cls:'pv-blue',ico:'clock',txt:`Carteira: ${parados.length} tema${parados.length>1?'s':''} sem avanço nos portões há mais de 30 dias`,act:'Ver',acao:"showView('carteira')"});}
+  {const esp=temasVisiveis().filter(t=>statusTema(t)==='enviada'&&t.enviadaEm&&diasDesde(t.enviadaEm)>21);
+   if(esp.length) itens.push({cls:'pv-blue',ico:'clock',txt:`Carteira: ${esp.length} ideia${esp.length>1?'s':''} enviada${esp.length>1?'s':''} a alunos há mais de 3 semanas, sem virar manuscrito`,act:'Ver',acao:"showView('carteira')"});}
   manuscripts.filter(m=>m.type==='proprio').forEach(m=>{
     const i=etapaIdx(m), d=diasDesde(m.etapaData||m.criadoEm||today());
     if(i<5&&d>30) itens.push({cls:'pv-orange',ico:'clock',txt:`Meu artigo parado há ${d} dias em "${escHTML(ETAPAS_PROP[i])}": ${escHTML((m.title||'').slice(0,60))}${(m.title||'').length>60?'…':''}`,act:'Abrir',acao:"showView('meus')"});
@@ -3680,7 +3735,7 @@ function executarBusca(){
   manuscripts.forEach(m=>add('Manuscrito',m.title,m.authors||'',`openManuDetail('${m.id}')`,[m.title,m.authors,m.journal]));
   bancas.forEach(b=>add('Banca',b.title||'Banca',fmtDate(b.date)+' · '+(b.authors||''),`openEditBancaModal('${b.id}')`,[b.title,b.authors,b.advisor,b.members]));
   periodicos.forEach(p=>add('Periódico',p.nome,p.qualis?'Qualis '+p.qualis:'',`openEditPeriodicoModal('${p.id}')`,[p.nome,p.editora,p.issn]));
-  temas.forEach(t=>add('Tema',t.cod+' — '+t.titulo,statusTema(t),`showView('carteira');openTema('${t.id}')`,[t.cod,t.titulo,t.hipotese]));
+  temasVisiveis().forEach(t=>add('Ideia',(t.cod?t.cod+' — ':'')+t.titulo,ST_NOME[statusTema(t)]||'',`showView('carteira');abrirIdeia('${t.id}')`,[t.cod,t.titulo,t.hipotese,t.contexto,t.pergunta]));
   todasBases().forEach(b=>add('Base de dados',b.nome,b.inst,`abrirBaseNoCatalogo('${b.id}')`,[b.nome,b.inst,(b.termos||[]).join(' ')]));
   producao.forEach(p=>add('Produção',p.titulo,(p.ano||'')+' · '+(p.veiculo||''),`showView('producao');openEditProducaoModal('${p.id}')`,[p.titulo,p.autores,p.veiculo]));
   _bsResultados=r.slice(0,25);
@@ -4063,51 +4118,426 @@ const TEMAS_SEED=[{"id":"t-a1","cod":"A1","prog":"A","artigo":"A-def","titulo":"
 
 // ─── CARTEIRA DE TEMAS ────────────────────────────────────────
 const GATES=[['lacuna','1 · Lacuna verificada na literatura','Matriz de artigos 2023–2026: o que cada um fez e o que este tema acrescenta'],['dados','2 · Dados auditados','Acesso efetivo, versões, período, resolução, completude e licenças conferidos'],['piloto','3 · Piloto concluído','Processamento numa amostra pequena, com resultado verificável e modelo de referência']];
-const ST_NOME={proposto:'Proposto',lacuna:'Lacuna verificada',dados:'Dados auditados',piloto:'Piloto concluído',aprovado:'Aprovado',ofertado:'Ofertado',execucao:'Em execução',reformular:'Reformular',suspenso:'Suspenso'};
+const ST_NOME={disponivel:'Disponível',enviada:'Enviada ao aluno',manuscrito:'Virou manuscrito',arquivada:'Arquivada'};
 let ctFiltroSt='';
 function statusTema(t){
-  if(t.decisao==='suspender') return 'suspenso';
-  if(t.decisao==='reformular') return 'reformular';
-  if(t.manuId) return 'execucao';
-  if(t.decisao==='aprovar') return t.ofertado?'ofertado':'aprovado';
-  const g=t.portoes||{};
-  return g.piloto&&g.piloto.ok?'piloto':g.dados&&g.dados.ok?'dados':g.lacuna&&g.lacuna.ok?'lacuna':'proposto';
+  if(t.manuId) return 'manuscrito';
+  if(t.arquivada||t.decisao==='suspender') return 'arquivada';
+  if(t.alunoId&&t.enviadaEm) return 'enviada';
+  return 'disponivel';
 }
 function ultimaAtividadeTema(t){const g=t.portoes||{};return [t.criadoEm,t.atualizado,...Object.values(g).map(x=>x&&x.data)].filter(Boolean).sort().pop()||today();}
+// ─── CARTEIRA DE IDEIAS: grupos, figuras e ideias do caderno de física ───
+const GRUPOS_CT=[
+  {id:'mrv',nome:'MRV da vegetação',sub:'VegaCheck e AmbiScore: provar que a vegetação é estável e monitorá-la de forma contínua',prog:'A',ico:'mrv'},
+  {id:'clima',nome:'Clima urbano e ERA5-Land',sub:'Temperatura do ar intraurbana, refinamento do ERA5-Land e validação por estação INMET',prog:'B',ico:'clima'},
+  {id:'n1',nome:'Física quântica',sub:'Interação fóton–matéria, espectroscopia e fluorescência',nucleo:1,ico:'n1'},
+  {id:'n2',nome:'Física do clima',sub:'Termodinâmica, transferência de calor e balanço energético',nucleo:2,ico:'n2'},
+  {id:'n3',nome:'Sistemas complexos',sub:'Percolação, entropia, fractais e transições críticas',nucleo:3,ico:'n3'},
+  {id:'n4',nome:'Inteligência artificial',sub:'Redes orientadas por leis físicas e problemas inversos',nucleo:4,ico:'n4'},
+  {id:'n5',nome:'Observação da Terra',sub:'Validação com dados orbitais e sensores do futuro',nucleo:5,ico:'n5'}
+];
+const GRUPO_ICO={
+  mrv:'<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>',
+  clima:'<path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/><path d="M18 8h3M18 12h3M18 16h2"/>',
+  n1:'<circle cx="12" cy="12" r="1.6"/><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/>',
+  n2:'<circle cx="8" cy="8" r="3.5"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M3.4 12.6l1-1M11.6 4.4l1-1"/><path d="M17 11v7.5a2.5 2.5 0 1 1-2 0V11a1 1 0 0 1 2 0Z"/>',
+  n3:'<rect x="3" y="3" width="5" height="5"/><rect x="10" y="3" width="5" height="5"/><rect x="3" y="10" width="5" height="5"/><rect x="17" y="10" width="4" height="4"/><rect x="10" y="17" width="4" height="4"/><rect x="17" y="17" width="4" height="4"/>',
+  n4:'<circle cx="5" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 6.8l3.2 4M7 17.2l3.2-4M13.8 11l3.4-4M13.8 13l3.4 4"/>',
+  n5:'<path d="M13 7 9 3 5 7l4 4"/><path d="m17 11 4 4-4 4-4-4"/><path d="m8 12 4 4 6-6-4-4Z"/><path d="m16 8 3-3"/><path d="M9 21a6 6 0 0 0-6-6"/>'
+};
+function grupoDe(t){return t.grupo||(t.prog==='B'?'clima':'mrv');}
+function _grade(cols,rows,p,seed,x0,y0,cel,cor1,cor2){let s=seed,o='';const r=()=>{s=(s*16807)%2147483647;return s/2147483647;};
+  for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){o+=`<rect x="${x0+i*cel}" y="${y0+j*cel}" width="${cel-1.5}" height="${cel-1.5}" fill="${(typeof p==='function'?p(i,j,r()):r()<p)?cor1:cor2}"/>`;}return o;}
+const FIG_CT={
+  sif:()=>`<svg viewBox="0 0 520 250" role="img" aria-label="Sol, fóton, folha e satélite"><g stroke="#e0b13a" stroke-width="3" stroke-linecap="round">${[0,45,90,135,180,225,270,315].map(a=>{const c=Math.cos(a*Math.PI/180),s=Math.sin(a*Math.PI/180);return `<line x1="${75+c*34}" y1="${70+s*34}" x2="${75+c*44}" y2="${70+s*44}"/>`;}).join('')}</g><circle cx="75" cy="70" r="27" fill="#e8b83c"/><text x="75" y="132" text-anchor="middle">Sol</text>
+    <line x1="112" y1="98" x2="232" y2="152" stroke="#d29a2a" stroke-width="3"/><text x="150" y="108">Fóton</text>
+    <path d="M190 205 Q215 140 330 130 Q345 190 250 215 Z" fill="#2f8a5a"/><path d="M200 210 L320 140" stroke="#bfe3cc" stroke-width="2"/><circle cx="262" cy="172" r="17" fill="#1f4a3a"/><text x="262" y="177" text-anchor="middle" fill="#fff" font-size="12">Chl</text>
+    <line x1="270" y1="160" x2="438" y2="58" stroke="#c0503f" stroke-width="3"/><polygon points="438,58 424,60 431,70" fill="#c0503f"/><text x="282" y="84" fill="#c0503f">Fluorescência</text>
+    <rect x="440" y="30" width="22" height="30" rx="3" fill="#7a8790"/><rect x="398" y="38" width="38" height="12" rx="5" fill="#3a6f9a"/><rect x="466" y="38" width="38" height="12" rx="5" fill="#3a6f9a"/><text x="451" y="80" text-anchor="middle">Satélite</text>
+    <line x1="278" y1="182" x2="372" y2="212" stroke="#d7783a" stroke-width="2.5"/><text x="380" y="217">Calor</text>
+    <line x1="262" y1="190" x2="262" y2="226" stroke="#2f7a4f" stroke-width="2.5"/><text x="262" y="244" text-anchor="middle">Fotoquímica</text></svg>`,
+  jablonski:()=>`<svg viewBox="0 0 520 230" role="img" aria-label="Diagrama de estados eletrônicos"><line x1="80" y1="190" x2="80" y2="30" stroke="#2f8a6a" stroke-width="2"/><polygon points="80,22 75,34 85,34" fill="#2f8a6a"/><text x="62" y="40">E</text>
+    <line x1="120" y1="40" x2="460" y2="40" stroke="#3a5a66" stroke-width="2.5"/><text x="470" y="45">S₁*</text>
+    <line x1="120" y1="95" x2="460" y2="95" stroke="#3a5a66" stroke-width="2" stroke-dasharray="6 5"/><text x="470" y="100">S₁</text>
+    <line x1="120" y1="185" x2="460" y2="185" stroke="#3a5a66" stroke-width="3"/><text x="470" y="190">S₀</text>
+    <line x1="170" y1="183" x2="170" y2="46" stroke="#d29a2a" stroke-width="3"/><polygon points="170,42 165,54 175,54" fill="#d29a2a"/>
+    <line x1="235" y1="42" x2="235" y2="86" stroke="#d7783a" stroke-width="3"/><polygon points="235,92 230,80 240,80" fill="#d7783a"/><text x="245" y="66" font-size="11">Relaxação</text>
+    <line x1="320" y1="97" x2="320" y2="176" stroke="#c0503f" stroke-width="3"/><polygon points="320,182 315,170 325,170" fill="#c0503f"/>
+    <line x1="410" y1="97" x2="410" y2="176" stroke="#2f8a6a" stroke-width="3"/><polygon points="410,182 405,170 415,170" fill="#2f8a6a"/>
+    <text x="170" y="210" text-anchor="middle">Absorção</text><text x="320" y="210" text-anchor="middle">Fluorescência</text><text x="410" y="210" text-anchor="middle">Outras vias</text></svg>`,
+  espectro:()=>{let d='M250 50';for(let x=250;x<=500;x+=2){let y=50;[285,325,370,410,450,485].forEach(c=>{y+=95*Math.exp(-((x-c)*(x-c))/40);});d+=` L${x} ${y.toFixed(1)}`;}
+    const mol=x=>`<circle cx="${x}" cy="80" r="11" fill="#c0503f"/><circle cx="${x+19}" cy="80" r="11" fill="#3a5a66"/><circle cx="${x+38}" cy="80" r="11" fill="#c0503f"/>`;
+    return `<svg viewBox="0 0 520 200" role="img" aria-label="Vibrações moleculares e assinatura de absorção">${mol(20)}${mol(80)}${mol(140)}<text x="98" y="120" text-anchor="middle">Vibrações moleculares</text>
+    <line x1="245" y1="25" x2="245" y2="165" stroke="#3a5a66" stroke-width="2"/><line x1="245" y1="165" x2="505" y2="165" stroke="#3a5a66" stroke-width="2"/><path d="${d}" fill="none" stroke="#2c7fae" stroke-width="2.5"/>
+    <text x="375" y="18" text-anchor="middle">Assinatura de absorção</text><text x="375" y="188" text-anchor="middle">Comprimento de onda</text></svg>`;},
+  percolacao:()=>`<svg viewBox="0 0 540 175" role="img" aria-label="Três grades com 25, 55 e 75 por cento de vegetação">${[[.25,10,'25% de vegetação'],[.55,190,'55% de vegetação'],[.75,370,'75% de vegetação']].map(([p,x,l],k)=>`<text x="${x+80}" y="16" text-anchor="middle">${l}</text>`+_grade(16,10,p,7+k*3,x,26,10,'#2f8a5a','#a9b0b5')).join('')}
+    <rect x="160" y="150" width="11" height="11" fill="#2f8a5a"/><text x="177" y="160">Vegetação</text><rect x="300" y="150" width="11" height="11" fill="#a9b0b5"/><text x="317" y="160">Área construída</text></svg>`,
+  entropia:()=>`<svg viewBox="0 0 540 150" role="img" aria-label="Preservação, fragmentação e conversão da paisagem">${[
+      [(i,j,r)=>r>.07,10,'Preservação'],[(i,j,r)=>((Math.floor(i/4)+Math.floor(j/3))%2===0)?r>.15:r<.12,190,'Fragmentação'],[(i,j,r)=>r<.06,370,'Conversão']]
+      .map(([f,x,l],k)=>_grade(16,10,f,11+k*5,x,8,10,'#2f8a5a','#c9b48a')+`<text x="${x+80}" y="132" text-anchor="middle">${l}</text>`).join('')}</svg>`,
+  rydberg:()=>`<svg viewBox="0 0 520 210" role="img" aria-label="Átomo de Rydberg e micro-ondas"><path d="M40 110 q15 -22 30 0 t30 0 t30 0 t30 0" fill="none" stroke="#d29a2a" stroke-width="3"/><text x="100" y="80" text-anchor="middle">Micro-ondas</text>
+    ${[18,34,50,68,88].map(r=>`<circle cx="285" cy="105" r="${r}" fill="none" stroke="#6aa59a" stroke-width="1.5" stroke-dasharray="5 4"/>`).join('')}<circle cx="285" cy="105" r="11" fill="#c0503f"/><circle cx="270" cy="118" r="4" fill="#3a5a66"/>
+    <circle cx="370" cy="83" r="7" fill="#2c7fae"/><line x1="370" y1="83" x2="430" y2="45" stroke="#2c7fae" stroke-width="2.5"/><text x="430" y="36" text-anchor="middle">Elétron altamente excitado</text>
+    <text x="285" y="208" text-anchor="middle">Átomo de Rydberg (esquema)</text></svg>`,
+  fotons:()=>{let s=3;const r=()=>{s=(s*16807)%2147483647;return s/2147483647;};let dots='';for(let k=0;k<55;k++){const t=r(),y=60+t*135,hw=8+t*62,x=260+(r()*2-1)*hw;dots+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.2" fill="#2c6fa8"/>`;}
+    const arv=x=>{const h=40+((x*7)%17);return `<rect x="${x-3}" y="${200-h}" width="6" height="${h}" fill="#7a5a3a"/><circle cx="${x}" cy="${200-h}" r="17" fill="#3f9a64" opacity=".9"/>`;};
+    return `<svg viewBox="0 0 520 240" role="img" aria-label="LiDAR de contagem de fótons sobre a floresta"><rect x="250" y="18" width="20" height="24" rx="3" fill="#7a8790"/><rect x="212" y="24" width="34" height="10" rx="5" fill="#3a6f9a"/><rect x="274" y="24" width="34" height="10" rx="5" fill="#3a6f9a"/><text x="260" y="12" text-anchor="middle">ICESat-2</text>
+    <line x1="255" y1="45" x2="185" y2="200" stroke="#2f8a6a" stroke-dasharray="5 4" stroke-width="1.6"/><line x1="265" y1="45" x2="335" y2="200" stroke="#2f8a6a" stroke-dasharray="5 4" stroke-width="1.6"/>
+    ${[40,85,130,175,215,300,345,390,435,480].map(arv).join('')}${dots}<rect x="20" y="200" width="480" height="22" fill="#c9b48a"/><text x="260" y="216" text-anchor="middle" fill="#3a3a2a" font-size="12">Superfície terrestre</text>
+    <text x="430" y="80" text-anchor="middle">Eventos de detecção</text><text x="430" y="96" text-anchor="middle">de fótons</text></svg>`;},
+  iluminacao:()=>`<svg viewBox="0 0 520 200" role="img" aria-label="Esquema de iluminação quântica"><rect x="20" y="80" width="120" height="46" rx="6" fill="none" stroke="#6aa59a" stroke-width="1.6"/><text x="80" y="100" text-anchor="middle">Fonte de pares</text><text x="80" y="117" text-anchor="middle" font-size="11">correlacionados</text>
+    <path d="M140 100 L190 45 L400 45" fill="none" stroke="#2c7fae" stroke-width="2.5"/><path d="M140 108 L190 160 L400 160" fill="none" stroke="#8a5aa8" stroke-width="2.5"/><circle cx="190" cy="45" r="6" fill="#2c7fae"/><circle cx="190" cy="160" r="6" fill="#8a5aa8"/>
+    <line x1="190" y1="52" x2="190" y2="154" stroke="#7a8790" stroke-dasharray="4 4"/><text x="200" y="106">Correlação</text><text x="300" y="36" text-anchor="middle">Fóton sinal</text><text x="300" y="180" text-anchor="middle">Referência</text>
+    <rect x="402" y="30" width="16" height="34" rx="3" fill="#7a8790"/><text x="430" y="50">Alvo</text><line x1="412" y1="66" x2="440" y2="128" stroke="#2c7fae" stroke-width="2.5"/>
+    <rect x="400" y="132" width="100" height="44" rx="6" fill="none" stroke="#6aa59a" stroke-width="1.6"/><text x="450" y="151" text-anchor="middle">Detecção</text><text x="450" y="167" text-anchor="middle">conjunta</text></svg>`
+};
+const REF_JQSRT={t:'A practical guide to coding line-by-line trace gas absorption in Earth’s atmosphere (J. Quant. Spectrosc. Radiat. Transfer, 2025)',u:'https://doi.org/10.1016/j.jqsrt.2025.109345'};
+const REF_DART={t:'DART-based temporal and spatial retrievals of solar-induced chlorophyll fluorescence quantum efficiency (Remote Sensing of Environment, 2025)',u:'https://doi.org/10.1016/j.rse.2025.114636'};
+const REF_NCSIF={t:'Fast response of satellite fluorescence-derived plant physiology to drought stress (Nature Communications, 2026)',u:'https://www.nature.com/articles/s41467-026-70076-0'};
+const REF_SIFDATA={t:'Dados de SIF nível 3 (OCO-2/OCO-3) — NASA JPL',u:'https://climatesciences.jpl.nasa.gov/sif/download-data/level-3/'};
+const REF_FLEX={t:'Missão FLEX — ESA',u:'https://earth.esa.int/eogateway/missions/flex'};
+const REF_SCOPE={t:'SCOPE — transferência radiativa, fotossíntese, fluorescência e balanço de energia (código aberto)',u:'https://github.com/Christiaanvandertol/SCOPE'};
+const REF_EMIT={t:'NASA EMIT — espectroscopia hiperespectral',u:'https://earth.jpl.nasa.gov/emit/'};
+const _CAD='Caderno de pesquisa “Física quântica, sensoriamento remoto e ciências ambientais” (24/11/2026)';
+const IDEIAS_CADERNO=[
+ {id:'pdf-fq1',cod:'FQ-1',grupo:'n1',titulo:'Fluorescência da clorofila para detectar degradação antes do NDVI',
+  contexto:'Quando um fóton atinge a clorofila, pode excitar elétrons para estados de maior energia. A energia absorvida segue três caminhos: é usada na fotoquímica, dissipada como calor ou reemitida como fluorescência. A fluorescência induzida pelo Sol (SIF) é observável por satélites e acompanha o funcionamento fisiológico da planta, enquanto índices como o NDVI respondem sobretudo à estrutura e ao verdor do dossel.',
+  figura:'sif',legenda:'Da interação fóton–clorofila à observação orbital da atividade fotossintética (esquema).',
+  pergunta:'É possível detectar degradação fisiológica da vegetação antes de alterações no NDVI?',
+  hipotese:'Alterações fotossintéticas podem anteceder alterações estruturais.',
+  experimento:'Simular absorção, emissão e transferência radiativa; comparar séries de SIF, NDVI, EVI e NBR em áreas sob estresse ambiental.',
+  dadosTxt:'OCO-2/OCO-3, TROPOMI, Sentinel-2, MapBiomas.',
+  beneficio:'Monitoramento precoce da degradação, avaliação funcional da Reserva Legal e acompanhamento da recuperação ambiental.',
+  cautela:'A resolução de muitos produtos orbitais de SIF é quilométrica; a avaliação de pequenas propriedades exige cautela.',
+  refs:[REF_SIFDATA,REF_NCSIF],nivel:'TCC / Mestrado',viab:'A',fonte:_CAD+', Parte II, item 1'},
+ {id:'pdf-fq2',cod:'FQ-2',grupo:'n1',titulo:'Eficiência quântica da fluorescência: estrutura preservada, fisiologia degradada',
+  contexto:'Fundamentos: quantização da energia, excitação eletrônica, absorção, emissão espontânea e dissipação energética. Depois de absorver um fóton, a clorofila passa a um estado excitado, relaxa e volta ao estado fundamental emitindo fluorescência ou por outras vias. A pesquisa busca separar, no sinal observado pelo satélite, a contribuição da estrutura vegetal da contribuição do funcionamento fisiológico.',
+  figura:'jablonski',legenda:'Diagrama de estados eletrônicos simplificado, com caminhos de absorção, relaxação e emissão.',
+  pergunta:'É possível distinguir vegetação estruturalmente preservada de vegetação fisiologicamente degradada no Cerrado e na Amazônia?',
+  dadosTxt:'SIF orbital; FLEX (ESA, resolução prevista de 300 m) quando disponível; modelos de transferência radiativa (SCOPE, DART).',
+  beneficio:'Indicador funcional para o MRV de permanência: mostra se a vegetação que continua de pé continua funcionando (conecta-se ao grupo MRV da vegetação).',
+  cautela:'O caderno relata lançamento do FLEX em 15/09/2026 e fase de comissionamento; situação não revalidada.',
+  refs:[REF_DART,REF_NCSIF,{t:'Proximal sensing of drought stress with sun-induced chlorophyll fluorescence (Remote Sensing of Environment, 2026) — sem link no caderno'},REF_FLEX,REF_SCOPE],nivel:'Mestrado / Doutorado',viab:'B',fonte:_CAD+', Parte III, item 1.1'},
+ {id:'pdf-fq3',cod:'FQ-3',grupo:'n1',titulo:'Espectroscopia ambiental: comprimentos de onda que distinguem processos de degradação',
+  contexto:'Moléculas possuem níveis discretos de energia. As transições entre eles produzem padrões característicos de absorção e emissão. Podemos investigar computacionalmente essas assinaturas e a capacidade dos sensores de identificar substâncias e alterações ambientais.',
+  figura:'espectro',legenda:'Vibrações e assinatura espectral idealizada, sem correspondência a um gás ou sensor específico.',
+  pergunta:'Quais combinações de comprimentos de onda distinguem processos de degradação com maior confiabilidade?',
+  experimento:'Simular absorção, misturas espectrais, respostas dos sensores e efeitos atmosféricos.',
+  dadosTxt:'NASA EMIT, biblioteca espectral do USGS, Sentinel-2.',
+  beneficio:'Caracterização bioquímica da vegetação e identificação de materiais contaminantes, áreas mineradas e gases, respeitando os limites instrumentais.',
+  refs:[REF_EMIT],nivel:'TCC / Mestrado',viab:'A',fonte:_CAD+', Parte II, item 4'},
+ {id:'pdf-fq4',cod:'FQ-4',grupo:'n1',titulo:'Metano em aterros e áreas industriais: espectroscopia molecular aplicada à atmosfera',
+  contexto:'Fundamentos: equação de Schrödinger, níveis energéticos moleculares, transições vibracionais e rotacionais. Quando usamos uma banda espectral para detectar um gás atmosférico, exploramos consequências observáveis das transições quânticas moleculares. A pesquisa de fronteira procura aperfeiçoar a descrição dessas transições e a precisão das estimativas orbitais. A linha pode ser desenvolvida quase integralmente em Python, com dados espectroscópicos e orbitais existentes.',
+  figura:'espectro',legenda:'Vibrações e assinatura espectral idealizada, sem correspondência a um gás ou sensor específico.',
+  fluxo:['Estados quânticos moleculares','Linhas espectrais · HITRAN','Transferência radiativa','Resposta instrumental','Dados orbitais · EMIT','Detecção e incerteza'],
+  pergunta:'Quais são os limites de detecção de emissões de metano em aterros sanitários e áreas industriais, simulados a partir das propriedades moleculares do gás?',
+  experimento:'Simular assinaturas espectrais de gases a partir de propriedades moleculares, avaliar limites de detecção de sensores e desenvolver métodos de identificação de emissões.',
+  dadosTxt:'HITRAN / HAPI, NASA EMIT.',
+  beneficio:'Identificação de emissões de metano em aterros sanitários e áreas industriais, com incerteza conhecida.',
+  cautela:'Nem todo modo vibracional é ativo no infravermelho: as regras de seleção e a variação do momento de dipolo determinam a interação. A simulação deve incorporar essas condições.',
+  refs:[REF_JQSRT,{t:'The HITRAN2024 methane update (2026) — sem link no caderno'},{t:'Comparação de seis sensores hiperespectrais orbitais para emissões pontuais de metano (Remote Sensing of Environment, 2026) — sem link no caderno'},{t:'HITRAN / HAPI',u:'https://hitran.org/hapi/'},REF_EMIT],nivel:'TCC / Mestrado',viab:'A',fonte:_CAD+', Parte III, item 2'},
+ {id:'pdf-fc1',cod:'FC-1',grupo:'n2',titulo:'Termodinâmica e inteligência artificial para a temperatura do ar intraurbana',
+  contexto:'A evolução natural de pesquisas sobre temperatura intraurbana e UrbanClima seria incorporar as leis da física à inteligência artificial, em vez de depender exclusivamente de relações estatísticas. A abordagem é conhecida como Physics-Informed Machine Learning (PIML). O ponto de partida é o balanço de energia da superfície urbana:',
+  equacao:'Q* + Q_F = Q_H + Q_E + ΔQ_S + ΔQ_A',
+  tabela:[['Q*','Saldo de radiação'],['Q_F','Calor antropogênico'],['Q_H','Fluxo de calor sensível'],['Q_E','Fluxo de calor latente'],['ΔQ_S','Armazenamento de calor'],['ΔQ_A','Transporte advectivo de energia']],
+  pergunta:'Modelos fisicamente orientados generalizam melhor a temperatura do ar intraurbana?',
+  experimento:'Comparar ERA5-Land, ML convencional e ML com restrições termodinâmicas, validando em cidades brasileiras independentes.',
+  dadosTxt:'INMET, ERA5-Land, Landsat, Sentinel-2 e MapBiomas.',
+  beneficio:'Mapas térmicos para arborização e adaptação climática (conecta-se ao grupo Clima urbano e ERA5-Land).',
+  refs:[{t:'Revisão de 2026 sobre a integração entre física e aprendizado de máquina no clima urbano — citada no caderno, sem referência completa'}],nivel:'Mestrado',viab:'A',fonte:_CAD+', Parte II, item 2'},
+ {id:'pdf-sc1',cod:'SC-1',grupo:'n3',titulo:'Percolação urbana: a configuração da vegetação que reduz a temperatura',
+  contexto:'A física estatística estuda como propriedades globais emergem de muitas interações locais. Na teoria da percolação, a partir de certa ocupação, células isoladas passam a formar caminhos conectados, numa transição abrupta. Na cidade, a mesma área verde pode ter efeitos térmicos diferentes conforme a conectividade e a organização dos fragmentos.',
+  figura:'percolacao',legenda:'Ocupação aleatória estática: mesmas células, diferentes proporções de vegetação. Não representa modelo térmico validado nem um limiar real.',
+  pergunta:'Existe configuração espacial crítica capaz de produzir redução não linear da temperatura?',
+  hipotese:'A conectividade e a organização dos fragmentos importam além da quantidade de vegetação.',
+  experimento:'Monte Carlo, percolação, geometria fractal e dados térmicos para testar configurações urbanas.',
+  beneficio:'Otimizar a arborização com a mesma área verde.',
+  refs:[{t:'Estudo de 2026 na Nature Cities sobre escalonamento da variabilidade climática em 142 cidades — citado no caderno, sem referência completa'}],nivel:'TCC / Mestrado',viab:'A',fonte:_CAD+', Parte II, item 3'},
+ {id:'pdf-sc2',cod:'SC-2',grupo:'n3',titulo:'Entropia da paisagem e alerta precoce de perda de resiliência',
+  contexto:'Sistemas complexos podem perder resiliência gradualmente antes de mudar de estado. Na paisagem, a passagem de preservação para fragmentação e conversão reorganiza o mosaico espacial; medidas de entropia, autocorrelação e teoria da informação podem captar essa reorganização antes da transformação estrutural.',
+  figura:'entropia',legenda:'Representação conceitual da reorganização espacial da paisagem.',
+  pergunta:'É possível identificar sinais de perda de resiliência antes de uma transformação estrutural significativa?',
+  experimento:'Analisar séries MapBiomas e Sentinel-2 com entropia espacial, autocorrelação, teoria da informação, dinâmica não linear e pontos de ruptura (BFAST).',
+  dadosTxt:'MapBiomas, Sentinel-2.',
+  beneficio:'Indicadores de alerta precoce de degradação, perda de conectividade e transições ecológicas.',
+  cautela:'A entropia informacional de uma paisagem não é necessariamente a mesma grandeza que a entropia termodinâmica.',
+  nivel:'TCC / Mestrado',viab:'A',fonte:_CAD+', Parte II, item 5'},
+ {id:'pdf-ia1',cod:'IA-1',grupo:'n4',titulo:'Modelagem física e computacional da interação fóton–vegetação para a detecção precoce da degradação',
+  contexto:'É a pesquisa que o caderno recomenda começar primeiro no laboratório de física computacional e inteligência ambiental. Une o núcleo de física quântica (interação fóton–matéria) ao de inteligência artificial (redes orientadas por leis físicas e problemas inversos): partir do sinal que o satélite mede para chegar ao estado físico da vegetação.',
+  fluxo:['Fóton e dualidade onda-partícula','Níveis quânticos de energia','Absorção e emissão de fótons','Radiação e clorofila','Transferência radiativa no dossel','Comparação com satélites','Indicadores de degradação','Validação e publicação'],
+  experimento:'Seguir a trajetória acima: simular absorção e emissão, modelar a transferência radiativa no dossel com o SCOPE, comparar as simulações com dados reais de satélite e desenvolver indicadores de degradação ambiental.',
+  dadosTxt:'SCOPE (transferência radiativa, fotossíntese, fluorescência e balanço de energia); bases públicas de fluorescência da NASA.',
+  beneficio:'Explicar por que, fisicamente, as imagens mostram determinado fenômeno, e não apenas correlacioná-lo.',
+  cautela:'As propostas são hipóteses, não lacunas de originalidade comprovada. Antes de iniciar, fazer revisão aprofundada da literatura e inventário de dados.',
+  refs:[{t:'SCOPE — documentação',u:'https://rtm-suite.wur.nl/quarto-hub-scopeinr/_site/index.html'},REF_SIFDATA],nivel:'Mestrado / Doutorado',viab:'B',fonte:_CAD+', Parte II, item 5 (GeoPhysics Lab)'},
+ {id:'pdf-ot1',cod:'OT-1',grupo:'n5',titulo:'Contagem de fótons do ICESat-2 para a estrutura vertical da vegetação nativa',
+  contexto:'O ICESat-2, da NASA, usa LiDAR de contagem de fótons. Em vez de apenas imagens, trabalhamos com eventos de detecção geolocalizados: o produto ATL03 fornece latitude, longitude, elevação e tempo de cada fóton detectado desde outubro de 2018. Isso não significa que o instrumento use emaranhamento quântico, mas permite investigar a estatística da radiação em nível de fótons.',
+  figura:'fotons',legenda:'LiDAR orbital de contagem de fótons. As posições dos pontos são ilustrativas, não dados reais.',
+  fluxo:['Eventos ATL03','Modelo probabilístico de ruído','Separação dossel / terreno','Indicadores estruturais'],
+  pergunta:'Modelos probabilísticos dos eventos de fótons melhoram a caracterização vertical da vegetação nativa e a distinção entre estágios de regeneração?',
+  experimento:'Desenvolver modelos probabilísticos para caracterizar a estrutura vertical da vegetação nativa, estimar biomassa e distinguir estágios de regeneração.',
+  dadosTxt:'ICESat-2 ATL03 (NSIDC).',
+  beneficio:'Estrutura vertical e estágios de regeneração da vegetação nativa, com potencial para estimativa de biomassa.',
+  cautela:'Estimar biomassa exige calibração e validação independentes. A contagem de fótons, por si só, não demonstra vantagem quântica não clássica.',
+  refs:[{t:'ICESat-2 ATL03 — NSIDC',u:'https://nsidc.org/data/atl03/versions/7'},{t:'Classificação de nuvens de fótons do ICESat-2 considerando declividade e complexidade estrutural dos dosséis (Remote Sensing of Environment, 2025) — sem link no caderno'}],nivel:'TCC / Mestrado',viab:'A',fonte:_CAD+', Parte III, item 4'},
+ {id:'pdf-ot2',cod:'OT-2',grupo:'n5',titulo:'Receptores atômicos de Rydberg: limites de sensibilidade para a observação da Terra',
+  contexto:'Um átomo de Rydberg tem um elétron em estado de elevada excitação energética, o que o torna muito sensível a campos elétricos externos. A ideia é usar átomos como receptores de radiação, em substituição ou complemento às antenas convencionais. Pesquisadores do JPL/NASA demonstraram em 2024 a detecção remota de umidade do solo com átomos de Rydberg e sinais de rádio de satélites; em 2025 e 2026 surgiram radares de imageamento e um SAR experimentais com receptor atômico. A NASA também propôs o projeto RAID, com demonstrações aerotransportadas para umidade do solo e água na vegetação.',
+  figura:'rydberg',legenda:'Representação didática da elevada sensibilidade de estados de Rydberg a campos elétricos. As linhas circulares não representam órbitas reais.',
+  fluxo:['Estados atômicos','Interação com micro-ondas','Resposta óptica EIT','Sensibilidade e ruído'],
+  pergunta:'Qual seria o ganho de sensibilidade de receptores atômicos frente aos sensores de micro-ondas tradicionais?',
+  experimento:'Modelar a resposta de receptores atômicos em diferentes frequências: simular a interação entre campos eletromagnéticos e sistemas atômicos, introduzir ruído e variar parâmetros instrumentais.',
+  dadosTxt:'QuTiP (simulação de sistemas quânticos).',
+  beneficio:'Estimar limites de detecção para tecnologias futuras de observação da Terra.',
+  cautela:'O desenvolvimento e a validação de um instrumento exigem infraestrutura experimental ou parcerias; simulações não demonstram desempenho operacional.',
+  refs:[{t:'A Rydberg atomic synthetic-aperture radar imaging system approaching the Rayleigh criterion (Nature Sensors, 2026)',u:'https://www.nature.com/articles/s44460-026-00129-w'},{t:'Quantum sensing for NASA science missions (EPJ Quantum Technology, 2025)',u:'https://doi.org/10.1140/epjqt/s40507-025-00360-3'},{t:'The Quantum Leap: NASA’s Next-Generation Tools for Earth Science (2026)',u:'https://esto.nasa.gov/the-quantum-leap-nasas-next-generation-tools-for-earth-science/'}],nivel:'Doutorado / colaboração',viab:'C',fonte:_CAD+', Parte II, item 6 e Parte III, item 3'},
+ {id:'pdf-ot3',cod:'OT-3',grupo:'n5',titulo:'Iluminação quântica: luz correlacionada para detectar sinais muito fracos',
+  contexto:'Fundamentos: emaranhamento, superposição, correlação quântica, interferência e estados comprimidos da luz (squeezed light). Na iluminação quântica, um fóton-sinal é enviado ao alvo e um fóton de referência, correlacionado a ele, é retido para detecção conjunta. O objetivo é investigar se propriedades não clássicas da radiação podem melhorar a detecção de sinais extremamente fracos.',
+  figura:'iluminacao',legenda:'Esquema conceitual: sinal enviado ao alvo e referência retida para detecção conjunta.',
+  pergunta:'Em que condições de ruído, perdas atmosféricas e intensidade um sistema quântico detecta melhor que um clássico?',
+  experimento:'Comparar, por simulação, sistemas clássicos e quânticos com ruído, perdas atmosféricas e diferentes intensidades.',
+  beneficio:'Aplicações potenciais em fluorescência fraca, aerossóis e baixa iluminação.',
+  cautela:'São aplicações potenciais, não capacidades operacionais garantidas.',
+  refs:[{t:'Entanglement-inspired frequency-agile rangefinding (Nature Communications, 2026) — sem link no caderno'},{t:'Projeto da NASA de LiDAR quântico para medição de ventos — sem link no caderno'}],nivel:'Doutorado / colaboração',viab:'B',fonte:_CAD+', Parte III, item 1.5'},
+ {id:'pdf-ot4',cod:'OT-4',grupo:'n5',titulo:'Gravimetria quântica por interferometria atômica',
+  contexto:'Fundamentos: dualidade onda-partícula, superposição e interferência de ondas de matéria. Átomos preparados, separados em duas trajetórias e recombinados acumulam uma diferença de fase que depende da gravidade. A NASA desenvolve o Quantum Gravity Gradiometer Pathfinder (teste orbital previsto para não antes de 2030, segundo o caderno) e a Europa, o projeto CARIOQA. Em 2026, um estudo na Earth and Space Science investigou por simulação futuras missões com gradiômetros quânticos e relógios ópticos.',
+  fluxo:['Preparação atômica','Separação de trajetórias','Recombinação','Fase gravitacional'],
+  beneficio:'Aplicações em variações de massa terrestre, águas subterrâneas, geleiras e processos geofísicos.',
+  cautela:'Linha interessante de física fundamental, mas menos alinhada à prioridade atual em vegetação e clima urbano.',
+  nivel:'Doutorado / colaboração',viab:'C',fonte:_CAD+', Parte III, item 1.6'}
+];
+IDEIAS_CADERNO.forEach(t=>Object.assign(t,{origem:'caderno',dados:[],portoes:{},criadoEm:'2026-11-24'}));
+function garantirIdeiasCaderno(){let n=0;IDEIAS_CADERNO.forEach(s=>{if(!temas.some(t=>t.id===s.id)){temas.push(JSON.parse(JSON.stringify(s)));n++;}});return n;}
+function temasVisiveis(){return temas.filter(t=>!t.excluido);}
+
+let ctGrupo='';
+function abrirGrupoCt(g){ctGrupo=g;ctFiltroSt='';const b=document.getElementById('ctBusca');if(b)b.value='';renderCarteira();try{document.querySelector('.content').scrollTop=0;window.scrollTo(0,0);}catch(e){}}
 function renderCarteira(){
-  const prog=document.getElementById('ctProg').value, niv=document.getElementById('ctNivel').value, q=normTxt(document.getElementById('ctBusca').value.trim());
-  let l=temas.filter(t=>(!prog||t.prog===prog)&&(!niv||normTxt(t.nivel).includes(normTxt(niv)))&&(!q||normTxt(t.cod+' '+t.titulo+' '+t.hipotese).includes(q)));
-  const cont={};l.forEach(t=>{const s=statusTema(t);cont[s]=(cont[s]||0)+1;});
-  document.getElementById('ctStatus').innerHTML=`<button class="ct-st${!ctFiltroSt?' on':''}" onclick="ctFiltroSt='';renderCarteira()">Todos (${l.length})</button>`+
-    Object.keys(ST_NOME).filter(s=>cont[s]).map(s=>`<button class="ct-st${ctFiltroSt===s?' on':''}" onclick="ctFiltroSt='${s}';renderCarteira()">${ST_NOME[s]} (${cont[s]})</button>`).join('');
+  garantirIdeiasCaderno();
+  const q=normTxt(document.getElementById('ctBusca').value.trim()), el=document.getElementById('ctConteudo'), mig=document.getElementById('ctMigalha'), vis=temasVisiveis();
+  const porCod=(x,y)=>(x.cod||'').localeCompare(y.cod||'',undefined,{numeric:true});
+  if(q){
+    const l=vis.filter(t=>normTxt([t.cod,t.titulo,t.contexto,t.pergunta,t.hipotese,t.experimento||t.metodo,t.dadosTxt].join(' ')).includes(q)).sort(porCod);
+    mig.innerHTML=`<span class="ct-gtit">Busca na carteira</span><span class="ct-gsub">${l.length} ideia${l.length!==1?'s':''} encontrada${l.length!==1?'s':''}</span>`;
+    el.innerHTML=l.length?`<div class="ct-grid">${l.map(ctCard).join('')}</div>`:'<div class="empty-state" style="padding:20px">Nenhuma ideia encontrada.</div>';
+    return;
+  }
+  if(!ctGrupo){
+    mig.innerHTML='<span class="ct-gtit">Carteira de ideias</span><span class="ct-gsub">Escolha um grupo. Cada ideia-semente pode ser enviada a um aluno e, se ele aceitar, virar manuscrito.</span>';
+    el.innerHTML='<div class="cg-grid">'+GRUPOS_CT.map(G=>{
+      const ts=vis.filter(t=>grupoDe(t)===G.id), cn={}; ts.forEach(t=>{const s=statusTema(t);cn[s]=(cn[s]||0)+1;});
+      return `<div class="cg-card" onclick="abrirGrupoCt('${G.id}')">
+        <div style="display:flex;gap:11px;align-items:center"><div class="cg-ico"><svg viewBox="0 0 24 24">${GRUPO_ICO[G.ico]}</svg></div>
+        <div style="min-width:0"><div class="cg-nuc">${G.nucleo?'GeoPhysics Lab · núcleo '+G.nucleo:'Programa '+G.prog}</div><div class="cg-n">${escHTML(G.nome)}</div></div></div>
+        <div class="cg-d">${escHTML(G.sub)}</div>
+        <div class="cg-c"><span class="ct-tag">${ts.length} ideia${ts.length!==1?'s':''}</span>${cn.enviada?`<span class="ct-st-tag st-enviada">${cn.enviada} enviada${cn.enviada>1?'s':''}</span>`:''}${cn.manuscrito?`<span class="ct-st-tag st-manuscrito">${cn.manuscrito} em manuscrito</span>`:''}</div>
+      </div>`;}).join('')+'</div>';
+    return;
+  }
+  const G=GRUPOS_CT.find(x=>x.id===ctGrupo)||GRUPOS_CT[0], P=G.prog?PROGRAMAS[G.prog]:null;
+  let l=vis.filter(t=>grupoDe(t)===G.id);
+  const cont={}; l.forEach(t=>{const s=statusTema(t);cont[s]=(cont[s]||0)+1;});
+  mig.innerHTML=`<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button class="btn btn-secondary btn-sm" onclick="abrirGrupoCt('')">← Grupos</button><span class="ct-gtit">${escHTML(G.nome)}</span></div>`;
+  let h=`<div class="ct-prog"><div class="ct-prog-p">${escHTML(G.sub)}${G.nucleo?' · GeoPhysics Lab, núcleo '+G.nucleo:''}${P&&P.pergunta?`<br><b>Pergunta-mãe:</b> ${escHTML(P.pergunta)}`:''}</div></div>`;
+  h+=`<div class="ct-status"><button class="ct-st${!ctFiltroSt?' on':''}" onclick="ctFiltroSt='';renderCarteira()">Todas (${l.length})</button>`+
+    Object.keys(ST_NOME).filter(s=>cont[s]).map(s=>`<button class="ct-st${ctFiltroSt===s?' on':''}" onclick="ctFiltroSt='${s}';renderCarteira()">${ST_NOME[s]} (${cont[s]})</button>`).join('')+'</div>';
   if(ctFiltroSt) l=l.filter(t=>statusTema(t)===ctFiltroSt);
-  const el=document.getElementById('ctLista');
-  if(!l.length){el.innerHTML='<div class="empty-state" style="padding:20px">Nenhum tema com esses filtros.</div>';return;}
-  const progs=[...new Set(l.map(t=>t.prog))].sort();
-  el.innerHTML=progs.map(pk=>{
-    const P=PROGRAMAS[pk]||{nome:'Programa '+pk,pergunta:''};
-    const arts=ARTIGOS_PROG.filter(a=>a.prog===pk), semArt=l.filter(t=>t.prog===pk&&!arts.some(a=>a.id===t.artigo));
-    return `<div class="ct-prog"><div class="ct-prog-t">Programa ${pk} — ${escHTML(P.nome)}</div><div class="ct-prog-p"><b>Pergunta-mãe:</b> ${escHTML(P.pergunta)}${P.destrava?` · <b>Destrava:</b> ${escHTML(P.destrava)}`:''}</div></div>`+
-      arts.map(a=>{const ts=l.filter(t=>t.artigo===a.id).sort((x,y)=>x.cod.localeCompare(y.cod,undefined,{numeric:true}));if(!ts.length)return '';
-        return `<div class="ct-art"><span class="ct-art-t">${escHTML(a.titulo)}</span><span class="ct-art-s">artigo de programa · ${ts.length} módulo${ts.length>1?'s':''} · alvo: ${a.per.map(escHTML).join(', ')}</span></div><div class="ct-grid">${ts.map(ctCard).join('')}</div>`;}).join('')+
-      (semArt.length?`<div class="ct-art"><span class="ct-art-t">Sem artigo de programa</span></div><div class="ct-grid">${semArt.map(ctCard).join('')}</div>`:'');
-  }).join('');
+  if(!l.length) h+='<div class="empty-state" style="padding:20px">Nenhuma ideia neste grupo com esse filtro.</div>';
+  else if(G.prog){
+    const arts=ARTIGOS_PROG.filter(a=>a.prog===G.prog), semArt=l.filter(t=>!arts.some(a=>a.id===t.artigo)).sort(porCod);
+    h+=arts.map(a=>{const ts=l.filter(t=>t.artigo===a.id).sort(porCod);if(!ts.length)return '';
+      return `<div class="ct-art"><span class="ct-art-t">${escHTML(a.titulo)}</span><span class="ct-art-s">${ts.length} ideia${ts.length>1?'s':''} · alvo: ${a.per.map(escHTML).join(', ')}</span></div><div class="ct-grid">${ts.map(ctCard).join('')}</div>`;}).join('')+
+      (semArt.length?`<div class="ct-art"><span class="ct-art-t">Outras ideias</span></div><div class="ct-grid">${semArt.map(ctCard).join('')}</div>`:'');
+  } else h+=`<div class="ct-grid">${l.sort(porCod).map(ctCard).join('')}</div>`;
+  el.innerHTML=h;
 }
 function ctCard(t){
-  const s=statusTema(t), g=t.portoes||{}, al=t.alunoId?students.find(x=>x.id===t.alunoId):null;
-  const dots=GATES.map(([k])=>`<i class="${g[k]&&g[k].ok?'ok':''}"></i>`).join('')+`<i class="${t.decisao==='aprovar'?'ok':''}"></i>`;
-  return `<div class="ct-card" onclick="openTema('${t.id}')">
-    <div class="ct-head"><span class="ct-cod">${escHTML(t.cod)}</span><span class="ct-tit">${escHTML(t.titulo)}</span></div>
-    <div class="ct-hip">${escHTML(t.hipotese)}</div>
-    <div class="ct-meta"><span class="ct-st-tag st-${s}">${ST_NOME[s]}</span><span class="ct-tag">${escHTML(t.nivel||'—')}</span><span class="ct-tag v${t.viab}">viab. ${t.viab}</span>${al?`<span class="ct-tag">${escHTML(al.name)}</span>`:''}<span class="ct-gates" title="Portões 1–4">${dots}</span></div>
+  const s=statusTema(t), al=t.alunoId?students.find(x=>x.id===t.alunoId):null, res=t.contexto||t.hipotese||t.destrava||'';
+  const fig=t.imagem?`<div class="ct-thumb" style="text-align:center"><img src="${t.imagem}" alt="" style="max-height:78px;max-width:100%"></div>`:(t.figura&&FIG_CT[t.figura]?`<div class="ct-thumb">${FIG_CT[t.figura]()}</div>`:'');
+  return `<div class="ct-card" onclick="abrirIdeia('${t.id}')">${fig}
+    <div class="ct-head">${t.cod?`<span class="ct-cod">${escHTML(t.cod)}</span>`:''}<span class="ct-tit">${escHTML(t.titulo)}</span></div>
+    <div class="ct-hip">${escHTML(res)}</div>
+    <div class="ct-meta"><span class="ct-st-tag st-${s}">${ST_NOME[s]}</span>${t.nivel?`<span class="ct-tag">${escHTML(t.nivel)}</span>`:''}${t.viab?`<span class="ct-tag v${t.viab}">viab. ${t.viab}</span>`:''}${al?`<span class="ct-tag">${escHTML(al.name)}</span>`:''}</div>
   </div>`;
 }
+// ── leitura da ideia-semente ──
+const VIAB_NOME={A:'A — forte base documental',B:'B — depende de auditoria adicional',C:'C — maior risco'};
+function _sub(s){return escHTML(s||'').replace(/_([A-Za-z0-9]+)/g,'<sub>$1</sub>');}
+function ideiaCampos(t){
+  const bs=todasBases(), cat=(t.dados||[]).map(id=>{const b=bs.find(x=>x.id===id);return b?b.nome:id;});
+  return [['Pergunta',t.pergunta],['Hipótese',t.hipotese],['Experimento',t.experimento||t.metodo],['Dados',t.dadosTxt||cat.join('; ')],['Benefício',t.beneficio||t.destrava]].filter(x=>x[1]);
+}
+function ideiaHTML(t){
+  let h='';
+  const fig=t.imagem?`<img src="${t.imagem}" alt="">`:(t.figura&&FIG_CT[t.figura]?FIG_CT[t.figura]():'');
+  if(fig) h+=`<div class="id-fig">${fig}${t.legenda?`<div class="id-cap">${escHTML(t.legenda)}</div>`:''}</div>`;
+  const ctx=(t.contexto||'').split(/\n+/).map(x=>x.trim()).filter(Boolean).map(x=>`<p>${escHTML(x)}</p>`).join('');
+  if(ctx) h+=`<div class="id-txt">${ctx}</div>`;
+  if(t.equacao) h+=`<div class="id-eq">${_sub(t.equacao)}</div>`;
+  if(t.tabela&&t.tabela.length) h+=`<table class="id-tab"><tr><th>Variável</th><th>Significado</th></tr>${t.tabela.map(r=>`<tr><td>${_sub(r[0])}</td><td>${escHTML(r[1])}</td></tr>`).join('')}</table>`;
+  if(t.fluxo&&t.fluxo.length) h+=`<div class="id-flow">${t.fluxo.map(x=>`<span>${escHTML(x)}</span>`).join('<i>→</i>')}</div>`;
+  h+=ideiaCampos(t).map(([k,v])=>`<div class="id-campo"><b>${k}:</b> ${escHTML(v)}</div>`).join('');
+  const caut=t.cautela||t.cuidados; if(caut) h+=`<div class="id-caut">${escHTML(caut)}</div>`;
+  if(t.refs&&t.refs.length) h+=`<div class="id-refs"><b>Referências citadas</b> <span>— a verificar antes de usar</span><ul>${t.refs.map(r=>`<li>${r.u?`<a href="${escHTML(r.u)}" target="_blank" rel="noopener">${escHTML(r.t)}</a>`:escHTML(r.t)}</li>`).join('')}</ul></div>`;
+  if(t.fonte) h+=`<div class="id-fonte">Fonte: ${escHTML(t.fonte)}</div>`;
+  return h;
+}
+let _ideiaAtual='';
+function abrirIdeia(id){
+  const t=temas.find(x=>x.id===id); if(!t) return; _ideiaAtual=id;
+  const G=GRUPOS_CT.find(g=>g.id===grupoDe(t)), s=statusTema(t);
+  document.getElementById('idTitulo').textContent=(t.cod?t.cod+' · ':'')+(G?G.nome:'Ideia');
+  document.getElementById('idCorpo').innerHTML=`<div class="id-h">${escHTML(t.titulo)}</div>
+    <div class="ct-meta" style="margin:8px 0 4px"><span class="ct-st-tag st-${s}">${ST_NOME[s]}</span>${t.nivel?`<span class="ct-tag">${escHTML(t.nivel)}</span>`:''}${t.viab?`<span class="ct-tag v${t.viab}">viab. ${escHTML(VIAB_NOME[t.viab]||t.viab)}</span>`:''}</div>`+ideiaHTML(t);
+  renderEncaminhamento(t);
+  document.getElementById('idEditar').onclick=()=>{closeModal('modalIdeia');openTema(id);};
+  document.getElementById('idPdf').onclick=()=>ideiaPDF(id);
+  openModal('modalIdeia');
+}
+function renderEncaminhamento(t){
+  const el=document.getElementById('idEnc'); if(!el) return;
+  if(t.manuId){
+    const m=manuscripts.find(x=>x.id===t.manuId), s=students.find(x=>x.id===t.alunoId);
+    el.innerHTML=`<div class="id-enc-t">Virou manuscrito de <b>${escHTML(s?s.name:'—')}</b>${m?`: “${escHTML((m.title||'').slice(0,90))}”`:' (manuscrito não encontrado)'}.</div>
+      <div class="db-acoes">${m?`<button class="btn btn-secondary btn-sm" onclick="closeModal('modalIdeia');openEditManuModal('${m.id}')">Abrir manuscrito</button>`:''}<button class="btn btn-secondary btn-sm" onclick="pedidoEsqueleto('${t.id}')">Copiar pedido de esqueleto</button><button class="btn btn-secondary btn-sm" onclick="desvincularTema('${t.id}')">Desvincular</button></div>
+      <div class="id-enc-d">Para o esqueleto: copie o pedido, cole na conversa com o Claude e importe o .txt que ele devolver em Manuscritos → Importar esqueleto.</div>`;
+    return;
+  }
+  const ativos=students.filter(s=>!s.encerrado).sort((a,b)=>a.name.localeCompare(b.name)), al=t.alunoId?students.find(x=>x.id===t.alunoId):null;
+  el.innerHTML=`${al&&t.enviadaEm?`<div class="id-enc-t">Enviada a <b>${escHTML(al.name)}</b> em ${fmtDate(t.enviadaEm)}.</div>`:''}
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><select class="form-control" id="idAluno" style="flex:1;min-width:200px"><option value="">— Escolha o aluno —</option>${ativos.map(s=>`<option value="${s.id}"${s.id===t.alunoId?' selected':''}>${escHTML(s.name)} (${s.type})</option>`).join('')}</select>
+      <button class="btn btn-secondary btn-sm" onclick="marcarEnviada('${t.id}')">Enviar ao aluno</button>
+      <button class="btn btn-primary btn-sm" onclick="ideiaParaManuscrito('${t.id}')">Enviar para Manuscritos</button></div>
+    <div class="id-enc-d"><b>Enviar ao aluno</b> registra a oferta e abre o PDF da ideia para você compartilhar. Se o aluno aceitar, <b>Enviar para Manuscritos</b> cria o manuscrito só com o título provisório e o aluno como autor; o esqueleto entra depois pelo .txt do PAP.
+    ${statusTema(t)==='arquivada'?`<a href="#" onclick="arquivarIdeia('${t.id}',false);return false">Reativar ideia</a>`:`<a href="#" onclick="arquivarIdeia('${t.id}',true);return false">Arquivar ideia</a>`}</div>`;
+}
+function arquivarIdeia(id,sim){const t=temas.find(x=>x.id===id);if(!t)return;t.arquivada=!!sim;if(!sim&&t.decisao==='suspender')t.decisao='';t.atualizado=today();saveData();abrirIdeia(id);renderCurrentView();}
+function marcarEnviada(id){
+  const t=temas.find(x=>x.id===id), sid=document.getElementById('idAluno').value; if(!t) return;
+  if(!sid){toast('Escolha o aluno.');return;}
+  t.alunoId=sid;t.enviadaEm=today();t.atualizado=today();saveData();abrirIdeia(t.id);renderCurrentView();
+  ideiaPDF(id);
+}
+function ideiaParaManuscrito(id){
+  const t=temas.find(x=>x.id===id); if(!t) return;
+  const sid=(document.getElementById('idAluno')||{}).value||t.alunoId;
+  if(!sid){toast('Escolha o aluno que aceitou a ideia.');return;}
+  const s=students.find(x=>x.id===sid); if(!s) return;
+  if(!confirm(`Criar o manuscrito de ${s.name} a partir desta ideia?\n\nEle terá só o título provisório; o esqueleto entra depois pelo .txt do PAP.`)) return;
+  const tipo=['IC','TCC','ESP','MSC','PHD'].includes(s.type)?s.type:'TCC';
+  const m={id:uid(),title:t.titulo,journal:'',type:tipo,authors:s.name,steps:[],subStatus:'planejado',subDate:'',qualis:'',jcr:'',temaId:t.id,
+    notes:`Título provisório. Criado a partir da ideia ${t.cod||''} da Carteira em ${fmtDate(today())}. Esqueleto: importar o .txt do PAP em Manuscritos.`,skeleton:{}};
+  manuscripts.push(m);
+  t.manuId=m.id;t.alunoId=sid;if(!t.enviadaEm)t.enviadaEm=today();t.atualizado=today();
+  if((t.dados||[]).length){if(!dossies[m.id])dossies[m.id]={usar:{},atualizado:today()};t.dados.forEach(b=>{dossies[m.id].usar[b]={feito:{},desde:today()};});}
+  saveData();abrirIdeia(t.id);renderCurrentView();toast(`Manuscrito criado para ${s.name}.`);
+}
+function copiarTextoCt(txt,msg){
+  const ok=()=>toast(msg||'Copiado.');
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(txt).then(ok).catch(()=>fb());}else fb();
+  function fb(){const a=document.createElement('textarea');a.value=txt;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');ok();}catch(e){toast('Não foi possível copiar.');}a.remove();}
+}
+function pedidoEsqueleto(id){
+  const t=temas.find(x=>x.id===id); if(!t) return;
+  const s=students.find(x=>x.id===t.alunoId), m=manuscripts.find(x=>x.id===t.manuId), G=GRUPOS_CT.find(g=>g.id===grupoDe(t))||{};
+  const L=['Gere o esqueleto deste manuscrito pelo PAP, em arquivo .txt no formato LABRESEARCH-ESQUELETO v1.',
+    `Aluno: ${s?s.name+' ('+s.type+')':'—'}`,`Ideia: ${t.cod||''} — grupo ${G.nome||''}`,`Título provisório: ${m?m.title:t.titulo}`,''];
+  if(t.contexto) L.push('Contexto: '+t.contexto);
+  if(t.equacao) L.push('Equação: '+t.equacao);
+  ideiaCampos(t).forEach(([k,v])=>L.push(k+': '+v));
+  if(t.cautela||t.cuidados) L.push('Cuidados: '+(t.cautela||t.cuidados));
+  if(t.refs&&t.refs.length){L.push('Referências citadas (a verificar):');t.refs.forEach(r=>L.push('- '+r.t+(r.u?' '+r.u:'')));}
+  copiarTextoCt(L.join('\n'),'Pedido copiado. Cole na conversa com o Claude.');
+}
+function ideiaPDF(id){
+  const t=temas.find(x=>x.id===id); if(!t) return;
+  const G=GRUPOS_CT.find(g=>g.id===grupoDe(t))||{}, w=window.open('','_blank');
+  if(!w){toast('Permita a abertura de janelas para gerar o PDF.');return;}
+  const css=`@page{size:A4;margin:16mm 16mm 18mm}*{box-sizing:border-box}body{margin:0;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1d2b33;background:#fff}
+    .pg{max-width:780px;margin:0 auto;padding:22px}.k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#2a7a6a;font-weight:700}.bar{width:110px;height:4px;background:#2a7a6a;margin:8px 0 14px}
+    h1{font-size:25px;line-height:1.2;margin:0 0 8px;color:#16343d}.meta{font-size:12px;color:#5a6b72;margin-bottom:10px}
+    .id-fig{background:#f4f6f5;border:1px solid #dfe5e3;border-radius:10px;padding:12px;margin:10px 0 12px;color:#1d2b33;break-inside:avoid}.id-fig svg{width:100%;height:auto;max-height:280px;display:block;font-size:13px;font-family:inherit}.id-fig svg text:not([fill]){fill:#1d2b33}.id-fig img{max-width:100%;display:block;margin:0 auto}
+    .id-cap{font-size:10.5px;color:#6a7a80;margin-top:8px}.id-txt p{font-size:13px;line-height:1.6;margin:0 0 9px}
+    .id-eq{font-family:'Cambria Math','Times New Roman',serif;font-size:22px;text-align:center;padding:14px;background:#e9f1ee;border-radius:6px;margin:10px 0}
+    .id-tab{width:100%;border-collapse:collapse;font-size:12px;margin:4px 0 12px}.id-tab th{background:#1b4a4f;color:#fff;text-align:left;padding:7px 10px}.id-tab td{padding:6px 10px;border-bottom:1px solid #e1e6e4}.id-tab tr:nth-child(odd) td{background:#f6f8f7}
+    .id-flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0 12px}.id-flow span{font-size:11px;padding:6px 10px;border-radius:7px;background:#e9f1ee;border:1px solid #c9dad4}.id-flow i{color:#6a7a80;font-style:normal}
+    .id-campo{font-size:13px;line-height:1.55;margin:5px 0}.id-caut{border-left:3px solid #2a7a6a;background:#eef3f1;padding:8px 12px;font-size:12px;color:#4a5a60;margin:12px 0}
+    .id-refs{font-size:11.5px;color:#4a5a60;margin-top:10px}.id-refs span{color:#7a8a90}.id-refs ul{margin:4px 0 0 18px;padding:0}.id-refs li{margin:3px 0}.id-refs a{color:#1f6f8b}
+    .id-fonte{font-size:10.5px;color:#7a8a90;margin-top:8px}.rod{margin-top:18px;padding-top:8px;border-top:1px solid #dfe5e3;font-size:10.5px;color:#7a8a90}
+    .np{text-align:center;margin:10px}.np button{font-size:15px;padding:10px 18px;border-radius:8px;border:0;background:#1b4a4f;color:#fff}@media print{.np{display:none}.pg{padding:0}}`;
+  const meta=[t.nivel?'Nível indicado: '+t.nivel:'',t.viab?'Viabilidade '+(VIAB_NOME[t.viab]||t.viab):''].filter(Boolean).join(' · ');
+  w.document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escHTML((t.cod?t.cod+' — ':'')+t.titulo)}</title><style>${css}</style></head><body>
+    <div class="np"><button onclick="window.print()">Salvar como PDF</button></div>
+    <div class="pg"><div class="k">Ideia-semente de pesquisa · ${escHTML(G.nome||'')}</div><div class="bar"></div><h1>${escHTML(t.titulo)}</h1>${meta?`<div class="meta">${escHTML(meta)}</div>`:''}
+    ${ideiaHTML(t)}<div class="rod">LabResearch · EECA/UFG${cfg.nomeUsuario?' · '+escHTML(cfg.nomeUsuario):''} · ${fmtDate(today())}. Ideia para discussão: as referências e a originalidade devem ser verificadas antes de iniciar a pesquisa.</div></div>
+    </body></html>`);
+  w.document.close();
+  setTimeout(()=>{try{w.focus();w.print();}catch(e){}},600);
+}
+// ── esqueleto do PAP (.txt) → manuscrito ──
+const ESQ_SECOES={'pergunta':'question','pergunta de pesquisa':'question','perguntas':'question','hipoteses':'hypothesis','hipotese':'hypothesis','objetivo geral':'objGeneral','objetivos especificos':'objSpecific','objetivo especifico':'objSpecific','literatura e lacuna':'lit','literatura':'lit','estado da arte':'lit','revisao de literatura':'lit','material e metodos':'mm','materiais e metodos':'mm','metodos':'mm','metodologia':'mm','resultados esperados':'results','resultados':'results','discussao':'discussion','discussao e enquadramento':'discussion','notas':'notas'};
+function parseEsqueleto(txt){
+  txt=String(txt||'').replace(/^﻿/,'').replace(/\r\n?/g,'\n');
+  if(!/LABRESEARCH-ESQUELETO/i.test(txt)) return null;
+  const o={sk:{},notas:'',ignoradas:[]}, partes=txt.split(/^\s*={3,}\s*(.+?)\s*={3,}\s*$/m);
+  partes[0].split('\n').forEach(l=>{const m=l.match(/^\s*([^:#]{2,40}?)\s*:\s*(.*)$/);if(!m)return;
+    const k=normTxt(m[1]).replace(/[\s_-]+/g,' ').trim(), v=m[2].trim();
+    if(k==='titulo'||k==='titulo provisorio')o.titulo=v;else if(k==='aluno'||k==='autor'||k==='autores')o.aluno=v;else if(k==='nivel')o.nivel=v;
+    else if(k==='periodico'||k==='periodico alvo')o.periodico=v;else if(k==='plano b')o.planoB=v;else if(k==='ideia')o.ideia=v;});
+  for(let i=1;i<partes.length;i+=2){const nome=normTxt(partes[i]).replace(/\s+/g,' ').trim(), corpo=(partes[i+1]||'').replace(/^\n+|\s+$/g,''), k=ESQ_SECOES[nome];
+    if(!k){o.ignoradas.push(partes[i]);continue;} if(k==='notas') o.notas=corpo; else o.sk[k]=corpo;}
+  return o;
+}
+function nivelCodigo(v){const n=normTxt(v);if(/dout|phd/.test(n))return 'PHD';if(/mestr|msc/.test(n))return 'MSC';if(/espec|\besp\b/.test(n))return 'ESP';if(/tcc|gradua/.test(n))return 'TCC';if(/\bic\b|inicia/.test(n))return 'IC';return '';}
+function importarEsqueleto(inp){
+  const f=inp.files&&inp.files[0]; inp.value=''; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=()=>aplicarEsqueleto(parseEsqueleto(rd.result));
+  rd.readAsText(f,'utf-8');
+}
+function aplicarEsqueleto(o){
+  if(!o){toast('Arquivo fora do formato LABRESEARCH-ESQUELETO.');return;}
+  const temSk=m=>Object.values(m.skeleton||{}).some(v=>v&&String(v).trim());
+  let alvo=null;
+  if(o.ideia){const t=temasVisiveis().find(x=>normTxt(x.cod)===normTxt(o.ideia)||x.id===o.ideia);if(t&&t.manuId) alvo=manuscripts.find(m=>m.id===t.manuId)||null;}
+  if(!alvo&&o.aluno){const a=normTxt(o.aluno);const cs=manuscripts.filter(m=>m.type!=='proprio'&&normTxt(m.authors).includes(a)&&!temSk(m));if(cs.length===1) alvo=cs[0];}
+  if(alvo&&temSk(alvo)&&!confirm('Este manuscrito já tem campos do esqueleto preenchidos. Substituir pelos do arquivo?')) return;
+  if(alvo) openEditManuModal(alvo.id); else openAddManuModal();
+  const set=(id,v)=>{if(v){const e=document.getElementById(id);if(e) e.value=v;}};
+  set('mTitle',o.titulo);set('mJournal',o.periodico);set('mPlanoB',o.planoB);
+  if(!alvo){set('mAuthors',o.aluno);const nv=nivelCodigo(o.nivel||'');if(nv) document.getElementById('mType').value=nv;}
+  else if(!document.getElementById('mAuthors').value.trim()) set('mAuthors',o.aluno);
+  if(o.notas){const n=document.getElementById('mNotes');n.value=(n.value.trim()?n.value.trim()+'\n\n':'')+o.notas;}
+  loadSkeletonFields(Object.assign({},alvo?(alvo.skeleton||{}):{},o.sk));
+  renderManuStepsCheck(alvo?(alvo.steps||[]):[],document.getElementById('mType').value);
+  try{refreshDatalistPeriodicos();if(typeof atualizarHintPeriodico==='function')atualizarHintPeriodico();if(typeof preencherQualisDoPeriodico==='function')preencherQualisDoPeriodico();}catch(e){}
+  const n=Object.values(o.sk).filter(Boolean).length;
+  toast(`Esqueleto carregado em ${alvo?'“'+(alvo.title||'').slice(0,50)+'”':'um novo manuscrito'} (${n} campo${n!==1?'s':''}). Revise e clique em Salvar.`);
+  if(o.ignoradas.length) console.warn('Seções não reconhecidas no esqueleto:',o.ignoradas);
+}
+
 let _tmBases=[];
 function tmArtigosOpcoes(sel){
-  const pk=document.getElementById('tmProg').value, s=document.getElementById('tmArtigo');
+  const G=GRUPOS_CT.find(g=>g.id===document.getElementById('tmGrupo').value)||{}, pk=G.prog||'', s=document.getElementById('tmArtigo');
+  document.getElementById('tmArtigoWrap').style.display=pk?'':'none';
   s.innerHTML='<option value="">— sem artigo de programa —</option>'+ARTIGOS_PROG.filter(a=>a.prog===pk).map(a=>`<option value="${a.id}">${escHTML(a.titulo)}</option>`).join('');
   if(sel!==undefined) s.value=sel;
 }
+let _tmFig={figura:'',imagem:''};
+function tmRenderFig(){
+  const el=document.getElementById('tmFigPrev');
+  el.innerHTML=_tmFig.imagem?`<div class="id-fig" style="margin:0 0 6px"><img src="${_tmFig.imagem}" alt="" style="max-height:160px"></div>`:(_tmFig.figura&&FIG_CT[_tmFig.figura]?`<div class="id-fig" style="margin:0 0 6px">${FIG_CT[_tmFig.figura]()}</div>`:'<div style="font-size:11.5px;color:var(--text-dim);margin-bottom:6px">Sem figura.</div>');
+}
+function tmFigura(inp){
+  const f=inp.files&&inp.files[0]; inp.value=''; if(!f) return;
+  const img=new Image(), url=URL.createObjectURL(f);
+  img.onload=()=>{const k=Math.min(1,1000/Math.max(img.width,img.height)), cv=document.createElement('canvas');cv.width=Math.round(img.width*k);cv.height=Math.round(img.height*k);
+    const x=cv.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,cv.width,cv.height);x.drawImage(img,0,0,cv.width,cv.height);URL.revokeObjectURL(url);
+    _tmFig={figura:'',imagem:cv.toDataURL('image/jpeg',.82)};tmRenderFig();};
+  img.onerror=()=>{URL.revokeObjectURL(url);toast('Não foi possível ler a imagem.');};
+  img.src=url;
+}
+function tmRemFigura(){_tmFig={figura:'',imagem:''};tmRenderFig();}
 function tmRenderBases(){
   const bs=todasBases();
   document.getElementById('tmBases').innerHTML=_tmBases.map(id=>{const b=bs.find(x=>x.id===id);return `<span class="chip-base">${escHTML(b?b.nome:id)}<button type="button" onclick="tmRemBase('${id}')" title="Remover">✕</button></span>`;}).join('')||'<span style="font-size:11.5px;color:var(--text-dim)">Nenhuma base vinculada.</span>';
@@ -4117,19 +4547,16 @@ function tmAddBase(id){if(id&&!_tmBases.includes(id)){_tmBases.push(id);tmRender
 function tmRemBase(id){_tmBases=_tmBases.filter(x=>x!==id);tmRenderBases();}
 function openTema(id){
   const t=id?temas.find(x=>x.id===id):null, set=(k,v)=>{document.getElementById(k).value=v==null?'':v;};
-  document.getElementById('tmTitulo').textContent=t?`${t.cod} — ${ST_NOME[statusTema(t)]}`:'Novo tema';
-  set('tmId',t?t.id:'');set('tmCod',t?t.cod:'');set('tmProg',t?t.prog:'A');tmArtigosOpcoes(t?t.artigo:'');
-  set('tmTit',t&&t.titulo);set('tmHip',t&&t.hipotese);set('tmDest',t&&t.destrava);set('tmMet',t&&t.metodo);set('tmNivel',t&&t.nivel);set('tmViab',t?t.viab:'B');
-  set('tmCuid',t&&t.cuidados);set('tmDecisao',t?t.decisao:'');set('tmJust',t&&t.justificativa);set('tmNotas',t&&t.notas);
-  document.getElementById('tmOfertado').checked=!!(t&&t.ofertado);
+  document.getElementById('tmTitulo').textContent=t?'Editar ideia'+(t.cod?' '+t.cod:''):'Nova ideia';
+  document.getElementById('tmGrupo').innerHTML=GRUPOS_CT.map(g=>`<option value="${g.id}">${escHTML(g.nome)}</option>`).join('');
+  set('tmId',t?t.id:'');set('tmCod',t?t.cod:'');set('tmGrupo',t?grupoDe(t):(ctGrupo||'n1'));tmArtigosOpcoes(t?t.artigo:'');
+  set('tmTit',t&&t.titulo);set('tmCtx',t&&t.contexto);set('tmLeg',t&&t.legenda);set('tmEq',t&&t.equacao);set('tmPerg',t&&t.pergunta);set('tmHip',t&&t.hipotese);
+  set('tmMet',t&&(t.experimento||t.metodo));set('tmDadosTxt',t&&t.dadosTxt);set('tmDest',t&&(t.beneficio||t.destrava));set('tmCuid',t&&(t.cautela||t.cuidados));
+  set('tmNivel',t&&t.nivel);set('tmViab',t?(t.viab||'B'):'B');set('tmNotas',t&&t.notas);
+  set('tmRefs',t&&t.refs?t.refs.map(r=>r.t+(r.u?' | '+r.u:'')).join('\n'):'');
+  _tmFig={figura:t&&t.figura||'',imagem:t&&t.imagem||''};tmRenderFig();
   _tmBases=t?[...(t.dados||[])]:[];tmRenderBases();
-  const g=t?(t.portoes||{}):{};
-  document.getElementById('tmGates').innerHTML=GATES.map(([k,nome,dica])=>{const x=g[k]||{};return `<div class="gate${x.ok?' ok':''}" id="gate-${k}">
-    <label class="gate-h"><input type="checkbox" id="g-${k}" ${x.ok?'checked':''} onchange="this.closest('.gate').classList.toggle('ok',this.checked)"> ${nome}<small>${x.ok&&x.data?'cumprido em '+fmtDate(x.data):''}</small></label>
-    <textarea class="form-control" id="ge-${k}" rows="2" placeholder="Evidência: ${dica}">${escHTML(x.evid||'')}</textarea></div>`;}).join('');
-  tmRenderAtrib(t);
   document.getElementById('tmExcluir').style.display=t?'inline-flex':'none';
-  document.getElementById('tmWord').style.display=t?'inline-flex':'none';
   openModal('modalTema');
 }
 function tmRenderAtrib(t){
@@ -4145,20 +4572,21 @@ function tmRenderAtrib(t){
 }
 function salvarTema(){
   const g=k=>document.getElementById(k).value.trim();
-  if(!g('tmTit')){toast('Informe o título do tema.');return;}
-  const id=g('tmId')||('t-'+uid()), ant=temas.find(x=>x.id===id)||{portoes:{},criadoEm:today()};
-  const port={};GATES.forEach(([k])=>{const ok=document.getElementById('g-'+k).checked, a=(ant.portoes||{})[k]||{};port[k]={ok,data:ok?(a.ok&&a.data?a.data:today()):'',evid:document.getElementById('ge-'+k).value.trim()};});
-  const dec=g('tmDecisao');
-  if(dec==='aprovar'&&!GATES.every(([k])=>port[k].ok)&&!confirm('Os portões 1 a 3 não estão todos cumpridos. Aprovar mesmo assim?')) return;
-  const t=Object.assign({},ant,{id,cod:g('tmCod')||('T'+(temas.length+1)),prog:g('tmProg'),artigo:g('tmArtigo'),titulo:g('tmTit'),hipotese:g('tmHip'),destrava:g('tmDest'),metodo:g('tmMet'),
-    nivel:g('tmNivel'),viab:g('tmViab'),dados:[..._tmBases],cuidados:g('tmCuid'),portoes:port,decisao:dec,decisaoData:dec!==ant.decisao?today():(ant.decisaoData||''),
-    justificativa:g('tmJust'),ofertado:document.getElementById('tmOfertado').checked,notas:g('tmNotas'),atualizado:today()});
+  if(!g('tmTit')){toast('Informe o título da ideia.');return;}
+  const id=g('tmId')||('t-'+uid()), ant=temas.find(x=>x.id===id)||{portoes:{},criadoEm:today()}, grupo=g('tmGrupo'), G=GRUPOS_CT.find(x=>x.id===grupo)||{};
+  const refs=g('tmRefs').split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{const k=l.lastIndexOf(' | ');return k>0?{t:l.slice(0,k).trim(),u:l.slice(k+3).trim()}:{t:l};});
+  const t=Object.assign({},ant,{id,cod:g('tmCod')||('I'+(temas.length+1)),grupo,prog:G.prog||'',artigo:G.prog?g('tmArtigo'):'',titulo:g('tmTit'),contexto:g('tmCtx'),
+    figura:_tmFig.figura||'',imagem:_tmFig.imagem||'',legenda:g('tmLeg'),equacao:g('tmEq'),pergunta:g('tmPerg'),hipotese:g('tmHip'),experimento:g('tmMet'),metodo:g('tmMet'),
+    dadosTxt:g('tmDadosTxt'),dados:[..._tmBases],beneficio:g('tmDest'),destrava:g('tmDest'),cautela:g('tmCuid'),cuidados:g('tmCuid'),nivel:g('tmNivel'),viab:g('tmViab'),refs,notas:g('tmNotas'),atualizado:today()});
   const ix=temas.findIndex(x=>x.id===id); if(ix>=0) temas[ix]=t; else temas.push(t);
-  saveData();closeModal('modalTema');renderCurrentView();toast('Tema salvo.');
+  saveData();closeModal('modalTema');renderCurrentView();toast('Ideia salva.');abrirIdeia(id);
 }
 function excluirTema(){
-  const id=document.getElementById('tmId').value;if(!id||!confirm('Excluir este tema da carteira?'))return;
-  temas=temas.filter(t=>t.id!==id);saveData();closeModal('modalTema');renderCurrentView();
+  const id=document.getElementById('tmId').value, t=temas.find(x=>x.id===id);
+  if(!t||!confirm('Excluir esta ideia da carteira?'))return;
+  // ideias do caderno ficam marcadas como excluídas, para não voltarem na próxima abertura
+  if(t.origem==='caderno') temas=temas.map(x=>x.id===id?{id,excluido:true}:x); else temas=temas.filter(x=>x.id!==id);
+  saveData();closeModal('modalTema');renderCurrentView();
 }
 function atribuirTema(id){
   const t=temas.find(x=>x.id===id), sid=document.getElementById('tmAluno').value; if(!t)return;
@@ -4177,8 +4605,8 @@ function atribuirTema(id){
   saveData();openTema(id);renderCurrentView();toast(`Manuscrito criado para ${s.name}, com as bases já no dossiê de dados.`);
 }
 function desvincularTema(id){
-  const t=temas.find(x=>x.id===id);if(!t||!confirm('Desvincular o tema do orientando? O manuscrito continua existindo.'))return;
-  t.manuId='';t.alunoId='';t.atualizado=today();saveData();openTema(id);renderCurrentView();
+  const t=temas.find(x=>x.id===id);if(!t||!confirm('Desvincular a ideia do aluno? O manuscrito continua existindo.'))return;
+  t.manuId='';t.alunoId='';t.enviadaEm='';t.atualizado=today();saveData();abrirIdeia(id);renderCurrentView();
 }
 function temaWord(id){
   const t=temas.find(x=>x.id===id);if(!t)return;
