@@ -691,6 +691,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .id-enc{border-top:1px solid var(--border);margin-top:14px;padding-top:12px}
 .id-enc-t{font-size:12.5px;color:var(--text);margin-bottom:8px;line-height:1.5}
 .id-enc-d{font-size:11px;color:var(--text-dim);margin-top:8px;line-height:1.45}
+.id-enc-d a{color:var(--text-muted)}
 .st-disponivel{background:var(--surface3);color:var(--text-muted)}
 .st-enviada{background:var(--blue-dim);color:var(--blue)}
 .st-manuscrito{background:var(--green);color:#fff}
@@ -1810,7 +1811,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     <div class="modal-body"><div id="idCorpo"></div><div class="id-enc" id="idEnc"></div></div>
     <div class="modal-footer">
       <button class="btn btn-secondary btn-sm" id="idEditar" style="margin-right:auto">Editar</button>
-      <button class="btn btn-primary" id="idPdf">Compartilhar (PDF)</button>
+      <button class="btn btn-secondary btn-sm" id="idPdf" title="Página formatada para salvar em PDF">PDF</button>
+      <button class="btn btn-secondary btn-sm" id="idImg" title="Imagem com a figura, para mandar no WhatsApp">Imagem</button>
+      <button class="btn btn-primary" id="idShare" title="Texto formatado para o WhatsApp">Compartilhar</button>
     </div>
   </div>
 </div>
@@ -4392,6 +4395,8 @@ function abrirIdeia(id){
   renderEncaminhamento(t);
   document.getElementById('idEditar').onclick=()=>{closeModal('modalIdeia');openTema(id);};
   document.getElementById('idPdf').onclick=()=>ideiaPDF(id);
+  document.getElementById('idImg').onclick=()=>ideiaImagem(id);
+  document.getElementById('idShare').onclick=()=>compartilharIdeia(id);
   openModal('modalIdeia');
 }
 function renderEncaminhamento(t){
@@ -4408,15 +4413,18 @@ function renderEncaminhamento(t){
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><select class="form-control" id="idAluno" style="flex:1;min-width:200px"><option value="">— Escolha o aluno —</option>${ativos.map(s=>`<option value="${s.id}"${s.id===t.alunoId?' selected':''}>${escHTML(s.name)} (${s.type})</option>`).join('')}</select>
       <button class="btn btn-secondary btn-sm" onclick="marcarEnviada('${t.id}')">Enviar ao aluno</button>
       <button class="btn btn-primary btn-sm" onclick="ideiaParaManuscrito('${t.id}')">Enviar para Manuscritos</button></div>
-    <div class="id-enc-d"><b>Enviar ao aluno</b> registra a oferta e abre o PDF da ideia para você compartilhar. Se o aluno aceitar, <b>Enviar para Manuscritos</b> cria o manuscrito só com o título provisório e o aluno como autor; o esqueleto entra depois pelo .txt do PAP.
+    <div class="id-enc-d"><b>Enviar ao aluno</b> registra a oferta e abre o WhatsApp na conversa do aluno (telefone do cadastro), com a ideia em texto. Se o aluno aceitar, <b>Enviar para Manuscritos</b> cria o manuscrito só com o título provisório e o aluno como autor; o esqueleto entra depois pelo .txt do PAP.
     ${statusTema(t)==='arquivada'?`<a href="#" onclick="arquivarIdeia('${t.id}',false);return false">Reativar ideia</a>`:`<a href="#" onclick="arquivarIdeia('${t.id}',true);return false">Arquivar ideia</a>`}</div>`;
 }
 function arquivarIdeia(id,sim){const t=temas.find(x=>x.id===id);if(!t)return;t.arquivada=!!sim;if(!sim&&t.decisao==='suspender')t.decisao='';t.atualizado=today();saveData();abrirIdeia(id);renderCurrentView();}
 function marcarEnviada(id){
   const t=temas.find(x=>x.id===id), sid=document.getElementById('idAluno').value; if(!t) return;
   if(!sid){toast('Escolha o aluno.');return;}
-  t.alunoId=sid;t.enviadaEm=today();t.atualizado=today();saveData();abrirIdeia(t.id);renderCurrentView();
-  ideiaPDF(id);
+  t.alunoId=sid;t.enviadaEm=today();t.atualizado=today();saveData();
+  const al=students.find(x=>x.id===sid), fone=_waNumero(al&&al.phone), txt=ideiaTextoWhats(t,al);
+  if(fone) abrirWhats(txt,fone); else compartilharTexto(t.titulo,txt);
+  abrirIdeia(t.id);renderCurrentView();
+  toast(fone?`WhatsApp aberto na conversa de ${al.name.split(' ')[0]}.`:'Sem telefone no cadastro do aluno: escolha a conversa dele no WhatsApp.');
 }
 function ideiaParaManuscrito(id){
   const t=temas.find(x=>x.id===id); if(!t) return;
@@ -4448,6 +4456,85 @@ function pedidoEsqueleto(id){
   if(t.cautela||t.cuidados) L.push('Cuidados: '+(t.cautela||t.cuidados));
   if(t.refs&&t.refs.length){L.push('Referências citadas (a verificar):');t.refs.forEach(r=>L.push('- '+r.t+(r.u?' '+r.u:'')));}
   copiarTextoCt(L.join('\n'),'Pedido copiado. Cole na conversa com o Claude.');
+}
+// ── compartilhar pelo WhatsApp: texto formatado e imagem com a figura ──
+function _ehCelular(){return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||'');}
+function _waNumero(ph){const d=String(ph||'').replace(/\D/g,'');if(!d)return '';if(d.length>=12&&d.startsWith('55'))return d;if(d.length===10||d.length===11)return '55'+d;return '';}
+function _waLimpa(s){return String(s||'').replace(/_([A-Za-z0-9]+)/g,'$1').replace(/[ \t]+/g,' ').trim();}
+function ideiaTextoWhats(t,al){
+  const G=GRUPOS_CT.find(g=>g.id===grupoDe(t))||{}, L=[];
+  if(al&&al.name) L.push(`Olá, ${al.name.split(' ')[0]}! Segue uma ideia de pesquisa para conversarmos:`,'');
+  L.push(`*Ideia-semente de pesquisa* · _${G.nome||'Carteira'}_`,'',`*${_waLimpa((t.cod?t.cod+' — ':'')+t.titulo)}*`);
+  (t.contexto||'').split(/\n+/).map(x=>x.trim()).filter(Boolean).forEach(x=>L.push('',_waLimpa(x)));
+  if(t.equacao){L.push('',_waLimpa(t.equacao));(t.tabela||[]).forEach(r=>L.push(`• ${_waLimpa(r[0])}: ${r[1]}`));}
+  if(t.fluxo&&t.fluxo.length) L.push('','*Etapas:* '+t.fluxo.join(' → '));
+  ideiaCampos(t).forEach(([k,v])=>L.push('',`*${k}:* ${_waLimpa(v)}`));
+  const caut=t.cautela||t.cuidados; if(caut) L.push('',`_Atenção: ${_waLimpa(caut)}_`);
+  if(t.refs&&t.refs.length){L.push('','*Referências* (a verificar):');t.refs.forEach(r=>L.push('• '+r.t+(r.u?'\n  '+r.u:'')));}
+  const meta=[t.nivel?'Nível indicado: '+t.nivel:'',t.viab?'Viabilidade '+t.viab:''].filter(Boolean).join(' · ');
+  if(meta) L.push('','_'+meta+'_');
+  L.push('','_LabResearch · EECA/UFG_');
+  return L.join('\n');
+}
+function abrirWhats(txt,fone){const u=`https://wa.me/${fone||''}?text=${encodeURIComponent(txt)}`;const w=window.open(u,'_blank');if(!w) location.href=u;}
+function compartilharTexto(titulo,txt){
+  if(_ehCelular()&&navigator.share){navigator.share({title:titulo,text:txt}).catch(e=>{if(!e||e.name!=='AbortError') abrirWhats(txt);});}
+  else abrirWhats(txt);
+}
+function compartilharIdeia(id){const t=temas.find(x=>x.id===id);if(t) compartilharTexto(t.titulo,ideiaTextoWhats(t));}
+function _svgParaImg(svg,larg){
+  return new Promise((ok,er)=>{
+    const vb=(svg.match(/viewBox="([^"]+)"/)||[])[1], v=vb?vb.split(/\s+/).map(Number):[0,0,520,220], alt=Math.round(larg*v[3]/v[2]);
+    const s=svg.replace('<svg ',`<svg xmlns="http://www.w3.org/2000/svg" width="${larg}" height="${alt}" `).replace(/(<svg[^>]*>)/,'$1<style>svg{font-family:Arial,Helvetica,sans-serif;font-size:13px}text:not([fill]){fill:#1d2b33}</style>');
+    const im=new Image();im.onload=()=>ok(im);im.onerror=er;im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s);
+  });
+}
+function _imgDeURL(u){return new Promise((ok,er)=>{const im=new Image();im.onload=()=>ok(im);im.onerror=er;im.src=u;});}
+async function ideiaImagem(id){
+  const t=temas.find(x=>x.id===id); if(!t) return;
+  const G=GRUPOS_CT.find(g=>g.id===grupoDe(t))||{}, W=1080, P=64, CW=W-2*P, FT='"Segoe UI",Roboto,Helvetica,Arial,sans-serif';
+  const cv=document.createElement('canvas'); cv.width=W; cv.height=12000; const x=cv.getContext('2d');
+  x.fillStyle='#fff';x.fillRect(0,0,W,cv.height);x.textBaseline='top';
+  let y=P;
+  const fonte=(sz,w,fam)=>{x.font=`${w||400} ${sz}px ${fam||FT}`;};
+  const par=(segs,sz,lh,x0=P,larg=CW)=>{let cx=x0;fonte(sz);const esp=x.measureText(' ').width;
+    segs.forEach(s=>String(s.t||'').split(/\s+/).filter(Boolean).forEach(wd=>{fonte(sz,s.w);const ww=x.measureText(wd).width;if(cx>x0&&cx+ww>x0+larg){cx=x0;y+=lh;}x.fillStyle=s.c||'#1d2b33';x.fillText(wd,cx,y);cx+=ww+esp;}));
+    y+=lh;};
+  const rico=(txt,sz,cx,cy,desenha)=>{let w=0;String(txt).split(/(_[A-Za-z0-9]+)/).filter(Boolean).forEach(seg=>{const sub=seg[0]==='_',tt=sub?seg.slice(1):seg,s=sub?Math.round(sz*.68):sz;
+    fonte(s,400,'"Cambria Math","Times New Roman",serif');if(desenha){x.fillStyle='#16343d';x.fillText(tt,cx+w,cy+(sub?sz*.42:0));}w+=x.measureText(tt).width;});return w;};
+  // cabeçalho
+  fonte(24,700);x.fillStyle='#2a7a6a';try{x.letterSpacing='3px';}catch(e){}x.fillText(('IDEIA-SEMENTE DE PESQUISA · '+(G.nome||'')).toUpperCase(),P,y);try{x.letterSpacing='0px';}catch(e){}
+  y+=40;x.fillRect(P,y,150,6);y+=30;
+  par([{t:(t.cod?t.cod+' — ':'')+t.titulo,w:700,c:'#16343d'}],48,60);
+  const meta=[t.nivel?'Nível indicado: '+t.nivel:'',t.viab?'Viabilidade '+(VIAB_NOME[t.viab]||t.viab):''].filter(Boolean).join(' · ');
+  if(meta){y+=4;par([{t:meta,c:'#5a6b72'}],26,36);}
+  y+=18;
+  // figura
+  try{
+    let im=null;
+    if(t.imagem) im=await _imgDeURL(t.imagem); else if(t.figura&&FIG_CT[t.figura]) im=await _svgParaImg(FIG_CT[t.figura](),CW-40);
+    if(im){const iw=CW-40, ih=Math.round(iw*im.height/im.width);
+      const y0=y, bh=ih+40+(t.legenda?64:0);x.fillStyle='#f4f6f5';x.fillRect(P,y,CW,bh);x.drawImage(im,P+20,y+20,iw,ih);y+=ih+34;
+      if(t.legenda) par([{t:t.legenda,c:'#6a7a80'}],22,30,P+20,CW-40);
+      y=y0+bh+30;}
+  }catch(e){console.warn('Figura não desenhada:',e);}
+  // contexto, equação, tabela, etapas
+  (t.contexto||'').split(/\n+/).map(s=>s.trim()).filter(Boolean).forEach(s=>{par([{t:s}],31,46);y+=14;});
+  if(t.equacao){const sz=46,w=rico(t.equacao,sz,0,0,false);x.fillStyle='#e9f1ee';x.fillRect(P,y,CW,sz+56);rico(t.equacao,sz,P+(CW-w)/2,y+22,true);y+=sz+76;}
+  if(t.tabela&&t.tabela.length){t.tabela.forEach((r,i)=>{if(i%2===0){x.fillStyle='#f6f8f7';x.fillRect(P,y-8,CW,46);}rico(r[0],28,P+14,y,true);fonte(28);x.fillStyle='#1d2b33';x.fillText(r[1],P+200,y);y+=46;});y+=16;}
+  if(t.fluxo&&t.fluxo.length){par([{t:'Etapas:',w:700},{t:t.fluxo.join(' → '),c:'#1f5f55'}],29,42);y+=10;}
+  ideiaCampos(t).forEach(([k,v])=>{par([{t:k+':',w:700},{t:_waLimpa(v)}],31,45);y+=8;});
+  const caut=t.cautela||t.cuidados;
+  if(caut){y+=10;const y0=y;par([{t:caut,c:'#4a5a60'}],27,38,P+26,CW-26);x.fillStyle='#2a7a6a';x.fillRect(P,y0-4,6,y-y0);y+=10;}
+  y+=20;x.fillStyle='#dfe5e3';x.fillRect(P,y,CW,2);y+=16;
+  par([{t:`LabResearch · EECA/UFG · ${fmtDate(today())}. Ideia para discussão: referências e originalidade a verificar antes de iniciar.`,c:'#7a8a90'}],22,30);
+  const out=document.createElement('canvas');out.width=W;out.height=Math.min(cv.height,y+P);out.getContext('2d').drawImage(cv,0,0);
+  out.toBlob(b=>{
+    if(!b){toast('Não foi possível gerar a imagem.');return;}
+    const nome=`ideia-${(t.cod||'semente').toLowerCase()}.png`, f=new File([b],nome,{type:'image/png'});
+    if(_ehCelular()&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:t.titulo,text:'Ideia-semente de pesquisa: '+t.titulo}).catch(()=>{});}
+    else{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=nome;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000);toast('Imagem salva. Arraste para a conversa no WhatsApp.');}
+  },'image/png');
 }
 function ideiaPDF(id){
   const t=temas.find(x=>x.id===id); if(!t) return;
