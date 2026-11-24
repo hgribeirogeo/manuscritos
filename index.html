@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0d1117" id="metaTheme">
-<script>try{var _t=localStorage.getItem('labtheme');if(_t==='light'||_t==='robo'){document.documentElement.setAttribute('data-theme',_t);}}catch(e){}</script>
+<script>try{var _t=localStorage.getItem('labtheme');if(_t==='light'||_t==='robo'||_t==='holo'){document.documentElement.setAttribute('data-theme',_t);}}catch(e){}</script>
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>LabResearch · EECA/UFG</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Exo+2:wght@400;500;600&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -652,6 +652,156 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 :root[data-theme="robo"] .dh-grid2::before{top:-12px;height:12px}
 :root[data-theme="robo"] .dh-grid2::after{bottom:-20px;height:20px}
 
+/* ═══ TEMA HOLOGRÁFICO (vidro, neon ciano/rosa/laranja, holograma no Início) ═══ */
+.holo-hero{display:none}
+:root[data-theme="holo"]{
+  --bg:#04070d;--surface:#0a1628;--surface2:#0f2038;--surface3:#16294a;--border:#1b3654;--border2:#2a5278;
+  --text:#dff6ff;--text-muted:#8fb3c9;--text-dim:#5d7d92;
+  --green:#2fe0a0;--green-bright:#5fffc0;--green-dim:#2fe0a01f;--yellow:#ffd166;--yellow-dim:#ffd1661c;
+  --orange:#ff9a3c;--orange-dim:#ff9a3c1f;--red:#ff5a7a;--red-dim:#ff5a7a21;--blue:#4fdcff;--blue-dim:#4fdcff1f;
+  --purple:#d95cff;--purple-dim:#d95cff24;--teal:#3fe0d0;--teal-dim:#3fe0d01c;--pink:#ff4fb0;--pink-dim:#ff4fb01f;
+  --sans:'Exo 2','Inter',sans-serif;--hfont:'Orbitron','Exo 2',sans-serif;
+  --hcy:#4fdcff;--hcy2:#a6f4ff;--hbl:#2f7dff;--hpk:#ff4fb0;--hor:#ff9a3c;--hyl:#ffd166;--hpanel:#0a1830;
+}
+:root[data-theme="holo"] body{background-color:var(--bg);background-image:radial-gradient(ellipse 60% 40% at 60% 18%,#2f7dff24,transparent 70%),radial-gradient(ellipse 40% 30% at 90% 95%,#ff4fb012,transparent 70%),linear-gradient(#4fdcff0b 1px,transparent 1px),linear-gradient(90deg,#4fdcff0b 1px,transparent 1px);background-size:auto,auto,32px 32px,32px 32px;background-attachment:fixed}
+:root[data-theme="holo"] ::-webkit-scrollbar-thumb{background:#1f4a70}
+/* barra lateral */
+:root[data-theme="holo"] .sidebar{background:linear-gradient(180deg,#081222f5,#04080ff8);border-right-color:#4fdcff29;box-shadow:inset -1px 0 12px #4fdcff10}
+:root[data-theme="holo"] .sidebar-logo{border-bottom-color:#4fdcff26}
+:root[data-theme="holo"] .sidebar-logo .brand{font-family:var(--hfont);font-weight:700;letter-spacing:.14em;color:#fff;text-shadow:0 0 10px var(--hcy)}
+:root[data-theme="holo"] .sidebar-footer{border-top-color:#4fdcff26}
+:root[data-theme="holo"] .nav-item{border-radius:10px}
+:root[data-theme="holo"] .nav-item .nav-icon{width:28px;height:28px;border-radius:8px;border:1px solid #4fdcff26;background:linear-gradient(160deg,#142c4e99,#060e1cb3);flex-shrink:0}
+:root[data-theme="holo"] .nav-item:hover{background:#4fdcff0d;color:var(--hcy2)}
+:root[data-theme="holo"] .nav-item.active{background:linear-gradient(90deg,#4fdcff1f,transparent);color:#fff;border-color:#4fdcff40;box-shadow:inset 3px 0 0 var(--hcy)}
+:root[data-theme="holo"] .nav-item.active .nav-icon{border-color:var(--hcy);box-shadow:0 0 10px #4fdcff8c,inset 0 0 10px #4fdcff40;color:#fff}
+:root[data-theme="holo"] .nav-item.active .nav-icon .ic{filter:drop-shadow(0 0 4px var(--hcy))}
+:root[data-theme="holo"] .sync-dot.ok{background:var(--green);box-shadow:0 0 8px var(--green)}
+/* barra superior */
+:root[data-theme="holo"] .topbar{background:#060c18d9;border-bottom-color:#4fdcff33;box-shadow:0 1px 0 #4fdcff1a,0 6px 24px -12px #4fdcff59}
+:root[data-theme="holo"] .topbar-title{font-family:var(--hfont);font-weight:700;letter-spacing:.16em;text-transform:uppercase;font-size:14px;color:#fff;text-shadow:0 0 10px var(--hcy)}
+/* botões */
+:root[data-theme="holo"] .btn{border-radius:20px}
+:root[data-theme="holo"] .btn-primary{background:linear-gradient(90deg,#2fb4ff,#4fdcff);border-color:#a6f4ff;color:#03101c;font-weight:600;box-shadow:0 0 14px #4fdcff73,inset 0 1px 0 #ffffff80}
+:root[data-theme="holo"] .btn-primary:hover{background:linear-gradient(90deg,#5cc8ff,#8ae9ff);border-color:#d6fbff}
+:root[data-theme="holo"] .btn-secondary{background:#081426cc;border-color:#4fdcff40;color:var(--hcy2)}
+:root[data-theme="holo"] .btn-secondary:hover{border-color:var(--hcy);color:#fff;box-shadow:0 0 10px #4fdcff40}
+:root[data-theme="holo"] .btn-registrar{background:linear-gradient(90deg,#ff3d9a,#ff8fcf);border-color:#ffc2e4;color:#2a0718;box-shadow:0 0 16px #ff4fb0a6,inset 0 1px 0 #ffffff80}
+:root[data-theme="holo"] .btn-registrar:hover{background:linear-gradient(90deg,#ff5aaa,#ffa8da);border-color:#ffe0f1}
+:root[data-theme="holo"] .btn-sync{background:linear-gradient(90deg,#ff8a2a,#ffd166);border-color:#ffe2a8;color:#2a1300;box-shadow:0 0 14px #ff9a3c99}
+:root[data-theme="holo"] .btn-sync:hover{background:linear-gradient(90deg,#ffa050,#ffe08a);color:#2a1300}
+:root[data-theme="holo"] .dh-search{border-radius:20px;background:#081426cc;border-color:#4fdcff59;box-shadow:inset 0 0 12px #4fdcff1f}
+/* painéis com cantos cortados e moldura brilhante */
+:root[data-theme="holo"] :is(.dh-card,.card,.al-card,.stat-card,.ct-card,.db-card,.student-card,.banca-card,.journal-card,.jc2,.prod-card,.ma-card,.hh-stage){
+  --cut:11px;position:relative;border-color:transparent;border-radius:0;
+  background:linear-gradient(135deg,transparent var(--cut),var(--hpanel) 0) top/100% 50.5% no-repeat,linear-gradient(315deg,transparent var(--cut),var(--hpanel) 0) bottom/100% 50% no-repeat}
+:root[data-theme="holo"] :is(.dh-card,.card,.al-card,.stat-card,.ct-card,.db-card,.student-card,.banca-card,.journal-card,.jc2,.prod-card,.ma-card,.hh-stage)::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:1;--c2:calc(var(--cut)*1.4142);
+  background:var(--hring,linear-gradient(150deg,#a6f4ff,#4fdcff66 28%,#4fdcff24 60%,#4fdcff));
+  clip-path:polygon(evenodd,var(--c2) 0,100% 0,100% calc(100% - var(--c2)),calc(100% - var(--c2)) 100%,0 100%,0 var(--c2),var(--c2) 0,calc(var(--c2) + .42px) 1px,1px calc(var(--c2) + .42px),1px calc(100% - 1px),calc(100% - var(--c2) - .42px) calc(100% - 1px),calc(100% - 1px) calc(100% - var(--c2) - .42px),calc(100% - 1px) 1px,calc(var(--c2) + .42px) 1px)}
+:root[data-theme="holo"] :is(.al-card,.ct-card,.student-card,.banca-card,.journal-card,.jc2,.prod-card):hover{--hpanel:#0e2140}
+:root[data-theme="holo"] :is(.al-card,.ct-card,.student-card,.banca-card,.journal-card,.jc2,.prod-card):hover::after{--hring:linear-gradient(150deg,#fff,var(--hcy) 40%,#a6f4ff)}
+:root[data-theme="holo"] .banca-card.banca-aval{--hpanel:#250d33;--hring:linear-gradient(150deg,#ffc2e4,#d95cff80 40%,var(--purple))}
+:root[data-theme="holo"] .db-card.usar{box-shadow:none;--hring:linear-gradient(150deg,#b8ffe4,#2fe0a080 40%,var(--green))}
+:root[data-theme="holo"] :is(.student-card,.banca-card,.reuniao-card,.sema-card)::before{top:18px;bottom:18px;left:1px;box-shadow:0 0 8px currentColor}
+:root[data-theme="holo"] :is(.card-header,.modal-header){background:#0b1a30;border-bottom-color:#4fdcff2e}
+:root[data-theme="holo"] .card-header{background:transparent}
+:root[data-theme="holo"] :is(.manu-card,.reuniao-card,.sema-card,.ag-item,.migr-group,.db-resumo,.ct-prog){background:#081428e6;border-color:#4fdcff2e}
+:root[data-theme="holo"] :is(.manu-card,.reuniao-card,.sema-card,.ag-item):hover{border-color:#4fdcff73;background:#0c1d36}
+/* títulos */
+:root[data-theme="holo"] .dh-title{font-weight:600;color:#fff;text-shadow:0 0 12px #4fdcff73}
+:root[data-theme="holo"] :is(.dash-section-title,.dh-card-h,.ag-lista-mes,.db-grupo){font-family:var(--hfont);font-weight:500;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--hcy2)}
+:root[data-theme="holo"] .dh-card-h .ic{color:var(--hcy);filter:drop-shadow(0 0 4px var(--hcy))}
+:root[data-theme="holo"] .dh-card-h .dh-cnt{font-family:var(--mono);letter-spacing:0;text-transform:none}
+:root[data-theme="holo"] .dash-section-title::before{content:"";display:inline-block;width:6px;height:6px;margin-right:9px;vertical-align:1px;background:var(--hcy);box-shadow:0 0 8px var(--hcy);transform:rotate(45deg)}
+/* barras, avatares, selos */
+:root[data-theme="holo"] .on-bar,:root[data-theme="holo"] .al-bar,:root[data-theme="holo"] .jc2-bar{background:#4fdcff14;border:1px solid #4fdcff1f}
+:root[data-theme="holo"] .on-bar>div{background:linear-gradient(90deg,var(--hbl),var(--hcy));box-shadow:0 0 10px var(--hcy)}
+:root[data-theme="holo"] :is(.al-bar>div,.progress-fill){box-shadow:0 0 8px #4fdcff8c}
+:root[data-theme="holo"] .al-av{background:radial-gradient(circle at 35% 30%,#4fdcff59,#0a1e3ce6)!important;box-shadow:0 0 0 1.5px currentColor,0 0 10px currentColor}
+:root[data-theme="holo"] .badge{text-shadow:0 0 6px currentColor}
+/* formulários, janelas e avisos */
+:root[data-theme="holo"] .form-control{background:#050c18;border-color:#1f4062;box-shadow:inset 0 0 10px #4fdcff0d}
+:root[data-theme="holo"] .form-control:focus{border-color:var(--hcy);box-shadow:0 0 0 2px #4fdcff33,0 0 12px #4fdcff33}
+:root[data-theme="holo"] .overlay{background:#02060ecc;backdrop-filter:blur(3px)}
+:root[data-theme="holo"] .modal{background:#081426;border-color:#4fdcff80;border-radius:4px;box-shadow:0 0 0 1px #4fdcff26,0 0 28px #4fdcff33,0 20px 50px #000c}
+:root[data-theme="holo"] .modal-title{font-family:var(--hfont);font-weight:500;font-size:13px;letter-spacing:.1em;color:#fff;text-shadow:0 0 8px #4fdcff8c}
+:root[data-theme="holo"] .toast{background:#081426f2;border-color:#4fdcff73;box-shadow:0 0 18px #4fdcff40}
+:root[data-theme="holo"] .fab{background:radial-gradient(circle,#ff8fd0 0,var(--hpk) 40%,#5a0a38 80%);color:#fff;border:2px solid var(--hpk);box-shadow:0 0 18px var(--hpk),inset 0 0 12px #ffffff66}
+
+/* ── holograma do Início (só no tema holográfico) ── */
+:root[data-theme="holo"] .holo-hero{display:grid;grid-template-columns:140px minmax(0,1fr) 140px;gap:18px;align-items:center;margin:4px 0 16px}
+.hh-hex{display:flex;flex-direction:column;gap:16px}
+.hx{color:var(--c,var(--hcy));filter:drop-shadow(0 0 6px var(--c,var(--hcy)));cursor:pointer;transition:transform .15s}
+.hx:hover{transform:scale(1.05)}
+.hx>div{aspect-ratio:1/1.1;padding:1.5px;background:currentColor;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+.hx>div>div{width:100%;height:100%;background:radial-gradient(circle at 50% 35%,#1e3c64f2,#050c18f7);clip-path:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.hx .ic{color:currentColor}
+.hx b{font:700 22px var(--hfont);color:#fff;text-shadow:0 0 10px currentColor}
+.hx span{font:500 8.5px var(--hfont);letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);text-align:center;padding:0 8px}
+.hh-stage{height:446px;overflow:hidden;perspective:900px;--cut:20px!important}
+.hh-stage::before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,#a6f4ff08 0 1px,transparent 1px 3px)}
+.hh-tag{position:absolute;top:0;left:50%;transform:translateX(-50%);height:17px;padding:0 12px;font:500 9px/17px var(--hfont);letter-spacing:.16em;text-transform:uppercase;color:#03101c;background:var(--hcy);clip-path:polygon(6px 0,calc(100% - 6px) 0,100% 100%,0 100%);z-index:3;white-space:nowrap}
+.hh-anim{position:absolute;bottom:7px;left:40px;z-index:3;width:28px;height:28px;border-radius:50%;border:1px solid #4fdcff59;background:#050c18b3;color:var(--hcy2);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.hh-anim:hover{border-color:var(--hcy);box-shadow:0 0 10px #4fdcff66}
+.hh-vline{position:absolute;left:50%;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,#4fdcff59 40%,transparent)}
+.hh-hline{position:absolute;left:0;right:0;top:322px;height:1px;background:linear-gradient(90deg,transparent,var(--hcy) 20%,#fff 50%,var(--hcy) 80%,transparent);box-shadow:0 0 8px var(--hcy)}
+.hh-hline::before,.hh-hline::after{content:"";position:absolute;top:-3px;width:7px;height:7px;border-radius:50%;background:var(--hcy2);box-shadow:0 0 10px var(--hcy)}
+.hh-hline::before{left:12%}.hh-hline::after{right:12%}
+.hh-plat{position:absolute;left:50%;top:322px;width:330px;height:330px;margin:-165px 0 0 -165px;transform:rotateX(74deg);transform-style:preserve-3d}
+.hh-ring{position:absolute;border-radius:50%}
+.hh-ring.r1{inset:0;border:2px solid #a6f4ffe6;box-shadow:0 0 16px var(--hcy),0 0 40px #2f7dff80,inset 0 0 22px #4fdcff8c}
+.hh-ring.r2{inset:18px;background:repeating-conic-gradient(#a6f4ffd9 0 1.2deg,transparent 1.2deg 6deg);-webkit-mask:radial-gradient(circle,transparent 62%,#000 63%,#000 70%,transparent 71%);mask:radial-gradient(circle,transparent 62%,#000 63%,#000 70%,transparent 71%);animation:hhGira 40s linear infinite}
+.hh-ring.r3{inset:52px;border:5px solid #4fdcffbf;border-left-color:transparent;border-right-color:#ff4fb0cc;box-shadow:0 0 18px var(--hcy);animation:hhGira 9s linear infinite reverse}
+.hh-ring.r4{inset:86px;border:1.5px dashed #a6f4ffcc;animation:hhGira 18s linear infinite}
+.hh-ring.r5{inset:112px;background:radial-gradient(circle,#fff 0,#c9f8ff 18%,var(--hcy) 38%,#2f7dff73 62%,transparent 72%);box-shadow:0 0 60px var(--hcy);animation:hhPulsa 3s ease-in-out infinite}
+.hh-beam{position:absolute;left:50%;top:170px;width:240px;height:156px;margin-left:-120px;background:linear-gradient(0deg,#a6f4ff8c,#4fdcff29 55%,transparent);clip-path:polygon(40% 100%,60% 100%,100% 0,0 0);animation:hhPisca 4s infinite;mix-blend-mode:screen}
+.hh-streak{position:absolute;width:3px;border-radius:3px}
+.hh-streak.s1{left:23%;top:60px;height:190px;background:linear-gradient(180deg,transparent,var(--hpk),transparent);box-shadow:0 0 12px var(--hpk);transform:rotate(-8deg)}
+.hh-streak.s2{left:27%;top:120px;height:120px;width:2px;background:linear-gradient(180deg,transparent,var(--hor),transparent);box-shadow:0 0 10px var(--hor);transform:rotate(-8deg)}
+.hh-streak.s3{right:24%;top:80px;height:170px;background:linear-gradient(180deg,transparent,var(--hor),transparent);box-shadow:0 0 12px var(--hor);transform:rotate(8deg)}
+.hh-streak.s4{right:28%;top:150px;height:90px;width:2px;background:linear-gradient(180deg,transparent,var(--hpk),transparent);box-shadow:0 0 10px var(--hpk);transform:rotate(8deg)}
+.hh-canvas{position:absolute;left:50%;top:12px;width:440px;height:322px;margin-left:-220px;z-index:2}
+.hh-kpi{position:absolute;left:50%;top:398px;transform:translateX(-50%);text-align:center;white-space:nowrap;z-index:2;cursor:pointer}
+.hh-kpi b{font:700 30px var(--hfont);color:#fff;text-shadow:0 0 14px var(--hcy),0 0 30px var(--hbl);letter-spacing:2px}
+.hh-kpi span{margin-left:10px;font:500 10px var(--hfont);letter-spacing:.2em;color:var(--hcy2);text-transform:uppercase}
+.hh-orb{position:absolute;display:flex;align-items:center;gap:8px;font:500 11px var(--mono);color:var(--c);z-index:3;cursor:pointer}
+.hh-orb i{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 11px var(--hfont);font-style:normal;color:#fff;border:1.5px solid currentColor;box-shadow:0 0 10px currentColor,inset 0 0 10px currentColor;background:#040a14b3}
+.hh-orb span{color:var(--text-muted)}
+.hh-orb .os{display:none}
+.hh-orb.o1{left:5%;top:56px}.hh-orb.o2{left:4%;top:178px}.hh-orb.o3{right:5%;top:56px;flex-direction:row-reverse}.hh-orb.o4{right:4%;top:178px;flex-direction:row-reverse}
+.hh-num{position:absolute;bottom:12px;font:500 10px var(--hfont);color:var(--text-dim)}
+.holo-hero.parado *{animation-play-state:paused!important}
+@keyframes hhGira{to{transform:rotate(360deg)}}
+@keyframes hhPulsa{0%,100%{opacity:1}50%{opacity:.55}}
+@keyframes hhPisca{0%,100%{opacity:.85}45%{opacity:.7}47%{opacity:.95}49%{opacity:.6}52%{opacity:.9}}
+@media (prefers-reduced-motion:reduce){.holo-hero *{animation:none!important}}
+@media (max-width:1100px){:root[data-theme="holo"] .holo-hero{grid-template-columns:110px minmax(0,1fr) 110px;gap:12px}.hx b{font-size:18px}.hx span{font-size:7.5px}}
+@media (max-width:768px){
+  :root[data-theme="holo"] .holo-hero{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:2px 0 12px}
+  :root[data-theme="holo"] .hh-hex{display:contents}
+  .hh-stage{grid-column:1/-1;order:-1;height:380px}
+  .hx b{font-size:16px}.hx span{font-size:7px;letter-spacing:.04em;padding:0 4px}.hx .ic{width:13px;height:13px}
+  .hh-plat{top:262px;width:250px;height:250px;margin:-125px 0 0 -125px}
+  .hh-ring.r3{inset:40px}.hh-ring.r4{inset:66px}.hh-ring.r5{inset:86px}
+  .hh-hline{top:262px}
+  .hh-beam{top:140px;height:124px;width:180px;margin-left:-90px}
+  .hh-canvas{top:10px;width:280px;height:258px;margin-left:-140px}
+  .hh-kpi{top:334px}.hh-kpi b{font-size:24px}.hh-kpi span{font-size:9px;letter-spacing:.12em}
+  .hh-orb{font-size:10px}.hh-orb i{width:26px;height:26px;font-size:10px}.hh-orb .ol{display:none}.hh-orb .os{display:inline}
+  .hh-orb.o1{left:3%;top:34px}.hh-orb.o2{left:2%;top:120px}.hh-orb.o3{right:3%;top:34px}.hh-orb.o4{right:2%;top:120px}
+  .hh-streak.s1{left:20%}.hh-streak.s2{left:25%}.hh-streak.s3{right:20%}.hh-streak.s4{right:25%}
+  :root[data-theme="holo"] .topbar-title{font-size:12px}
+  :root[data-theme="holo"] .sidebar{background:linear-gradient(0deg,#04070dfa 60%,#060c18f2);border-top-color:#4fdcff33}
+  :root[data-theme="holo"] .nav-item{border:none;background:transparent!important;box-shadow:none!important;color:var(--text-muted)}
+  :root[data-theme="holo"] .nav-item .nav-icon{width:40px;height:40px;border-radius:50%;border:1.5px solid #4fdcffb3;background:radial-gradient(circle,#4fdcff33,#050e1ce6 70%);box-shadow:0 0 10px #4fdcff73,inset 0 0 10px #4fdcff4d;color:#fff}
+  :root[data-theme="holo"] .nav-item.active{color:#fff}
+  :root[data-theme="holo"] .nav-item.active .nav-icon{border-color:var(--hpk);background:radial-gradient(circle,#ff8fd0 0,var(--hpk) 40%,#5a0a38 80%);box-shadow:0 0 16px var(--hpk),inset 0 0 10px #ffffff66}
+  :root[data-theme="holo"] .nav-item.active:hover{background:transparent;color:#fff}
+  :root[data-theme="holo"] .main{padding-bottom:84px}
+  :root[data-theme="holo"] .fab{bottom:calc(88px + env(safe-area-inset-bottom))}
+}
+
 /* ═══ PERIÓDICOS (cadastro único) ═══ */
 .jq-line{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .jq-chip{font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:10px}
@@ -794,8 +944,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     <div class="topbar-title" id="topbarTitle">Início</div>
     <div class="topbar-actions">
       <button class="btn btn-secondary btn-sm btn-ico" onclick="openBusca()" title="Buscar (Ctrl K)"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></button>
-      <button class="btn btn-secondary btn-sm btn-ico" id="btnTema" onclick="alternarTema()" title="Alternar tema (escuro · claro · robótico)"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></button>
-      <button class="btn btn-secondary btn-sm btn-ico" onclick="syncNow()" title="Sincronizar: baixa o que mudou em outro aparelho e envia o que mudou aqui"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg><span class="tb-lbl">Sincronizar</span></button>
+      <button class="btn btn-secondary btn-sm btn-ico" id="btnTema" onclick="alternarTema()" title="Alternar tema (escuro · claro · robótico · holográfico)"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></button>
+      <button class="btn btn-secondary btn-sm btn-ico btn-sync" onclick="syncNow()" title="Sincronizar: baixa o que mudou em outro aparelho e envia o que mudou aqui"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg><span class="tb-lbl">Sincronizar</span></button>
       <button class="btn btn-primary btn-sm" id="topbarAdd" onclick="openAddStudentModal()">+ Orientando</button>
     </div>
   </div>
@@ -808,6 +958,29 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <div class="dh-hello"><div class="dh-title" id="dhSaudacao"></div><div class="dh-sub" id="dhSub"></div></div>
         <button class="dh-search" onclick="openBusca()"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> Buscar <kbd>Ctrl K</kbd></button>
         <button class="btn btn-primary btn-ico btn-registrar" onclick="openRegistrarReuniao()"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg> Registrar reunião</button>
+      </div>
+      <div class="holo-hero" id="holoHero">
+        <div class="hh-hex">
+          <div class="hx" style="--c:var(--hcy)" onclick="showView('manuscritos')" title="Manuscritos"><div><div><span class="hx-ic" data-ic="file"></span><b id="hxManu">0</b><span>Manuscritos</span></div></div></div>
+          <div class="hx" style="--c:var(--hpk)" onclick="showView('manuscritos')" title="Em avaliação"><div><div><span class="hx-ic" data-ic="send"></span><b id="hxAval">0</b><span>Em avaliação</span></div></div></div>
+        </div>
+        <div class="hh-stage" id="holoStage">
+          <div class="hh-tag">Laboratório</div>
+          <button class="hh-anim" id="holoAnimBtn" onclick="holoAlternarAnim()" title="Pausar animação"></button>
+          <div class="hh-vline"></div>
+          <div class="hh-streak s1"></div><div class="hh-streak s2"></div><div class="hh-streak s3"></div><div class="hh-streak s4"></div>
+          <div class="hh-plat"><div class="hh-ring r1"></div><div class="hh-ring r2"></div><div class="hh-ring r3"></div><div class="hh-ring r4"></div><div class="hh-ring r5"></div></div>
+          <div class="hh-hline" id="holoLinha"></div>
+          <div class="hh-beam"></div>
+          <canvas class="hh-canvas" id="holoCanvas" aria-hidden="true"></canvas>
+          <div class="hh-kpi" onclick="showView('orientandos')"><b id="holoKpi">0</b><span>orientandos ativos</span></div>
+          <div class="hh-orb o1" id="holoOrb1"></div><div class="hh-orb o2" id="holoOrb2"></div><div class="hh-orb o3" id="holoOrb3"></div><div class="hh-orb o4" id="holoOrb4"></div>
+          <div class="hh-num" style="left:14px">02</div><div class="hh-num" style="right:14px">03</div>
+        </div>
+        <div class="hh-hex">
+          <div class="hx" style="--c:var(--hor)" onclick="showView('agenda')" title="Bancas"><div><div><span class="hx-ic" data-ic="cap"></span><b id="hxBancas">0</b><span>Bancas</span></div></div></div>
+          <div class="hx" style="--c:var(--hyl)" onclick="showView('alertas')" title="Alertas"><div><div><span class="hx-ic" data-ic="bell"></span><b id="hxAlertas">0</b><span>Alertas</span></div></div></div>
+        </div>
       </div>
       <div class="dh-card" id="dhPrecisa"></div>
       <div class="dh-grid2">
@@ -1078,7 +1251,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             </div>
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
               <button class="btn btn-primary" onclick="cfg.nomeUsuario=document.getElementById('cfgNome').value.trim();saveCfg();toast('Nome salvo.')">Salvar nome</button>
-              <button class="btn btn-secondary btn-ico" onclick="alternarTema()"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg> Alternar tema (escuro · claro · robótico)</button>
+              <button class="btn btn-secondary btn-ico" onclick="alternarTema()"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg> Alternar tema (escuro · claro · robótico · holográfico)</button>
             </div>
           </div>
         </div>
@@ -1565,7 +1738,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="mais-item" onclick="closeModal('modalMais');showView('producao')"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg> Produção intelectual</div>
       <div class="mais-item" onclick="closeModal('modalMais');showView('alertas')"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg> Alertas <span id="maisAlertas" style="margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--red)"></span></div>
       <div class="mais-item" onclick="closeModal('modalMais');showView('configuracoes')"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></svg> Configurações</div>
-      <div class="mais-item" onclick="alternarTema()"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg> Alternar tema (escuro · claro · robótico)</div>
+      <div class="mais-item" onclick="alternarTema()"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg> Alternar tema (escuro · claro · robótico · holográfico)</div>
     </div>
   </div>
 </div>
@@ -3190,11 +3363,11 @@ function renderDashBancas(){
   }).join('');
 }
 
-const IC_P={"cpu":"<rect width=\"16\" height=\"16\" x=\"4\" y=\"4\" rx=\"2\"/><rect width=\"6\" height=\"6\" x=\"9\" y=\"9\" rx=\"1\"/><path d=\"M15 2v2\"/><path d=\"M15 20v2\"/><path d=\"M2 15h2\"/><path d=\"M2 9h2\"/><path d=\"M20 15h2\"/><path d=\"M20 9h2\"/><path d=\"M9 2v2\"/><path d=\"M9 20v2\"/>","home": "<path d=\"m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/><polyline points=\"9 22 9 12 15 12 15 22\"/>", "users": "<path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M22 21v-2a4 4 0 0 0-3-3.87\"/><path d=\"M16 3.13a4 4 0 0 1 0 7.75\"/>", "file": "<path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"/><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"/><path d=\"M16 13H8\"/><path d=\"M16 17H8\"/>", "cal": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"/><path d=\"M16 2v4\"/><path d=\"M8 2v4\"/><path d=\"M3 10h18\"/>", "award": "<circle cx=\"12\" cy=\"8\" r=\"6\"/><path d=\"M15.477 12.89 17 22l-5-3-5 3 1.523-9.11\"/>", "bell": "<path d=\"M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9\"/><path d=\"M10.3 21a1.94 1.94 0 0 0 3.4 0\"/>", "sliders": "<line x1=\"21\" x2=\"14\" y1=\"4\" y2=\"4\"/><line x1=\"10\" x2=\"3\" y1=\"4\" y2=\"4\"/><line x1=\"21\" x2=\"12\" y1=\"12\" y2=\"12\"/><line x1=\"8\" x2=\"3\" y1=\"12\" y2=\"12\"/><line x1=\"21\" x2=\"16\" y1=\"20\" y2=\"20\"/><line x1=\"12\" x2=\"3\" y1=\"20\" y2=\"20\"/><line x1=\"14\" x2=\"14\" y1=\"2\" y2=\"6\"/><line x1=\"8\" x2=\"8\" y1=\"10\" y2=\"14\"/><line x1=\"16\" x2=\"16\" y1=\"18\" y2=\"22\"/>", "dots": "<circle cx=\"12\" cy=\"12\" r=\"1\"/><circle cx=\"19\" cy=\"12\" r=\"1\"/><circle cx=\"5\" cy=\"12\" r=\"1\"/>", "search": "<circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/>", "plus": "<path d=\"M5 12h14\"/><path d=\"M12 5v14\"/>", "sun": "<circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2\"/><path d=\"M12 20v2\"/><path d=\"m4.93 4.93 1.41 1.41\"/><path d=\"m17.66 17.66 1.41 1.41\"/><path d=\"M2 12h2\"/><path d=\"M20 12h2\"/><path d=\"m6.34 17.66-1.41 1.41\"/><path d=\"m19.07 4.93-1.41 1.41\"/>", "moon": "<path d=\"M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z\"/>", "refresh": "<path d=\"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8\"/><path d=\"M21 3v5h-5\"/><path d=\"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16\"/><path d=\"M8 16H3v5\"/>", "msg": "<path d=\"M7.9 20A9 9 0 1 0 4 16.1L2 22Z\"/><path d=\"M8 12h8\"/><path d=\"M12 8v8\"/>", "user": "<path d=\"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/>", "cap": "<path d=\"M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z\"/><path d=\"M22 10v6\"/><path d=\"M6 12.5V16a6 3 0 0 0 12 0v-3.5\"/>", "clock": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><polyline points=\"12 6 12 12 16 14\"/>", "check": "<path d=\"M20 6 9 17l-5-5\"/>", "chart": "<path d=\"M3 3v18h18\"/><path d=\"M18 17V9\"/><path d=\"M13 17V5\"/><path d=\"M8 17v-3\"/>", "send": "<path d=\"m22 2-7 20-4-9-9-4Z\"/><path d=\"M22 2 11 13\"/>", "left": "<path d=\"m15 18-6-6 6-6\"/>", "right": "<path d=\"m9 18 6-6-6-6\"/>"};
+const IC_P={"hexa":"<path d=\"M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/>","pause":"<rect x=\"6\" y=\"4\" width=\"4\" height=\"16\" rx=\"1\"/><rect x=\"14\" y=\"4\" width=\"4\" height=\"16\" rx=\"1\"/>","play":"<path d=\"M6 4l14 8-14 8z\"/>","cpu":"<rect width=\"16\" height=\"16\" x=\"4\" y=\"4\" rx=\"2\"/><rect width=\"6\" height=\"6\" x=\"9\" y=\"9\" rx=\"1\"/><path d=\"M15 2v2\"/><path d=\"M15 20v2\"/><path d=\"M2 15h2\"/><path d=\"M2 9h2\"/><path d=\"M20 15h2\"/><path d=\"M20 9h2\"/><path d=\"M9 2v2\"/><path d=\"M9 20v2\"/>","home": "<path d=\"m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/><polyline points=\"9 22 9 12 15 12 15 22\"/>", "users": "<path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M22 21v-2a4 4 0 0 0-3-3.87\"/><path d=\"M16 3.13a4 4 0 0 1 0 7.75\"/>", "file": "<path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"/><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"/><path d=\"M16 13H8\"/><path d=\"M16 17H8\"/>", "cal": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"/><path d=\"M16 2v4\"/><path d=\"M8 2v4\"/><path d=\"M3 10h18\"/>", "award": "<circle cx=\"12\" cy=\"8\" r=\"6\"/><path d=\"M15.477 12.89 17 22l-5-3-5 3 1.523-9.11\"/>", "bell": "<path d=\"M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9\"/><path d=\"M10.3 21a1.94 1.94 0 0 0 3.4 0\"/>", "sliders": "<line x1=\"21\" x2=\"14\" y1=\"4\" y2=\"4\"/><line x1=\"10\" x2=\"3\" y1=\"4\" y2=\"4\"/><line x1=\"21\" x2=\"12\" y1=\"12\" y2=\"12\"/><line x1=\"8\" x2=\"3\" y1=\"12\" y2=\"12\"/><line x1=\"21\" x2=\"16\" y1=\"20\" y2=\"20\"/><line x1=\"12\" x2=\"3\" y1=\"20\" y2=\"20\"/><line x1=\"14\" x2=\"14\" y1=\"2\" y2=\"6\"/><line x1=\"8\" x2=\"8\" y1=\"10\" y2=\"14\"/><line x1=\"16\" x2=\"16\" y1=\"18\" y2=\"22\"/>", "dots": "<circle cx=\"12\" cy=\"12\" r=\"1\"/><circle cx=\"19\" cy=\"12\" r=\"1\"/><circle cx=\"5\" cy=\"12\" r=\"1\"/>", "search": "<circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/>", "plus": "<path d=\"M5 12h14\"/><path d=\"M12 5v14\"/>", "sun": "<circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2\"/><path d=\"M12 20v2\"/><path d=\"m4.93 4.93 1.41 1.41\"/><path d=\"m17.66 17.66 1.41 1.41\"/><path d=\"M2 12h2\"/><path d=\"M20 12h2\"/><path d=\"m6.34 17.66-1.41 1.41\"/><path d=\"m19.07 4.93-1.41 1.41\"/>", "moon": "<path d=\"M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z\"/>", "refresh": "<path d=\"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8\"/><path d=\"M21 3v5h-5\"/><path d=\"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16\"/><path d=\"M8 16H3v5\"/>", "msg": "<path d=\"M7.9 20A9 9 0 1 0 4 16.1L2 22Z\"/><path d=\"M8 12h8\"/><path d=\"M12 8v8\"/>", "user": "<path d=\"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/>", "cap": "<path d=\"M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z\"/><path d=\"M22 10v6\"/><path d=\"M6 12.5V16a6 3 0 0 0 12 0v-3.5\"/>", "clock": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><polyline points=\"12 6 12 12 16 14\"/>", "check": "<path d=\"M20 6 9 17l-5-5\"/>", "chart": "<path d=\"M3 3v18h18\"/><path d=\"M18 17V9\"/><path d=\"M13 17V5\"/><path d=\"M8 17v-3\"/>", "send": "<path d=\"m22 2-7 20-4-9-9-4Z\"/><path d=\"M22 2 11 13\"/>", "left": "<path d=\"m15 18-6-6 6-6\"/>", "right": "<path d=\"m9 18 6-6-6-6\"/>"};
 function ic(n,s){s=s||16;return '<svg class="ic" width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(IC_P[n]||'')+'</svg>';}
 
 // ─── TEMA ─────────────────────────────────────────────────────
-const TEMAS=['dark','light','robo'], TEMA_NOME={dark:'escuro',light:'claro',robo:'robótico'}, TEMA_ICO={dark:'moon',light:'sun',robo:'cpu'}, TEMA_COR={dark:'#0d1117',light:'#f6f8fa',robo:'#0a0f14'};
+const TEMAS=['dark','light','robo','holo'], TEMA_NOME={dark:'escuro',light:'claro',robo:'robótico',holo:'holográfico'}, TEMA_ICO={dark:'moon',light:'sun',robo:'cpu',holo:'hexa'}, TEMA_COR={dark:'#0d1117',light:'#f6f8fa',robo:'#0a0f14',holo:'#04070d'};
 function temaAtual(){const t=document.documentElement.getAttribute('data-theme');return TEMAS.includes(t)?t:'dark';}
 function aplicarTemaUI(){
   const t=temaAtual(), prox=TEMAS[(TEMAS.indexOf(t)+1)%TEMAS.length];
@@ -3205,8 +3378,210 @@ function definirTema(t){
   if(t==='dark') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme',t);
   try{localStorage.setItem('labtheme',t);}catch(e){}
   aplicarTemaUI();
+  holoAtualizar();
 }
 function alternarTema(){const t=temaAtual();definirTema(TEMAS[(TEMAS.indexOf(t)+1)%TEMAS.length]);toast('Tema '+TEMA_NOME[temaAtual()]);}
+
+const RD_B64='A/APwH4ABAPwADwA/A8HwH+AHwAfgHwD+AAAfgAP4AfA8HwP8AD4APwD4B/wAAfAf/+APg8HwP4AH8gH4D4A/+AAfAf//APg8DwPwAf/wD4B8AH/4AfAf4fwPg8DwPgD//8B8B+AB/+AfgfgPwHgcD4AAH8H8A+A/AAP/gPgAAHwHgeB8AAf4D+A+A/wAA/wHwAAD4HweB+AB/wB+AfAf+AAP4D8AAD4HweA/AH/AB+AfAP/wAH4B+AAD4HwfAfAf8AB8A/AD/+AD8A/gAH4HwPAPz/wAD4A/AAP/gB+Af///4HwPgD//AAHwB+AAA/4A/AH///wDwHwB/4AA/gH8AAAP+AfgD///gDwHwA+AAP/APwBwAB/AP4Af/8ADwD4B8AB//AfgH+AA/gH8AAAAAH4D8D4AH/4A/AP/wAPwD+AAAAAP8B8H4Af/AB+Af/+AH4A/AAAAA/+A/fwB/wAD8A/j/gD8AfgAAAD8fAf/gH+AAH4B8AfwB+AHwAD//4PgP+AP4AAPwD4AP4A+AB/////wHwHwAfwAA/gHwAD+A/AB/////gHwHgA/AB//APwAB/AfwD/////gDwHgD+AH//APgGAfgP8P/wAAHwDwHgH8AP/PAPgfgfgH//wAAAD4D4PgP4A/4HAPgfgPwB//AAAAD8B4PgPwB/APgPgfgHwAP+AAAAB8B4PgfgH+APgPgfgD4AAAAAAAB+B4PgfAP4APgPgPgB4AAAAH/8A+B4PAfAPwA/gPgPgB8AAAA//+A+BwPAfAfgA/AfgHgB/4AAH///A+BwPAfAfAD+AfAHgH//+B//w/A+DwPAfA/AP4A/AH///////8APg+DwfAfA+AfgB+AP//h////gAPg+DwfAfA+A/AD8Af/+AB//+AAHg+DwfAfA+A+AH4B/n4AAAAAAAHg+DweAfA+B+APwD+AAAAAAAAAHA+DweAfA+B8AfgH8AAAAAAAAAPA8DweAfA+A8A/gP4AAAAAAAA+PA8DwOA+A+A8D/APwAA//4AAH/+A8DwPB+A/Ae/+AfgA/////g//+A8HgP/8A+Af/4A/AH/////////A8HgP/4A+Af/gB+Af/////////A8Hgf/wB+AfAAD8A/+AAAP//4Hg8HgfAAD8A+AAD4B/AAAAAf8AHg4HgeAAP4B+AAHwD8AAAAAAAAHw4PA+AAfwB8AAPwH4AAAAAAAAHw4PA8AD/gD8B//gHwAB/AAAAADw4PB8AP+AH4D//gHwAf//wAAADh4PB8A/4AfwH/fgH4B////gAAAB4OB4D/gA/gH4HwD8D////4B4AB4eD4D+AD/AHgD4D/P8AAf4D+ABweDwH4AP8APAD8A//wAAH8H/gBweDwPwAfwAfAB+AP/AAAD4H/4DwcDwPgB/gA/gA/AB+AHgD4P/+Dw8HwPgD+AD/4AfgA8APwD4Pn/Hg8HgPgH4Af/+APwA8AfwHwPB//g8HgPAPwB/A/gH4A+AfwHwOA//A4HgPAfgD/AfwD8A+AfgPgeAP/B4HgPAfAH4AP4B+A+A/AfgeAAPB4HgPAfAPwAD8A+A/A+AfAeAAHB4HgPAfAfgAB+AfA/B8A+A+AAHB4HwPAeA/A8A/AfA+B8B+A8AAHB4HwfA+A+B+AfAPgcD4B8B8AAGB4HwfA+A+D+APgPgAD4D4B4DAGB8HwfA+A8D/APwHwAHwH4D4PwHA8HweA+B8B/gH4H4APgHwHwP//A+DgeA+B8APwD4D8AfgPgHwf//AfAA+A8B8AD4B8B8B/AfgPgf//gPgA+B8B8AB8B+A/H+AfAfAf//wPwA8B8B4AA+A+Af/4A+AfA+Hn4D4B8B8D4Ag/AfAH/wB+A+A8AD4B8B8B4D4PgfAfAH8AD8B+B4AB8A8B8D4DwfgPgPgHwAP4B8B4AA+A+B4D4DwPgPgPgHgAfwD4DwAA+AeB4D4HwPgPgPgPgB/gH4DwAAfAeB4D4HwPgPgPgPgH+APwHwAAPgOB4DwHwPgPgPgfgP8AfgPgPAHwOD4DwHwPgPgPgfAPwA/APAfwHwOD4HwHwPgPgfAfAfgB+AfA/4D4OD4HwHwPgPgfAfAfAD8A+B/8B8eD4HwHgPgPAfAeA/AH4A+B/+B+8D4HwPgPgfAfA+A+APwB8D4/A/8D4HwPgPgfAfA+A+AfgD4HwfAf8D4HwPgPgfAfAfB+A/AH4HgPgH8DwHwPgPAfAfAfA+B+APwPgHwD4DwHgPgPAfAfAfgYD8AfgPAH4B4HwPgPgfAfAfAPgAD4A/AfAD4AAHwPgPgfAfAPgHwAPwB/AeAB8AAPwPgPgfAfAPwD4AfgD+A+AA+AAfgPgPgfAPgH4B8A/AH4A8DAfAA/APgPgfAPwD8B+A/APwB8HgPwB/APgPgfgHwB+A/B+AfgD4HgP4D+APgPgfgH4A/Afg8B/AD4PwH8H8AfgPgPwD8AfgPwAD8AHwP4D+P4A/APgP4B+APgH4AH4Afwf4B//gB/APgH8A/AHwD4AHwA/gf8A//AH+APgD+AfgD4B8APgD/A8eAP8AP8APgB/APwD8A/AfAH+A8fAD4A/wAfwB/gH4B+A/g+Af8B4PgB4B/AB/8AfwD8A+AP/8A/wB4PwB4D8AH//AP4B+AfAH/8B/AB4H4A4D4AP4fgD8A/AfgA/4D8AB4D8A4HwA/gPgB+AfgPwAPwH4ABwB+A4HwB/AHw';
+// Gera nuvem de pontos de um cérebro em vista lateral (2,5D). x: anterior(-) → posterior(+), y: para cima
+function gerarCerebro(N){
+  let sd=11; const rnd=()=>{sd=(sd*16807)%2147483647;return (sd-1)/2147483646;};
+  const hash=(i,j)=>{let h=Math.imul(i,374761393)+Math.imul(j,668265263);h=Math.imul(h^(h>>>13),1274126177);return ((h^(h>>>16))>>>0)/4294967295;};
+  const vn=(x,y)=>{const i=Math.floor(x),j=Math.floor(y),fx=x-i,fy=y-j,u=fx*fx*(3-2*fx),v=fy*fy*(3-2*fy);
+    const a=hash(i,j),b=hash(i+1,j),c=hash(i,j+1),d=hash(i+1,j+1);return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v;};
+  const fbm=(x,y)=>vn(x,y)*.6+vn(x*2.03+17.1,y*2.03+3.7)*.28+vn(x*4.1+5.3,y*4.1+9.1)*.12;
+  const E=(x,y,cx,cy,rx,ry,ang=0)=>{const c=Math.cos(ang),s=Math.sin(ang),dx=x-cx,dy=y-cy,u=(dx*c+dy*s)/rx,v=(-dx*s+dy*c)/ry;return u*u+v*v;};
+  // silhuetas: contorno lateral do cérebro por spline fechada em pontos anatômicos
+  const CTRL=[[-1.00,-0.05],[-0.95,0.22],[-0.79,0.45],[-0.53,0.62],[-0.18,0.72],[0.15,0.74],[0.46,0.66],[0.73,0.48],[0.93,0.22],[1.00,-0.04],
+    [0.93,-0.21],[0.72,-0.29],[0.47,-0.29],[0.31,-0.37],[0.15,-0.50],[-0.10,-0.56],[-0.34,-0.55],[-0.51,-0.46],[-0.60,-0.32],[-0.63,-0.24],[-0.79,-0.25],[-0.94,-0.18]];
+  const POL=[];
+  for(let k=0;k<CTRL.length;k++){const p0=CTRL[(k-1+CTRL.length)%CTRL.length],p1=CTRL[k],p2=CTRL[(k+1)%CTRL.length],p3=CTRL[(k+2)%CTRL.length];
+    for(let s=0;s<8;s++){const t=s/8,t2=t*t,t3=t2*t;POL.push([0,1].map(m=>0.5*((2*p1[m])+(-p0[m]+p2[m])*t+(2*p0[m]-5*p1[m]+4*p2[m]-p3[m])*t2+(-p0[m]+3*p1[m]-3*p2[m]+p3[m])*t3)));}}
+  // máscara rasterizada por varredura (rápida também no celular)
+  const GX0=-1.1,GY0=-1.05,GH=0.004,GNX=551,GNY=476,G=new Uint8Array(GNX*GNY);
+  for(let j=0;j<GNY;j++){const y=GY0+j*GH,xs=[];
+    for(let a=0,b=POL.length-1;a<POL.length;b=a++){const[xa,ya]=POL[a],[xb,yb]=POL[b];if((ya>y)!==(yb>y))xs.push((xb-xa)*(y-ya)/(yb-ya)+xa);}
+    xs.sort((m,n)=>m-n);
+    for(let k=0;k+1<xs.length;k+=2){const i0=Math.max(0,Math.ceil((xs[k]-GX0)/GH)),i1=Math.min(GNX-1,Math.floor((xs[k+1]-GX0)/GH));for(let i=i0;i<=i1;i++)G[j*GNX+i]=1;}}
+  const cerebroBase=(x,y)=>{const i=Math.round((x-GX0)/GH),j=Math.round((y-GY0)/GH);return i>=0&&j>=0&&i<GNX&&j<GNY&&G[j*GNX+i]===1;};
+  const cerebelo=(x,y)=>E(x,y,0.63,-0.46,0.34,0.19,-0.15)<1 && !cerebroBase(x,y);
+  const tronco=(x,y)=>{const t=(y+0.40)/-0.56; if(t<0||t>1) return false; const cx=0.21+0.10*t; return Math.abs(x-cx)<0.085-0.015*t && !cerebroBase(x,y) && !cerebelo(x,y);};
+  const dentro=(x,y)=>cerebroBase(x,y)||cerebelo(x,y)||tronco(x,y);
+  const borda=(x,y,r)=>{for(let k=0;k<8;k++){const a=k*Math.PI/4;if(!dentro(x+Math.cos(a)*r,y+Math.sin(a)*r))return true;}return false;};
+  // fissuras explícitas
+  const dSeg=(x,y,P)=>{let m=9;for(let i=0;i<P.length-1;i++){const[ax,ay]=P[i],[bx,by]=P[i+1],vx=bx-ax,vy=by-ay,t=Math.max(0,Math.min(1,((x-ax)*vx+(y-ay)*vy)/(vx*vx+vy*vy)));m=Math.min(m,Math.hypot(x-ax-t*vx,y-ay-t*vy));}return m;};
+  const SYLV=[[-0.62,-0.24],[-0.36,-0.17],[-0.06,-0.12],[0.21,-0.04],[0.37,0.07]];
+  const CENT=[[0.17,0.74],[0.11,0.54],[0.14,0.38],[0.05,0.20],[-0.01,0.04],[-0.05,-0.09]];
+  // giros: padrão de reação-difusão (Gray-Scott, labirinto) pré-calculado, 156×104 bits
+  const RDX=156,RDY=104,RD=new Float32Array(RDX*RDY);
+  {const bin=atob(RD_B64);for(let k=0;k<RDX*RDY;k++)RD[k]=(bin.charCodeAt(k>>3)>>(7-(k&7)))&1;
+   for(let it=0;it<2;it++){const T=RD.slice();for(let y=0;y<RDY;y++)for(let x=0;x<RDX;x++){let s=0,n=0;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const xx=x+dx,yy=y+dy;if(xx>=0&&yy>=0&&xx<RDX&&yy<RDY){s+=T[yy*RDX+xx];n++;}}RD[y*RDX+x]=s/n;}}}
+  const giro=(x,y)=>{const fx=(x+1.05)/2.1*(RDX-1), fy=(y+0.62)/1.4*(RDY-1);
+    const i=Math.max(0,Math.min(RDX-2,Math.floor(fx))), j=Math.max(0,Math.min(RDY-2,Math.floor(fy))), u=Math.min(1,Math.max(0,fx-i)), v=Math.min(1,Math.max(0,fy-j));
+    const a=RD[j*RDX+i],b=RD[j*RDX+i+1],c2=RD[(j+1)*RDX+i],d=RD[(j+1)*RDX+i+1];return a+(b-a)*u+(c2-a)*v+(a-b-c2+d)*u*v;};
+  // ── linhas de contorno (marching squares) → pontos densos ao longo das curvas ──
+  const P=[];
+  function contorno(F,mask,x0,x1,y0,y1,h,niveis,b,esp,jit){
+    const nx=Math.ceil((x1-x0)/h)+1, ny=Math.ceil((y1-y0)/h)+1, V=new Float32Array(nx*ny), M=new Uint8Array(nx*ny);
+    for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){const x=x0+i*h,y=y0+j*h;M[j*nx+i]=mask(x,y)?1:0;V[j*nx+i]=M[j*nx+i]?F(x,y):0;}
+    for(let j=0;j<ny-1;j++)for(let i=0;i<nx-1;i++){
+      const k=j*nx+i; if(!(M[k]&&M[k+1]&&M[k+nx]&&M[k+nx+1])) continue;
+      const a=V[k],bb=V[k+1],cc=V[k+nx+1],d=V[k+nx]; // cantos: (i,j) (i+1,j) (i+1,j+1) (i,j+1)
+      const lo=Math.min(a,bb,cc,d), hi=Math.max(a,bb,cc,d);
+      for(const L of niveis(lo,hi)){
+        const X=[]; const ed=(va,vb,xa,ya,xb,yb)=>{if((va<L)!==(vb<L)){const t=(L-va)/(vb-va);X.push([xa+(xb-xa)*t,ya+(yb-ya)*t]);}};
+        const x=x0+i*h,y=y0+j*h;
+        ed(a,bb,x,y,x+h,y); ed(bb,cc,x+h,y,x+h,y+h); ed(cc,d,x+h,y+h,x,y+h); ed(d,a,x,y+h,x,y);
+        for(let s=0;s+1<X.length;s+=2){const[ax,ay]=X[s],[bx,by]=X[s+1],len=Math.hypot(bx-ax,by-ay),n=Math.max(1,Math.round(len/esp));
+          for(let q=0;q<n;q++){const t=(q+rnd())/n;P.push([ax+(bx-ax)*t+(rnd()-.5)*jit, ay+(by-ay)*t+(rnd()-.5)*jit, 0, b*(0.75+0.25*rnd()), rnd()]);}}
+      }
+    }
+  }
+  const inteiros=(lo,hi)=>{const r=[];for(let L=Math.ceil(lo);L<=hi;L++)r.push(L);return r;};
+  const dS=(x,y)=>dSeg(x+0.012*Math.sin(y*31),y+0.014*Math.sin(x*27),SYLV), dC=(x,y)=>dSeg(x+0.014*Math.sin(y*29),y,CENT);
+  const semFissura=(x,y)=>cerebroBase(x,y)&&dS(x,y)>0.028&&dC(x,y)>0.018;
+  // sulcos (bordas dos giros)
+  contorno(giro,semFissura,-1.05,1.05,-0.62,0.78,0.0065,()=>[0.5],1.0,0.0058,0.003);
+  // silhueta de cada estrutura
+  contorno((x,y)=>dentro(x,y)?1:0,()=>true,-1.15,1.15,-1.05,0.85,0.008,()=>[0.5],1.0,0.0045,0.004);
+  contorno((x,y)=>cerebroBase(x,y)?1:0,(x,y)=>x>0&&y<-0.1,-0.2,1.1,-0.7,0.0,0.008,()=>[0.5],0.9,0.005,0.004); // limite cérebro/cerebelo
+  // fissuras: bordas (lateral e central) bem marcadas
+  contorno(dS,cerebroBase,-0.7,0.45,-0.3,0.15,0.006,()=>[0.028],1.0,0.005,0.003);
+  contorno(dC,cerebroBase,-0.15,0.25,-0.15,0.8,0.006,()=>[0.018],1.0,0.005,0.003);
+  // folhas do cerebelo
+  contorno((x,y)=>(y+0.5*(x-0.63)*(x-0.63)+0.02*Math.sin(x*9))*24,cerebelo,0.2,1.0,-0.72,-0.2,0.0075,inteiros,0.85,0.006,0.003);
+  // tronco: estrias verticais
+  contorno((x,y)=>(x-0.10*((y+0.40)/-0.56))*16,tronco,0.05,0.45,-0.99,-0.30,0.007,inteiros,0.6,0.008,0.003);
+  // preenchimento tênue (volume)
+  let n=0,cont=0;
+  while(cont<N*0.45&&n<N*20){n++;const x=rnd()*2.2-1.1,y=rnd()*1.9-1.05;if(!dentro(x,y))continue;cont++;
+    let b=0.18+0.1*rnd(); if(semFissura(x,y)){const g=giro(x,y);if(g<0.35&&rnd()<0.75)continue;b=0.1+0.42*g*g;}
+    P.push([x,y,0,b,rnd()]);}
+  // profundidade (cúpula) e face oposta tênue
+  for(const p of P){p[2]=Math.sqrt(Math.max(0,1-E(p[0],p[1],0.02,-0.05,1.1,0.85)))*0.62;}
+  const n2=P.length*0.3|0;
+  for(let i=0;i<n2;i++){const p=P[(rnd()*P.length)|0];P.push([p[0],p[1],-p[2]*0.9,p[3]*0.3,rnd()]);}
+  return P;
+}
+
+// ─── HOLOGRAMA DO INÍCIO (tema holográfico) ───────────────────
+// Cérebro de partículas, circuitos e fluxo de luz do anel até o cérebro. Só anima com o tema holográfico,
+// na tela Início e com a aba visível; pode ser pausado (preferência guardada neste aparelho).
+function holoDados(ativos,cnt,hoje){
+  const el=id=>document.getElementById(id); if(!el('holoKpi')) return;
+  el('holoKpi').textContent=ativos.length;
+  let niv=[['IC',cnt(['IC']),'var(--hcy)','IC'],['TCC',cnt(['TCC']),'var(--hpk)','TCC'],['Especialização',cnt(['ESP']),'var(--hor)','Esp.'],['Mestrado',cnt(['MSC']),'var(--hyl)','Mestr.'],['Doutorado',cnt(['PHD']),'var(--purple)','Dout.']].filter(n=>n[1]>0);
+  if(niv.length>4){const m=niv.find(n=>n[0]==='Mestrado'),d=niv.find(n=>n[0]==='Doutorado');niv=niv.filter(n=>n!==m&&n!==d).concat([['Mestr./Dout.',m[1]+d[1],'var(--hyl)','M/D']]);}
+  const pos=[1,3,2,4];
+  for(let k=1;k<=4;k++){const o=el('holoOrb'+k);o.innerHTML='';o.style.display='none';}
+  niv.forEach((n,i)=>{const o=el('holoOrb'+pos[i]);o.style.display='';o.style.setProperty('--c',n[2]);o.title='Ver orientandos';
+    o.onclick=()=>showView('orientandos');o.innerHTML=`<i>${n[1]}</i><span class="ol">${escHTML(n[0])}</span><span class="os">${escHTML(n[3])}</span>`;});
+  el('hxManu').textContent=manuscripts.filter(m=>m.subStatus!=='publicado').length;
+  el('hxAval').textContent=manuscripts.filter(m=>['submetido','revisao'].includes(m.subStatus)).length;
+  el('hxBancas').textContent=bancas.filter(b=>b.date&&b.date>=hoje).length;
+  el('hxAlertas').textContent=ativos.filter(s=>inactivityDays(s)>=cfg.warnDays).length;
+  document.querySelectorAll('#holoHero .hx-ic').forEach(s=>{if(!s.firstChild) s.innerHTML=ic(s.dataset.ic,16);});
+  holoAtualizar();
+}
+const HOLO={cerebro:null,gerando:false,rodando:false,t:0,nq:0};
+function holoAnimLigada(){try{return localStorage.getItem('labholoanim')!=='0';}catch(e){return true;}}
+function holoReduz(){return !!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);}
+function holoAlternarAnim(){
+  try{localStorage.setItem('labholoanim',holoAnimLigada()?'0':'1');}catch(e){}
+  toast(holoAnimLigada()?'Animação do holograma ligada.':'Animação do holograma pausada.');
+  holoAtualizar();
+}
+function holoVisivel(){const h=document.getElementById('holoHero');return temaAtual()==='holo'&&currentView==='dashboard'&&!document.hidden&&h&&h.offsetParent!==null;}
+function holoAtualizar(){
+  const h=document.getElementById('holoHero'); if(!h) return;
+  const anim=holoAnimLigada()&&!holoReduz();
+  h.classList.toggle('parado',!anim);
+  const b=document.getElementById('holoAnimBtn'); if(b){b.innerHTML=ic(anim?'pause':'play',12);b.title=anim?'Pausar animação':'Ligar animação';}
+  if(!holoVisivel()) return;
+  if(!HOLO.cerebro){
+    if(HOLO.gerando) return; HOLO.gerando=true;
+    setTimeout(()=>{try{HOLO.cerebro=gerarCerebro(9000);}catch(e){console.warn('Holograma:',e);HOLO.cerebro=[];}HOLO.gerando=false;holoAtualizar();},40);
+    return;
+  }
+  holoPreparar();
+  if(anim){if(!HOLO.rodando){HOLO.rodando=true;requestAnimationFrame(holoQuadro);}}
+  else holoDesenhar(false);
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden) holoAtualizar();});
+window.addEventListener('resize',()=>{HOLO.W=0;if(holoVisivel()) holoAtualizar();});
+function holoSprite(r,g,b){const s=document.createElement('canvas');s.width=s.height=32;const c=s.getContext('2d');const gr=c.createRadialGradient(16,16,0,16,16,16);
+  gr.addColorStop(0,'rgba(255,255,255,1)');gr.addColorStop(.18,`rgba(${r},${g},${b},.95)`);gr.addColorStop(.5,`rgba(${r},${g},${b},.25)`);gr.addColorStop(1,`rgba(${r},${g},${b},0)`);
+  c.fillStyle=gr;c.fillRect(0,0,32,32);return s;}
+function holoPreparar(){
+  const cv=document.getElementById('holoCanvas'), W=cv.clientWidth, H=cv.clientHeight, dpr=Math.min(window.devicePixelRatio||1,2);
+  if(HOLO.W===W&&HOLO.H===H&&HOLO.dpr===dpr) return;
+  Object.assign(HOLO,{cv,cx:cv.getContext('2d'),W,H,dpr});
+  cv.width=W*dpr;cv.height=H*dpr;
+  HOLO.bc=document.createElement('canvas');HOLO.bc.width=W*dpr;HOLO.bc.height=H*dpr;HOLO.bx=HOLO.bc.getContext('2d');HOLO.nq=0;
+  HOLO.anelY=document.getElementById('holoLinha').getBoundingClientRect().top-cv.getBoundingClientRect().top;
+  HOLO.S=Math.min(H*.23,W*.17);HOLO.CY=H*.44;
+  HOLO.fundo=document.createElement('canvas');HOLO.fundo.width=W*dpr;HOLO.fundo.height=H*dpr;
+  {const f=HOLO.fundo.getContext('2d');f.setTransform(dpr,0,0,dpr,0,0);const gr=f.createRadialGradient(W/2,HOLO.CY,0,W/2,HOLO.CY,HOLO.S*2.1);
+   gr.addColorStop(0,'rgba(255,190,80,.30)');gr.addColorStop(.4,'rgba(80,200,255,.10)');gr.addColorStop(1,'rgba(0,0,0,0)');f.fillStyle=gr;f.fillRect(0,0,W,H);}
+  if(!HOLO.OURO){
+    HOLO.OURO=holoSprite(255,196,80);HOLO.CIANO=holoSprite(120,235,255);
+    let sd=7; const rnd=()=>{sd=(sd*16807)%2147483647;return (sd-1)/2147483646;}; HOLO.rnd=rnd;
+    const L=1.4, FACES=[[0,1],[0,-1],[1,1],[1,-1],[2,1],[2,-1]];
+    const naFace=(f,a,b)=>{const[ax,s]=f,q=[0,0,0];const o=[0,1,2].filter(k=>k!==ax);q[ax]=s*L;q[o[0]]=a*L;q[o[1]]=b*L;return q;};
+    HOLO.T=[];HOLO.LUZ=[];
+    FACES.forEach(f=>{const vert=f[0]!==1;
+      for(let k=0;k<7;k++){const a=rnd()*1.8-.9,b1=-1+rnd()*.9,da=(rnd()<.5?-1:1)*(.1+rnd()*.25),b2=Math.min(.95,b1+.25+rnd()*.7);
+        const P=(a_,b_)=>vert?naFace(f,a_,b_):naFace(f,b_,a_);HOLO.T.push({pts:[P(a,-1),P(a,b1),P(a+da,b1+Math.abs(da)),P(a+da,b2)],ph:rnd()*6.3});}
+      for(let k=0;k<22;k++) HOLO.LUZ.push({p:naFace(f,rnd()*2-1,rnd()*2-1),ph:rnd()*6.3,o:rnd()<.78});});
+    HOLO.FL=[];for(let i=0;i<70;i++)HOLO.FL.push({s:rnd(),v:.0035+rnd()*.006,u:rnd()*2-1,w:rnd()*6.3,o:rnd()<.4});
+  }
+}
+function holoQuadro(){
+  if(!holoVisivel()||!holoAnimLigada()||holoReduz()){HOLO.rodando=false;return;}
+  holoDesenhar(true);
+  requestAnimationFrame(holoQuadro);
+}
+function holoDesenhar(anim){
+  const H_=HOLO, cx=H_.cx, W=H_.W, H=H_.H, dpr=H_.dpr, S=H_.S, CY=H_.CY, B=H_.cerebro, rnd=H_.rnd;
+  if(!cx||!W) return;
+  if(anim) H_.t+=.016;
+  const t=H_.t;
+  const proj=(p,cy,sy,cp,sp)=>{const x=p[0]*cy+p[2]*sy, z=-p[0]*sy+p[2]*cy, y=p[1];const y2=y*cp-z*sp, z2=y*sp+z*cp; const k=S*9/(9+z2); return [W/2+x*k, CY-y2*k, z2];};
+  const yaw=-.62+.30*Math.sin(t*.28), pit=.34, cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pit),sp=Math.sin(pit);
+  const yb=-.10+.20*Math.sin(t*.28+.6), pb=.08, cyb=Math.cos(yb),syb=Math.sin(yb),cpb=Math.cos(pb),spb=Math.sin(pb);
+  cx.setTransform(1,0,0,1,0,0); cx.clearRect(0,0,W*dpr,H*dpr); cx.globalCompositeOperation='lighter';
+  cx.drawImage(H_.fundo,0,0); cx.setTransform(dpr,0,0,dpr,0,0);
+  // trilhas de circuito e luzes do volume (sem arestas)
+  cx.lineWidth=.8;
+  H_.T.forEach(tr=>{const a=.14+.2*(.5+.5*Math.sin(t*1.4+tr.ph));cx.strokeStyle=`rgba(255,205,110,${a.toFixed(3)})`;cx.beginPath();
+    tr.pts.forEach((p,i)=>{const q=proj(p,cy,sy,cp,sp);i?cx.lineTo(q[0],q[1]):cx.moveTo(q[0],q[1]);});cx.stroke();
+    const e=proj(tr.pts[3],cy,sy,cp,sp);cx.globalAlpha=Math.max(0,.5+.45*Math.sin(t*2+tr.ph));cx.drawImage(H_.OURO,e[0]-5,e[1]-5,10,10);cx.globalAlpha=1;});
+  H_.LUZ.forEach(l=>{const q=proj(l.p,cy,sy,cp,sp),a=Math.max(0,Math.sin(t*1.7+l.ph));if(a<.05)return;cx.globalAlpha=a*.85;const s=4+a*4;cx.drawImage(l.o?H_.OURO:H_.CIANO,q[0]-s/2,q[1]-s/2,s,s);});
+  cx.globalAlpha=1;
+  // partículas: saem do centro do anel e sobem com o feixe até o cérebro
+  const y0=H_.anelY, y1=CY+S*.2, hw0=W*.025, hw1=S*1.15;
+  H_.FL.forEach(f=>{ if(anim){f.s+=f.v; if(f.s>1){f.s=0;f.u=rnd()*2-1;}}
+    const e=f.s*f.s*(3-2*f.s), y=y0+(y1-y0)*e, hw=hw0+(hw1-hw0)*e, x=W/2+f.u*hw+Math.sin(t*2+f.w)*2;
+    const a=Math.min(1,f.s*8)*Math.min(1,(1-f.s)*3.5); if(a<=0) return;
+    const sz=3+4*(1-f.s); cx.globalAlpha=a; cx.drawImage(f.o?H_.OURO:H_.CIANO,x-sz/2,y-sz/2,sz,sz);
+    cx.globalAlpha=a*.35; cx.drawImage(f.o?H_.OURO:H_.CIANO,x-sz/2,y+sz*.9-sz/2,sz*.8,sz*1.6);});
+  cx.globalAlpha=1;
+  // cérebro: redesenhado a cada 3 quadros num canvas auxiliar, pontos agrupados por brilho
+  if(!anim||H_.nq++%3===0){
+    const bx=H_.bx; bx.setTransform(dpr,0,0,dpr,0,0); bx.clearRect(0,0,W,H); bx.globalCompositeOperation='lighter';
+    const NB=8, cam=[]; for(let k=0;k<NB*2;k++) cam[k]=new Path2D();
+    const br=[], sc=1.5;
+    for(let i=0;i<B.length;i++){const b=B[i];const q=proj([b[0]*sc,b[1]*sc+.05,b[2]*sc],cyb,syb,cpb,spb);
+      const tw=.72+.28*Math.sin(t*2.2+b[4]*40), a=b[3]*tw*(q[2]>0?.45:1);
+      if(b[3]>.85&&b[4]<.012){br.push(q[0],q[1],a);continue;}
+      const big=b[3]>.85?1:0, s=big?1.6:1.25, k=Math.min(NB-1,(a*NB)|0)+big*NB;
+      cam[k].rect(q[0]-s/2,q[1]-s/2,s,s);}
+    for(let k=0;k<NB*2;k++){bx.fillStyle=`rgba(205,248,255,${(((k%NB)+.6)/NB).toFixed(3)})`;bx.fill(cam[k]);}
+    for(let i=0;i<br.length;i+=3){bx.globalAlpha=Math.min(1,Math.max(0,br[i+2]*(.6+.4*Math.sin(t*3+i))));bx.drawImage(H_.OURO,br[i]-4,br[i+1]-4,8,8);}
+    bx.globalAlpha=1;
+  }
+  cx.setTransform(1,0,0,1,0,0); cx.drawImage(H_.bc,0,0);
+}
 
 // ─── EVENTOS (fonte única para Agenda e Início) ───────────────
 function addDiasISO(iso,n){const d=new Date(iso+'T12:00:00');d.setDate(d.getDate()+n);return isoLocal(d);}
@@ -3237,6 +3612,7 @@ function renderDashNovo(){
   const nEsp=cnt(['ESP']), nMsc=cnt(['MSC']), nPhd=cnt(['PHD']), nPos=nEsp+nMsc+nPhd;
   const posTxt=`${nPos} pós-graduação`+(nPos?' ('+[nEsp&&nEsp+' especialização',nMsc&&nMsc+' mestrado',nPhd&&nPhd+' doutorado'].filter(Boolean).join(', ')+')':'');
   el('dhSub').textContent=dt.charAt(0).toUpperCase()+dt.slice(1)+` · ${ativos.length} orientandos ativos · ${cnt(['IC'])} IC · ${cnt(['TCC'])} TCC · ${posTxt}`;
+  holoDados(ativos,cnt,hoje);
 
   // Precisa de você
   const itens=[];
