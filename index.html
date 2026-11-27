@@ -822,7 +822,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 @keyframes hhPisca{0%,100%{opacity:.85}45%{opacity:.7}47%{opacity:.95}49%{opacity:.6}52%{opacity:.9}}
 @media (prefers-reduced-motion:reduce){.holo-hero *{animation:none!important}}
 @media (max-width:1100px){:root[data-theme="holo"] .holo-hero{grid-template-columns:110px minmax(0,1fr) 110px;gap:12px}.hx b{font-size:18px}.hx span{font-size:7.5px}}
-@media (max-width:768px){
+@media (max-width:599px),(max-width:768px) and (max-height:520px){
   :root[data-theme="holo"] .holo-hero{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:2px 0 12px}
   :root[data-theme="holo"] .hh-hex{display:contents}
   .hh-stage{grid-column:1/-1;order:-1;height:380px}
@@ -872,7 +872,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 #setupQR{background:#fff;padding:10px;border-radius:6px;display:inline-block;margin:8px 0}
 
 /* ═══ MOBILE (≤768px) — apenas sobrescreve, não altera o layout desktop ═══ */
-@media (max-width:768px){
+@media (max-width:599px),(max-width:768px) and (max-height:520px){
   body{display:block}
   /* Sidebar vira barra de navegação inferior */
   .sidebar{top:auto;bottom:0;left:0;right:0;width:100%;min-height:0;height:auto;flex-direction:row;border-right:none;border-top:1px solid var(--border);z-index:150;padding-bottom:env(safe-area-inset-bottom)}
@@ -930,6 +930,42 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
   .form-control{font-size:16px}
   .toast-wrap{bottom:80px;right:12px;left:12px}
 }
+/* ═══ TABLET: barra de ícones à esquerda, conteúdo com largura de tablet ═══ */
+@media (min-width:769px) and (max-width:1024px),(min-width:600px) and (max-width:768px) and (min-height:521px){
+  :root{--sidebar:84px}
+  .sidebar-logo{padding:16px 6px 12px;text-align:center}
+  .sidebar-logo .brand{font-size:0}
+  .sidebar-logo .brand::before{content:'LR';font-size:16px;letter-spacing:.1em}
+  .sidebar-logo .sub{display:none}
+  .sidebar-nav{padding:6px;overflow-y:auto;flex:1}
+  .nav-item{flex-direction:column;justify-content:center;gap:4px;padding:9px 2px;font-size:10.5px;text-align:center;line-height:1.15;position:relative;min-height:56px}
+  .nav-icon .ic{width:20px;height:20px}
+  .nl-full{display:none}
+  .nl-short{display:inline}
+  #alert-count{position:absolute;top:5px;right:12px;margin:0 !important}
+  .sidebar-footer{padding:10px 6px}
+  .sync-status{justify-content:center}
+  #syncText{display:none}
+  .content{padding:18px 20px}
+  .topbar{padding:12px 20px}
+}
+@media (min-width:600px) and (max-width:768px) and (min-height:521px){
+  .tb-lbl{display:none}
+  :root[data-theme="holo"] .holo-hero{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+  :root[data-theme="holo"] .hh-hex{display:contents}
+  .hh-stage{grid-column:1/-1;order:-1}
+  .hx{max-width:140px;width:100%;justify-self:center}
+}
+/* Toque em tablet: alvos maiores e campos sem zoom automático do iPad */
+@media (pointer:coarse) and (min-width:600px){
+  .btn{min-height:40px}
+  .btn-sm{min-height:36px;padding-left:12px;padding-right:12px}
+  .form-control{font-size:16px;min-height:42px}
+  textarea.form-control{min-height:0}
+  .modal-close{min-width:40px;min-height:40px}
+  .ct-st{min-height:34px}
+  .dh-search kbd{display:none}
+}
 </style>
 </head>
 <body>
@@ -954,7 +990,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg></span> <span>Agenda</span>
     </div>
     <div class="nav-item nav-extra" onclick="showView('meus')" id="nav-meus">
-      <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span> <span>Meus artigos</span>
+      <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span> <span class="nl-full">Meus artigos</span><span class="nl-short">Artigos</span>
     </div>
     <div class="nav-item nav-extra" onclick="showView('periodicos')" id="nav-periodicos">
       <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></span> <span>Periódicos</span>
@@ -963,7 +999,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg></span> <span>Dados</span>
     </div>
     <div class="nav-item nav-extra" onclick="showView('carteira')" id="nav-carteira">
-      <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span> <span>Carteira de temas</span>
+      <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span> <span class="nl-full">Carteira de temas</span><span class="nl-short">Carteira</span>
     </div>
     <div class="nav-item nav-extra" onclick="showView('producao')" id="nav-producao">
       <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></span> <span>Produção</span>
@@ -972,7 +1008,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span> <span>Alertas</span> <span id="alert-count" style="margin-left:auto;font-family:var(--mono);font-size:9px;background:var(--red);color:#fff;border-radius:10px;padding:1px 5px;display:none"></span>
     </div>
     <div class="nav-item nav-extra" onclick="showView('configuracoes')" id="nav-configuracoes" style="margin-top:auto">
-      <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></svg></span> <span>Configurações</span>
+      <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></svg></span> <span class="nl-full">Configurações</span><span class="nl-short">Ajustes</span>
     </div>
     <div class="nav-item nav-mais" onclick="openModal('modalMais')" id="nav-mais">
       <span class="nav-icon"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></span> <span>Mais</span> <span id="alert-count-mais" style="font-family:var(--mono);font-size:9px;background:var(--red);color:#fff;border-radius:10px;padding:1px 5px;display:none"></span>
@@ -2417,7 +2453,7 @@ function showView(v, skipHistory=false){
   if(el) el.style.display='';
   const nav=document.getElementById('nav-'+v);
   if(nav) nav.classList.add('active');
-  if(window.innerWidth<=768 && ['producao','alertas','configuracoes','meus','periodicos','dados','carteira'].includes(v)){const nm=document.getElementById('nav-mais');if(nm) nm.classList.add('active');}
+  if(ehLayoutCelular() && ['producao','alertas','configuracoes','meus','periodicos','dados','carteira'].includes(v)){const nm=document.getElementById('nav-mais');if(nm) nm.classList.add('active');}
   currentView=v;
   const titles={dashboard:'Início',agenda:'Agenda',meus:'Meus artigos',periodicos:'Catálogo de periódicos',dados:'Dados da pesquisa',carteira:'Carteira de temas',orientandos:'Orientandos',manuscritos:'Manuscritos',calendario:'Calendário',bancas:'Agenda de Bancas',producao:'Produção Intelectual',alertas:'Alertas',configuracoes:'Configurações','student-detail':'Orientando','manu-detail':'Manuscrito'};
   document.getElementById('topbarTitle').textContent=titles[v]||v;
@@ -4458,7 +4494,10 @@ function pedidoEsqueleto(id){
   copiarTextoCt(L.join('\n'),'Pedido copiado. Cole na conversa com o Claude.');
 }
 // ── compartilhar pelo WhatsApp: texto formatado e imagem com a figura ──
-function _ehCelular(){return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||'');}
+const MQ_CELULAR='(max-width:599px),(max-width:768px) and (max-height:520px)';
+function ehLayoutCelular(){return !!(window.matchMedia&&matchMedia(MQ_CELULAR).matches);}
+// celular ou tablet (o iPad se apresenta como Mac, mas tem tela de toque)
+function _ehCelular(){const ua=navigator.userAgent||'';return /Android|iPhone|iPad|iPod|Mobile/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1);}
 function _waNumero(ph){const d=String(ph||'').replace(/\D/g,'');if(!d)return '';if(d.length>=12&&d.startsWith('55'))return d;if(d.length===10||d.length===11)return '55'+d;return '';}
 function _waLimpa(s){return String(s||'').replace(/_([A-Za-z0-9]+)/g,'$1').replace(/[ \t]+/g,' ').trim();}
 function ideiaTextoWhats(t,al){
